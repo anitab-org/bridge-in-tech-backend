@@ -7,7 +7,7 @@
 
 Bridge-In-Tech is an application that allows industries/companies, mentors and students to actively collaborate to one another. 
 
-This is the backend client of Bridge-In-Tech.
+This is the backend client of Bridge-In-Tech.    
 
 Please read our [Contributing Guidelines](.github/CONTRIBUTING.md), [Code of Conduct](.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](.github/REPORTING_GUIDELINES.md) thoroughly.
 
