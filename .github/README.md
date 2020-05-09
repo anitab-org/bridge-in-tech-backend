@@ -1,15 +1,15 @@
-# Bridge-In-Tech (android)
+# Bridge-In-Tech (backend)
 
 
 ## Contributing
 
 **This project is under active development**
 
-Bridge-In-Tech is an extension of Mentorship System that allows industry companies, mentors and students to actively contribute to one another. 
+Bridge-In-Tech is an application that allows industries/companies, mentors and students to actively collaborate to one another. 
 
-This is the Android client of Bridge-In-Tech.
+This is the backend client of Bridge-In-Tech.
 
-Please read our [Contributing Guidelines](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/.github/CONTRIBUTING.md), [Code of Conduct](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/.github/REPORTING_GUIDELINES.md) thoroughly.
+Please read our [Contributing Guidelines](.github/CONTRIBUTING.md), [Code of Conduct](.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](.github/REPORTING_GUIDELINES.md) thoroughly.
 
 
 ## Branches
@@ -24,4 +24,4 @@ If you have any questions or want to discuss something about this repo, feel fre
 
 ## License
 
-The project is licensed under the GNU General Public License v3.0. Learn more about it in the [LICENSE](https://github.com/anitab-org/anitab-org.github.io/blob/develop/LICENSE) file.
+The project is licensed under the GNU General Public License v3.0. Learn more about it in the [LICENSE](LICENSE) file.
