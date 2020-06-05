@@ -25,8 +25,7 @@ class TestTestingConfig(TestCase):
         self.assertTrue(application.config["TESTING"])
         self.assertFalse(application.config["SQLALCHEMY_TRACK_MODIFICATIONS"])
         self.assertTrue(application.config["MOCK_EMAIL"])
-        self.assertEqual(
-            "postgresql:///bit_schema_test", application.config["SQLALCHEMY_DATABASE_URI"]
+        self.assertEqual("postgresql:///bit_schema_test", application.config["SQLALCHEMY_DATABASE_URI"]
         )
         self.assertIsNotNone(current_app)
 

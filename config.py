@@ -53,7 +53,7 @@ class BaseConfig(object):
         db_user_arg=os.getenv("DB_USERNAME"),
         db_password_arg=os.getenv("DB_PASSWORD"),
         db_endpoint_arg=os.getenv("DB_ENDPOINT"),
-        db_name_arg=os.getenv("DB_NAME"),
+        db_name_arg=os.getenv("DB_NAME")
     ):
         """Build remote database uri using specific environment variables."""
 
@@ -62,7 +62,7 @@ class BaseConfig(object):
             db_user=db_user_arg,
             db_password=db_password_arg,
             db_endpoint=db_endpoint_arg,
-            db_name=db_name_arg,
+            db_name=db_name_arg
         )  
 
 class LocalConfig(BaseConfig):
@@ -87,16 +87,20 @@ class TestingConfig(BaseConfig):
     
     # Using a local postgre database
     SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema_test"
-    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_test_uri()
+    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
 
 class StagingConfig(BaseConfig):
     """Staging configuration."""
 
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
+    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
+    SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema"
+    
     
 class ProductionConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
+    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
+    SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema"
+    
     
     
 
