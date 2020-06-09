@@ -1,0 +1,25 @@
+language: python
+sudo: required
+python:
+  - '3.6'
+cache: pip
+services:
+    - postgresql
+addons:
+    postgresql: '10'
+    apt:
+      packages:
+      - postgresql-10
+      - postgresql-client-10
+env:
+  global:
+  - PGPORT=5432
+before_script:
+  - psql -c 'create database bit_schema_test;' -U postgres
+  - psql -c 'create schema bitschema;' -U postgres
+  - psql -c 'create schema test_schema;' -U postgres
+  - psql -c 'create schema test_schema_2;' -U postgres
+install:
+  - pip3 install -r requirements.txt
+script:
+  - python -m unittest discover tests -v
