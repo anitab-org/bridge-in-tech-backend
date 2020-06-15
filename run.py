@@ -4,7 +4,9 @@ from flask import Flask, jsonify
 # from flask_restx import Resource, Api
 from config import get_env_config
 from flask_migrate import Migrate, MigrateCommand
+from flask_cors import CORS
 
+cors = CORS()
 
 def create_app(config_filename: str) -> Flask:
     # instantiate the app
@@ -36,6 +38,8 @@ def create_app(config_filename: str) -> Flask:
 
     migrate = Migrate(app, db)
 
+    cors.init_app(app, resources={r"*": {"origins": "http://localhost:3000"}}) 
+    
     from app.api.jwt_extension import jwt
 
     jwt.init_app(app)
