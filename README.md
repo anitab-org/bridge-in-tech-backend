@@ -11,6 +11,10 @@ This is the backend client of Bridge-In-Tech.
 
 Please read our [Contributing Guidelines](.github/CONTRIBUTING.md), [Code of Conduct](.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](.github/REPORTING_GUIDELINES.md) thoroughly.
 
+**BridgeInTech Environment Setup Instructions**
+
+https://github.com/anitab-org/bridge-in-tech-backend/wiki/BIT-development-environment-setup
+
 
 ## Branches
 
