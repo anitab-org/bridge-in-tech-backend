@@ -1,10 +1,8 @@
 import os
 from flask import Flask, jsonify
-
-# from flask_restx import Resource, Api
-from config import get_env_config
 from flask_migrate import Migrate, MigrateCommand
 from flask_cors import CORS
+from config import get_env_config
 
 cors = CORS()
 
@@ -64,10 +62,6 @@ def create_tables():
     
     from app.database.sqlalchemy_extension import db
 
-    # to clear mock data
-    # !!! WARNING!!! Uncomment the line below ONLY when you want to clear all data in the database to start fresh
-    # db.drop_all()
-    
     from app.database.models.ms_schema.user import UserModel
     from app.database.models.ms_schema.mentorship_relation import (
         MentorshipRelationModel,
@@ -84,16 +78,7 @@ def create_tables():
         MentorshipRelationExtensionModel,
     )
 
-    # uncomment the line below if no dummy data needed on INITIAL setup!
-    # !!! Warning !!! Do not uncomment if this is not your INITIAL setup to database!
     db.create_all()
-
-    # uncomment lines below if you want to add dummy data on INITIAL setup!
-    # !!! Warning!!! Treat this with caution as it will mess up your db!!
-    # Warning !!! Do not uncomment if this is not your INITIAL setup to database!
-
-    # from app.database.db_add_mock import add_mock_data # uncomment here
-    # add_mock_data()
 
     @application.shell_context_processor
     def make_shell_context():
@@ -109,8 +94,6 @@ def create_tables():
             "PersonalBackgroundModel": PersonalBackgroundModel,
             "MentorshipRelationExtensionModel": MentorshipRelationExtensionModel,
         }
-
-    # test
 
 if __name__ == "__main__":
     application.run(port=5000)

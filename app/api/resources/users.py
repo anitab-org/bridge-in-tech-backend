@@ -5,6 +5,8 @@ from flask_restx import Resource, Namespace
 from app.api.ms_api_utils import post_request, BASE_MS_API_URL
 from app import messages
 from app.api.models.user import *
+from app.api.validations.user import *
+
 
 users_ns = Namespace("Users", description="Operations related to users")
 add_models_to_namespace(users_ns)
@@ -47,13 +49,16 @@ class UserRegister(Resource):
 
         data = request.json
 
-        # send POST /register request to MS API and return response
-        
+        is_valid = validate_user_registration_request_data(data)
+
+        if is_valid != {}:
+            return is_valid, HTTPStatus.BAD_REQUEST
+
         result = post_request(f"{BASE_MS_API_URL}/register", data)
 
         if result[1] == HTTPStatus.OK:
-            return f"{messages.USER_WAS_CREATED_SUCCESSFULLY}", HTTPStatus.CREATED
+            return messages.USER_WAS_CREATED_SUCCESSFULLY, HTTPStatus.CREATED
         elif result[1] == HTTPStatus.INTERNAL_SERVER_ERROR:
-            return f"{messages.INTERNAL_SERVER_ERROR}", HTTPStatus.INTERNAL_SERVER_ERROR
+            return messages.INTERNAL_SERVER_ERROR, HTTPStatus.INTERNAL_SERVER_ERROR
         else:
             return result

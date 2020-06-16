@@ -15,10 +15,14 @@ env:
   global:
   - PGPORT=5432
 before_script:
-  - psql -c 'create database bit_schema_test;' -U postgres
-  - psql -c 'create schema bitschema;' -U postgres
-  - psql -c 'create schema test_schema;' -U postgres
-  - psql -c 'create schema test_schema_2;' -U postgres
+  - psql -c 'CREATE DATABASE bit_schema_test;' -U postgres
+  - psql -c 'CREATE SCHEMA bitschema;' -U postgres -d bit_schema_test
+  - psql -c 'CREATE SCHEMA test_schema;' -U postgres -d bit_schema_test
+  - psql -c 'create SCHEMA test_schema_2;' -U postgres -d bit_schema_test
+  - psql -c '\dn;' -U postgres -d bit_schema_test
+  - psql -c 'show search_path;' -U postgres -d bit_schema_test
+  - psql -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema_test
+  - psql -c 'show search_path;' -U postgres -d bit_schema_test
 install:
   - pip3 install -r requirements.txt
 script:
