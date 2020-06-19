@@ -1,8 +1,15 @@
 import json
 from http import HTTPStatus
 from flask import request
+from flask_jwt_extended import (
+    jwt_required,
+    jwt_refresh_token_required,
+    create_access_token,
+    create_refresh_token,
+    get_jwt_identity,
+)
 from flask_restx import Resource, Namespace
-from app.api.ms_api_utils import post_request, BASE_MS_API_URL
+from app.api.ms_api_utils import post_request, BASE_MS_API_URL, http_response_checker
 from app import messages
 from app.api.models.user import *
 from app.api.validations.user import *
@@ -49,16 +56,46 @@ class UserRegister(Resource):
 
         data = request.json
 
-        is_valid = validate_user_registration_request_data(data)
-
-        if is_valid != {}:
-            return is_valid, HTTPStatus.BAD_REQUEST
-
         result = post_request(f"{BASE_MS_API_URL}/register", data)
 
-        if result[1] == HTTPStatus.OK:
-            return messages.USER_WAS_CREATED_SUCCESSFULLY, HTTPStatus.CREATED
-        elif result[1] == HTTPStatus.INTERNAL_SERVER_ERROR:
-            return messages.INTERNAL_SERVER_ERROR, HTTPStatus.INTERNAL_SERVER_ERROR
-        else:
-            return result
+        return http_response_checker(result, "register")
+
+        
+@users_ns.route("login")
+class LoginUser(Resource):
+    @classmethod
+    @users_ns.doc("login")
+    @users_ns.response(HTTPStatus.OK, "Successful login", login_response_body_model)
+    @users_ns.response(
+        HTTPStatus.BAD_REQUEST,
+        f"{messages.USERNAME_FIELD_IS_MISSING}\n" 
+        f"{messages.PASSWORD_FIELD_IS_MISSING}",
+    )
+    @users_ns.response(HTTPStatus.UNAUTHORIZED, f"{messages.WRONG_USERNAME_OR_PASSWORD}")
+    @users_ns.response(HTTPStatus.FORBIDDEN, f"{messages.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN}")
+    @users_ns.response(
+        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+    )
+    @users_ns.expect(login_request_body_model)
+    def post(cls):
+        """
+        Login user
+
+        The user can login with (username or email) + password.
+        Username field can be either the User's username or the email.
+        The return value is an access token and the expiry timestamp.
+        The token is valid for 1 week.
+        """
+        data = request.json
+        
+        username = data.get("username", None)
+        password = data.get("password", None)
+
+        if not username:
+            return messages.USERNAME_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
+        if not password:
+            return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
+
+        result = post_request(f"{BASE_MS_API_URL}/login", data)
+
+        return http_response_checker(result, "login")

@@ -59,7 +59,6 @@ application = create_app(get_env_config())
 @application.before_first_request
 def create_tables():
     
-    
     from app.database.sqlalchemy_extension import db
 
     from app.database.models.ms_schema.user import UserModel
