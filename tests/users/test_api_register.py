@@ -15,136 +15,164 @@ class TestUserRegistrationApi(BaseTestCase):
     @patch("requests.post")
     def test_api_register_successful(self, mock_register):
         
-        json_response_code = json.dumps(HTTPStatus.CREATED)
-        message = {'message': f'{messages.USER_WAS_CREATED_SUCCESSFULLY}'}
-        status_code = {'status_code': f"{json_response_code}"}
-        expected_tuple = [message, status_code]
+        response_code = HTTPStatus.CREATED
+        expected_message = messages.USER_WAS_CREATED_SUCCESSFULLY
         
         mock_response = Mock()
-        mock_response.json.return_value = expected_tuple
+        mock_response.json.return_value = expected_message
+        mock_response.status_code = HTTPStatus.CREATED
         mock_register.return_value = mock_response
-
-        data = user1
-        response = post_request(f"{BASE_MS_API_URL}/register", data)
+        mock_register.raise_for_status = json.dumps(HTTPStatus.OK)
+        
+        with self.client:
+            response = self.client.post(
+                "/register",
+                data=json.dumps(user1),
+                follow_redirects=True,
+                content_type="application/json",
+            )
 
         mock_register.assert_called()
-        self.assertEqual(1, mock_response.json.call_count)
-        self.assertEqual(response[0], expected_tuple)
+        self.assertEqual(1, mock_register.call_count)
+        self.assertEqual(response.json, expected_message)
+        self.assertEqual(response.status_code, response_code)
         
-
+     
     @patch("requests.post")
     def test_api_register_password_invalid(self, mock_register):
         
-        json_response_code = json.dumps(HTTPStatus.BAD_REQUEST)
-        message = {'message': f'{messages.PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH}'}
-        status_code = {'status_code': f"{json_response_code}"}
-        expected_tuple = [message, status_code]
-        
+        response_code = HTTPStatus.BAD_REQUEST
+        expected_message = messages.PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH
+
         mock_response = Mock()
         http_error = requests.exceptions.HTTPError()
         mock_response.raise_for_status.side_effect = http_error
         mock_register.return_value = mock_response
         
         mock_error = Mock()
-        mock_error.json.return_value = expected_tuple
+        mock_error.json.return_value = expected_message
         mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
 
-        data = {
-            "name": "user_pwd_invalid",
+        user_invalid_pwd = {
+            "name": "user pwd invalid",
             "username": "username_pwd_invalid",
             "password": "toshort",
-            "email": "email_pwd_invalid",
+            "email": "email@pwd.invalid",
             "terms_and_conditions_checked": True,
             "need_mentoring": True,
             "available_to_mentor": False,
         }
-        response = post_request(f"{BASE_MS_API_URL}/register", data)
+
+        mock_error = Mock()
+        mock_error.json.return_value = expected_message
+        mock_error.status_code = HTTPStatus.BAD_REQUEST
+        mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
+
+        with self.client:
+            response = self.client.post(
+                "/register",
+                data=json.dumps(user_invalid_pwd),
+                follow_redirects=True,
+                content_type="application/json",
+            )
         
-        mock_register.assert_called()
+        mock_register.assert_not_called()
         self.assertEqual(0, mock_response.raise_for_status.call_count)
         self.assertEqual(0, mock_register.json.call_count)
         self.assertEqual(0, mock_register.raise_for_status.call_count)
-        self.assertEqual(response[0], expected_tuple)
+        self.assertEqual(response.json, expected_message)
+        self.assertEqual(response.status_code, response_code)
         
-
+    
     @patch("requests.post")
     def test_api_register_username_exist(self, mock_register):
         
-        json_response_code = json.dumps(HTTPStatus.CONFLICT)
-        message = {'message': '{messages.USER_USES_A_USERNAME_THAT_ALREADY_EXISTS}'}
-        status_code = {'status_code': f"{json_response_code}"}
-        expected_tuple = [message, status_code]
+        response_code = HTTPStatus.CONFLICT
+        expected_message = messages.USER_USES_A_USERNAME_THAT_ALREADY_EXISTS
 
         mock_response = Mock()
         http_error = requests.exceptions.HTTPError()
         mock_response.raise_for_status.side_effect = http_error
         mock_register.return_value = mock_response
         
-        mock_error = Mock()
-        mock_error.json.return_value = expected_tuple
-        mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
-        
-        data = {
-            "name": "user_username_exist",
+        user_username_exist = {
+            "name": "user username exist",
             "username": "username_exist",
             "password": "pwd_username_exist",
-            "email": "email_username_exist",
+            "email": "email@username.exist",
             "terms_and_conditions_checked": True,
             "need_mentoring": True,
             "available_to_mentor": False,
         }
-        response = post_request(f"{BASE_MS_API_URL}/register", data)
-        
+
+        mock_error = Mock()
+        mock_error.json.return_value = expected_message
+        mock_error.status_code = HTTPStatus.CONFLICT
+        mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
+
+        with self.client:
+            response = self.client.post(
+                "/register",
+                data=json.dumps(user_username_exist),
+                follow_redirects=True,
+                content_type="application/json",
+            )
+
         mock_register.assert_called()
         self.assertEqual(0, mock_response.raise_for_status.call_count)
         self.assertEqual(0, mock_register.json.call_count)
         self.assertEqual(0, mock_register.raise_for_status.call_count)
-        self.assertEqual(response[0], expected_tuple)
-
+        self.assertEqual(response.json, expected_message)
+        self.assertEqual(response.status_code, response_code)
+        
         
     @patch("requests.post")
     def test_api_register_email_exist(self, mock_register):
         
-        json_response_code = json.dumps(HTTPStatus.CONFLICT)
-        message = {'message': '{messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS}'}
-        status_code = {'status_code': f"{json_response_code}"}
-        expected_tuple = [message, status_code]
-
+        response_code = HTTPStatus.CONFLICT
+        expected_message = messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS
+        
         mock_response = Mock()
         http_error = requests.exceptions.HTTPError()
         mock_response.raise_for_status.side_effect = http_error
         mock_register.return_value = mock_response
 
-        mock_error = Mock()
-        mock_error.json.return_value = expected_tuple
-        mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
-
-        data = {
-            "name": "user_email_exist",
+        user_email_exist = {
+            "name": "user email exist",
             "username": "username_email_exist",
             "password": "pwd_email_exist",
-            "email": "email_exist",
+            "email": "user@email.exist",
             "terms_and_conditions_checked": True,
             "need_mentoring": True,
             "available_to_mentor": False,
         }
-        response = post_request(f"{BASE_MS_API_URL}/register", data)
-        
+
+        mock_error = Mock()
+        mock_error.json.return_value = expected_message
+        mock_error.status_code = HTTPStatus.CONFLICT
+        mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
+
+        with self.client:
+            response = self.client.post(
+                "/register",
+                data=json.dumps(user_email_exist),
+                follow_redirects=True,
+                content_type="application/json",
+            )
+
         mock_register.assert_called()
         self.assertEqual(0, mock_response.raise_for_status.call_count)
         self.assertEqual(0, mock_register.json.call_count)
         self.assertEqual(0, mock_register.raise_for_status.call_count)
-        self.assertEqual(response[0], expected_tuple)
+        self.assertEqual(response.json, expected_message)
+        self.assertEqual(response.status_code, response_code)
         
 
     @patch("requests.post")
     def test_api_register_internal_server_error(self, mock_register):
         
-        json_response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
-        json_response_message = messages.INTERNAL_SERVER_ERROR
-        message = json_response_message
-        status_code = f"{json_response_code}"
-        expected_tuple = [message, status_code]
+        response_code = HTTPStatus.INTERNAL_SERVER_ERROR
+        expected_message = messages.INTERNAL_SERVER_ERROR
         
         mock_response = Mock()
         server_error = Exception()
@@ -152,27 +180,34 @@ class TestUserRegistrationApi(BaseTestCase):
         mock_register.return_value = mock_response
 
         mock_error = Mock()
-        mock_error.json.return_value = expected_tuple
+        mock_error.json.return_value = expected_message
+        mock_error.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
         mock_register.side_effect = Exception()
         
-        data = {
-            "name": "user_server_err",
+        user_server_err = {
+            "name": "user server err",
             "username": "username_server_err",
             "password": "pwd_server_err",
-            "email": "email_server_err",
+            "email": "email@server.err",
             "terms_and_conditions_checked": True,
             "need_mentoring": True,
             "available_to_mentor": False,
         }
-        response = post_request(f"{BASE_MS_API_URL}/register", data)
-        
+        with self.client:
+            response = self.client.post(
+                "/register",
+                data=json.dumps(user_server_err),
+                follow_redirects=True,
+                content_type="application/json",
+            )
+            
         mock_register.assert_called()
         self.assertEqual(0, mock_response.raise_for_status.call_count)
         self.assertEqual(0, mock_register.json.call_count)
         self.assertEqual(0, mock_register.raise_for_status.call_count)
-        self.assertEqual(response[0], expected_tuple[0])
-        self.assertEqual(response[1], expected_tuple[1])
-    
+        self.assertEqual(response.json, expected_message)
+        self.assertEqual(response.status_code, response_code)
+        
                
 if __name__ == "__main__":
     unittest.main()

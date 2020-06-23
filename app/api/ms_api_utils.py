@@ -3,6 +3,8 @@ from http import HTTPStatus
 from flask import json
 import requests
 from app import messages
+from app.utils.decorator_utils import http_response_namedtuple_converter
+
 
 # set base url
 
@@ -17,7 +19,6 @@ BASE_MS_API_URL = "http://127.0.0.1:4000"
 
 # create instance
 def post_request(request_url, data):
-    
     try:
         response = requests.post(
             request_url, json=data, headers={"Accept": "application/json"}
@@ -39,41 +40,38 @@ def post_request(request_url, data):
     finally:
         logging.fatal(f"{response_message}")
         return response_message, response_code
-    
-def http_response_checker(result, request_type):
-    
-    if result[1] == HTTPStatus.OK:
-        return http_ok_status_checker(result, request_type)
-    if result[1] == HTTPStatus.BAD_REQUEST:
-        return http_bad_request_checker(result)
-    
-    # TO DO. CHANGE HTTPStatus.NOT_FOUND to UNAUTHORIZED AFTER PR647 IN MS BACKEND IS APPROVED
-    if request_type == "login":
-        if result[1] == HTTPStatus.NOT_FOUND:
-            return messages.WRONG_USERNAME_OR_PASSWORD, HTTPStatus.UNAUTHORIZED
-    
-    if result[1] == HTTPStatus.FORBIDDEN:
-        return messages.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN, HTTPStatus.FORBIDDEN
-    if result[1] == HTTPStatus.INTERNAL_SERVER_ERROR:
-        return messages.INTERNAL_SERVER_ERROR, HTTPStatus.INTERNAL_SERVER_ERROR
-    # for all other errors
+
+
+@http_response_namedtuple_converter
+def http_response_checker(result):
+    # TO DO: REMOVE ALL IF CONDITIONS ONCE ALL BIT-MS HTTP ERROR ISSUES ON MS ARE FIXED 
+    # if result.status_code == HTTPStatus.OK:
+    #     result = http_ok_status_checker(result)
+    # # if result.status_code == HTTPStatus.BAD_REQUEST:
+    #     result = http_bad_request_status_checker(result)
+    # if result.status_code == HTTPStatus.NOT_FOUND:
+    #     result = http_not_found_status_checker(result)
     return result
+
+
+# @http_response_namedtuple_converter
+# def http_ok_status_checker(result):
+#     # TO DO: REMOVE WHEN ISSUE#619 ON MS BACKEND IS FIXED
+#     if result.message == messages.USER_WAS_CREATED_SUCCESSFULLY:
+#         return result._replace(status_code=HTTPStatus.CREATED)
+
+
+# @http_response_namedtuple_converter
+# def http_bad_request_status_checker(result):
+#     # TO DO: REMOVE ONCE ISSUE#619 ON MS BACKEND IS FIXED
+#     if result.message == messages.USER_USES_A_USERNAME_THAT_ALREADY_EXISTS or result.message == messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS:
+#         return result._replace(status_code = HTTPStatus.CONFLICT)
+
+
+# @http_response_namedtuple_converter
+# def http_not_found_status_checker(result):
+#     # TO DO: REMOVE ONCE ISSUE#624 ON MS BACKEND IS FIXED
+#     if result.message == messages.WRONG_USERNAME_OR_PASSWORD:
+#         return result._replace(status_code = HTTPStatus.UNAUTHORIZED)
     
-def http_bad_request_checker(result):
-    
-    if result[0] == f"{messages.USERNAME_FIELD_IS_MISSING}":
-        return messages.USERNAME_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
-    if result[0] == f"{messages.PASSWORD_FIELD_IS_MISSING}":
-        return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
-    
-def http_ok_status_checker(result, request_type):
-    if result[1] == HTTPStatus.OK:
-        if request_type == "register":
-            return messages.USER_WAS_CREATED_SUCCESSFULLY, HTTPStatus.CREATED
-        if request_type == "login":
-            result_to_show = {
-                "access_token": result[0].get("access_token"),
-                "access_expiry": result[0].get("access_expiry"),
-            }
-            return result_to_show, HTTPStatus.OK
     
