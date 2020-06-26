@@ -18,6 +18,7 @@ BASE_MS_API_URL = "http://127.0.0.1:4000"
 # BASE_MS_API_URL = "https://bridge-in-tech-ms-test.herokuapp.com"
 
 # create instance
+
 def post_request(request_url, data):
     try:
         response = requests.post(
