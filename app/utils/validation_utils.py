@@ -119,18 +119,11 @@ def get_length_validation_error_message(field_name, min_length, max_length):
         - error message if minimum length is determined.
     """
     if min_length is None:
-        return "The {field_name} field has to be no more than {max_limit} characters.".format(
-            field_name=field_name, max_limit=max_length
-        )
+        return f"The {field_name} field has to be no more than {max_limit} characters."
+        
     
-    return (
-         "The {field_name} field has to be at least {min_limit} "
-         "characters and no more than {max_limit} characters.".format(
-            field_name=field_name,
-            min_limit=min_length,
-            max_limit=max_length,
-        )
-    )
+    return f"The {field_name} field has to be at least {min_length} characters and no more than {max_length} characters."
+    
 
 
 def get_stripped_string(string_with_whitespaces):
