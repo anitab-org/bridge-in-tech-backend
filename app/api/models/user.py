@@ -4,7 +4,6 @@ from flask_restx import fields, Model
 def add_models_to_namespace(api_namespace):
     api_namespace.models[register_user_api_model.name] = register_user_api_model
 
-
 register_user_api_model = Model(
     "User registration model",
     {

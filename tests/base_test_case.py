@@ -21,24 +21,9 @@ class BaseTestCase(TestCase):
         
         db.create_all()
 
-        # register first user which is admin user
-
-        
-        
-        # self.admin_user = UserModel(
-        #     name=test_admin_user["name"],
-        #     email=test_admin_user["email"],
-        #     username=test_admin_user["username"],
-        #     password=test_admin_user["password"],
-        #     terms_and_conditions_checked=test_admin_user[
-        #         "terms_and_conditions_checked"
-        #     ],
-        # )
-        # db.session.add(self.admin_user)
-        # db.session.commit()
-        # self.admin_user.is_email_verified = True
 
     @classmethod
     def tearDown(cls):
         db.session.remove()
         db.drop_all()
+        

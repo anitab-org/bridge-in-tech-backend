@@ -1,12 +1,9 @@
 import logging
-import requests
 from http import HTTPStatus
+from flask import json
+import requests
 from app import messages
 
-# from requests.exceptions import HTTPError
-from flask import json
-# from urllib3.exceptions import HTTPError
-# from werkzeug.exceptions import HTTPException
 
 # set base url
 
@@ -22,18 +19,26 @@ BASE_MS_API_URL = "http://127.0.0.1:4000"
 
 # create instance
 def post_request(request_url, data):
+    
     try:
-
         response = requests.post(
             request_url, json=data, headers={"Accept": "application/json"}
         )
         response.raise_for_status()
-    except requests.ConnectionError as e:
-        return f"{e.response.json()}", HTTPStatus.INTERNAL_SERVER_ERROR
-    except requests.HTTPError as e:
-        return f"{e.response.json()}", e.response.status_code
+        response_message = response.json()
+        response_code = response.status_code
+    except requests.exceptions.ConnectionError as e:
+        response_message = messages.INTERNAL_SERVER_ERROR
+        response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
+        logging.fatal(f"{e}")
+    except requests.exceptions.HTTPError as e:
+        response_message = e.response.json()
+        response_code = e.response.status_code
     except Exception as e:
-        return f"{e.response.json()}", e.response.status_code
-    else:
-        logging.warning(f"{response}")
-        return f"{response.json()}", response.status_code
+        response_message = messages.INTERNAL_SERVER_ERROR
+        response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
+        logging.fatal(f"{e}")
+    finally:
+        logging.fatal(f"{response_message}")
+        return response_message, response_code
+        
