@@ -23,15 +23,12 @@ Install all dependencies in the `requirements.txt` file: `pip install -r require
 1. Run postgresql shell command: `psql`. 
 2. Create database, name it "bit_schema": `create DATABASE bit_schema;`
 3. If you are not currently connected as `postgres`, run the following to connect to the database you've just created as the superuser `postgres`.
-
-// TO DO: SUPPLY IMAGE TO SHOW STEPS 1 AND 2 COMMAND LINES
+> \c bit_schema postgres
 
 4. Create the BIT schema: `create schema bitschema;`
 5. Confirm to check the new schema has been added. 
 
 You should see 2 schemas, public and bitschema.
-
-// TO DO: SUPPLY IMAGE TO SHOW STEPS 5 IS CONFIRMED
 
 You can now closed the psql shell by typing `\q` and hit `enter`.
 
@@ -70,16 +67,10 @@ you should see the following
 1. Run the next command to show the existing search_path
 > $ psql -c 'show search_path;' -U postgres -d bit_schema_test
 
-// TO DO: ADD AN IMAGE SHOWING THE INITIAL SEARCH PATH. IT SHOULD ONLY HAVE the `public` schema
-
 2. Then run this command to set new search_path to both bitschema and public
 > psql -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema
 
-// TO DO: ADD AN IMAGE SHOWING THE RESPONSE OF THE COMMAND ABOVE
-
 3. Finally, run the same command on step 2 to check if the new path has been set
-
-// TO DO: ADD AN IMAGE SHOWING THE MODIFIED SEARCH PATH. IT SHOULD HAVE 2 SCHEMAS, bitschema and public
 
 Do the same steps to set new search_path on bit_schema_test. You just need to set bitschema and public as it is done here (no need to set search path for test_schema and test_schema_2 as there are the default postgresql test schemas)
 
