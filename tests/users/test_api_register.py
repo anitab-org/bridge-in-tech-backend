@@ -22,7 +22,7 @@ class TestUserRegistrationApi(BaseTestCase):
         mock_response.json.return_value = expected_message
         mock_response.status_code = HTTPStatus.CREATED
         mock_register.return_value = mock_response
-        mock_register.raise_for_status = json.dumps(HTTPStatus.OK)
+        mock_register.raise_for_status = json.dumps(HTTPStatus.CREATED)
         
         with self.client:
             response = self.client.post(
