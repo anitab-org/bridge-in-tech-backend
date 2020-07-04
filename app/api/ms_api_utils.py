@@ -4,7 +4,6 @@ from flask import json
 import requests
 from app import messages
 
-
 # set base url
 
 # for ms-api local server
@@ -15,7 +14,6 @@ BASE_MS_API_URL = "http://127.0.0.1:4000"
 # Heroku MS API needs to be set as preference over the localhost. Otherwise, make sure
 # you run the MS API local server when you push the PR.
 # BASE_MS_API_URL = "https://bridge-in-tech-ms-test.herokuapp.com"
-
 
 # create instance
 def post_request(request_url, data):
@@ -41,4 +39,41 @@ def post_request(request_url, data):
     finally:
         logging.fatal(f"{response_message}")
         return response_message, response_code
-        
+    
+def http_response_checker(result, request_type):
+    
+    if result[1] == HTTPStatus.OK:
+        return http_ok_status_checker(result, request_type)
+    if result[1] == HTTPStatus.BAD_REQUEST:
+        return http_bad_request_checker(result)
+    
+    # TO DO. CHANGE HTTPStatus.NOT_FOUND to UNAUTHORIZED AFTER PR647 IN MS BACKEND IS APPROVED
+    if request_type == "login":
+        if result[1] == HTTPStatus.NOT_FOUND:
+            return messages.WRONG_USERNAME_OR_PASSWORD, HTTPStatus.UNAUTHORIZED
+    
+    if result[1] == HTTPStatus.FORBIDDEN:
+        return messages.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN, HTTPStatus.FORBIDDEN
+    if result[1] == HTTPStatus.INTERNAL_SERVER_ERROR:
+        return messages.INTERNAL_SERVER_ERROR, HTTPStatus.INTERNAL_SERVER_ERROR
+    # for all other errors
+    return result
+    
+def http_bad_request_checker(result):
+    
+    if result[0] == f"{messages.USERNAME_FIELD_IS_MISSING}":
+        return messages.USERNAME_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
+    if result[0] == f"{messages.PASSWORD_FIELD_IS_MISSING}":
+        return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
+    
+def http_ok_status_checker(result, request_type):
+    if result[1] == HTTPStatus.OK:
+        if request_type == "register":
+            return messages.USER_WAS_CREATED_SUCCESSFULLY, HTTPStatus.CREATED
+        if request_type == "login":
+            result_to_show = {
+                "access_token": result[0].get("access_token"),
+                "access_expiry": result[0].get("access_expiry"),
+            }
+            return result_to_show, HTTPStatus.OK
+    
