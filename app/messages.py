@@ -12,7 +12,7 @@ FIELD_AVAILABLE_TO_MENTOR_IS_INVALID = {
     "message": "Field available_to_mentor" " is not valid."
 }
 PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH = {
-    "message": f"The password field has to be longer than {PASSWORD_MIN_LENGTH} characters and shorter than {PASSWORD_MAX_LENGTH} characters."
+    "message": f"The password field has to be at least {PASSWORD_MIN_LENGTH} characters and no more than {PASSWORD_MAX_LENGTH} characters."
 }
 
 # Not found
@@ -152,13 +152,13 @@ USER_IS_NOT_REGISTERED_IN_THE_SYSTEM = {
 }
 NAME_LENGTH_GREATER_THAN_MAX_LIMIT = {
     "message": "The {field_name} field has"
-    " to be shorter than {max_limit}"
+    " to be no more than {max_limit}"
     " characters."
 }
 NAME_LENGTH_LESSER_THAN_MAX_LIMIT = {
     "message": "The {field_name} field has to"
-    " be longer than {min_limit} characters"
-    " and shorter than {max_limit}"
+    " be at least than {min_limit} characters"
+    " and no more than {max_limit}"
     " characters."
 }
 USER_INPUTS_INCORRECT_CONFIGURATION_VALUE = {

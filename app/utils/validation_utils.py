@@ -28,6 +28,7 @@ For the "username" field to be valid, it may contain one or more character from:
     - special character "-".
 """
 import re
+from collections import namedtuple
 
 name_regex = r"(^[a-zA-Z\s\-]+$)"
 email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
@@ -72,7 +73,6 @@ def is_username_valid(username):
     """
     return re.match(username_regex, username)
 
-
 def validate_length(field_length, min_length, max_length, field_name):
     """Validates string input.
 
@@ -101,9 +101,9 @@ def validate_length(field_length, min_length, max_length, field_name):
                 field_name, min_length, max_length
             )
         }
-        return False, error_msg
+        return {"is_valid": False, "message": error_msg}
     
-    return True, {}
+    return {"is_valid": True, "message": {}}
 
 
 def get_length_validation_error_message(field_name, min_length, max_length):
@@ -119,18 +119,11 @@ def get_length_validation_error_message(field_name, min_length, max_length):
         - error message if minimum length is determined.
     """
     if min_length is None:
-        return "The {field_name} field has to be shorter than {max_limit} characters.".format(
-            field_name=field_name, max_limit=max_length + 1
-        )
+        return f"The {field_name} field has to be no more than {max_limit} characters."
+        
     
-    return (
-         "The {field_name} field has to be longer than {min_limit} "
-         "characters and shorter than {max_limit} characters.".format(
-            field_name=field_name,
-            min_limit=min_length - 1,
-            max_limit=max_length + 1,
-        )
-    )
+    return f"The {field_name} field has to be at least {min_length} characters and no more than {max_length} characters."
+    
 
 
 def get_stripped_string(string_with_whitespaces):

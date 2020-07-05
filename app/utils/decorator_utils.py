@@ -2,6 +2,7 @@
 This module is used to define decorators for the app
 """
 from http import HTTPStatus
+from collections import namedtuple
 from app import messages
 from app.database.models.ms_schema.user import UserModel
 
@@ -43,3 +44,11 @@ def email_verification_required(user_function):
         return messages.USER_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
 
     return check_verification
+
+
+def http_response_namedtuple_converter(user_function):
+    def tuple_to_namedtuple_http_response(result):
+        HttpNamedTupleResponse = namedtuple("HttpNamedTupleResponse", ["message", "status_code"])
+        converted_result = HttpNamedTupleResponse(*result)
+        return user_function(converted_result)
+    return tuple_to_namedtuple_http_response

@@ -33,12 +33,16 @@ class UserRegister(Resource):
     )
     @users_ns.response(
         HTTPStatus.BAD_REQUEST,
-        f"{messages.PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH}"
+        f"{messages.NAME_INPUT_BY_USER_IS_INVALID}\n"
+        f"{messages.USERNAME_INPUT_BY_USER_IS_INVALID}\n"
+        f"{messages.EMAIL_INPUT_BY_USER_IS_INVALID}\n"
+        f"{messages.PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH}\n"
+        f"{messages.TERMS_AND_CONDITIONS_ARE_NOT_CHECKED}"
     )
     @users_ns.response(
         HTTPStatus.CONFLICT,
         f"{messages.USER_USES_A_USERNAME_THAT_ALREADY_EXISTS}\n"
-        f"{messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS}",
+        f"{messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS}"
     )
     @users_ns.response(
         HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
@@ -56,9 +60,14 @@ class UserRegister(Resource):
 
         data = request.json
 
+        is_valid = validate_user_registration_request_data(data)
+
+        if is_valid != {}:
+            return is_valid, HTTPStatus.BAD_REQUEST
+            
         result = post_request(f"{BASE_MS_API_URL}/register", data)
 
-        return http_response_checker(result, "register")
+        return http_response_checker(result)
 
         
 @users_ns.route("login")
@@ -98,4 +107,4 @@ class LoginUser(Resource):
 
         result = post_request(f"{BASE_MS_API_URL}/login", data)
 
-        return http_response_checker(result, "login")
+        return http_response_checker(result)
