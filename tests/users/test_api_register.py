@@ -51,6 +51,7 @@ class TestUserRegistrationApi(BaseTestCase):
         
         mock_error = Mock()
         mock_error.json.return_value = expected_message
+        mock_error.status_code = response_code
         mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
 
         user_invalid_pwd = {
@@ -62,11 +63,6 @@ class TestUserRegistrationApi(BaseTestCase):
             "need_mentoring": True,
             "available_to_mentor": False,
         }
-
-        mock_error = Mock()
-        mock_error.json.return_value = expected_message
-        mock_error.status_code = HTTPStatus.BAD_REQUEST
-        mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
 
         with self.client:
             response = self.client.post(
@@ -107,7 +103,7 @@ class TestUserRegistrationApi(BaseTestCase):
 
         mock_error = Mock()
         mock_error.json.return_value = expected_message
-        mock_error.status_code = HTTPStatus.CONFLICT
+        mock_error.status_code = response_code
         mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
 
         with self.client:
@@ -137,6 +133,11 @@ class TestUserRegistrationApi(BaseTestCase):
         mock_response.raise_for_status.side_effect = http_error
         mock_register.return_value = mock_response
 
+        mock_error = Mock()
+        mock_error.json.return_value = expected_message
+        mock_error.status_code = response_code
+        mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
+
         user_email_exist = {
             "name": "user email exist",
             "username": "username_email_exist",
@@ -146,11 +147,6 @@ class TestUserRegistrationApi(BaseTestCase):
             "need_mentoring": True,
             "available_to_mentor": False,
         }
-
-        mock_error = Mock()
-        mock_error.json.return_value = expected_message
-        mock_error.status_code = HTTPStatus.CONFLICT
-        mock_register.side_effect = requests.exceptions.HTTPError(response=mock_error)
 
         with self.client:
             response = self.client.post(
