@@ -30,6 +30,7 @@ class BaseConfig(object):
     # Flask JWT settings
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(weeks=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(weeks=4)
+    PROPAGATE_EXCEPTION = True
 
     # Security
     SECRET_KEY = os.getenv("SECRET_KEY", None)
