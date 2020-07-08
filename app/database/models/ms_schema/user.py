@@ -23,7 +23,7 @@ class UserModel(db.Model):
     # Specifying database table used for UserModel
     __tablename__ = "users"
     __table_args__ = {"schema": "public", "extend_existing": True}
-
+    
     id = db.Column(db.Integer, primary_key=True)
 
     # personal data
@@ -52,7 +52,7 @@ class UserModel(db.Model):
     bio = db.Column(db.String(500))
     location = db.Column(db.String(80))
     occupation = db.Column(db.String(80))
-    organization = db.Column(db.String(80))
+    current_organization = db.Column(db.String(80))
     slack_username = db.Column(db.String(80))
     social_media_links = db.Column(db.String(500))
     skills = db.Column(db.String(500))
@@ -121,7 +121,7 @@ class UserModel(db.Model):
             "bio": self.bio,
             "location": self.location,
             "occupation": self.occupation,
-            "organization": self.organization,
+            "current_organization": self.organization,
             "slack_username": self.slack_username,
             "social_media_links": self.social_media_links,
             "skills": self.skills,

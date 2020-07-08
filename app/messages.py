@@ -192,7 +192,7 @@ USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN = {
     "message": "Please verify your" " email before login."
 }
 NAME_USERNAME_AND_PASSWORD_NOT_IN_STRING_FORMAT = {
-    "message": "Name, username" " and password must be in" " string format."
+    "message": "Name, username," " or password must be in" " string format."
 }
 COMMENT_NOT_IN_STRING_FORMAT = {"message": "Comment must be in string format."}
 TERMS_AND_CONDITIONS_ARE_NOT_CHECKED = {
@@ -290,3 +290,4 @@ INTERNAL_SERVER_ERROR = {
     "message": "An unexpected server error occurs while processing your request. Please try again later."
 }
 
+UNEXPECTED_INPUT = {"message": "Unexpected input is detected. Please check your input to make sure only approved fields are to be submitted."}

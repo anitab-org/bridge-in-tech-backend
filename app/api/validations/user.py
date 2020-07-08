@@ -27,7 +27,6 @@ SOCIALS_MAX_LENGTH = 400
 
 
 def validate_user_registration_request_data(data):
-    # Verify if request body has required fields
     if "name" not in data:
         return messages.NAME_FIELD_IS_MISSING
     if "username" not in data:
@@ -38,13 +37,13 @@ def validate_user_registration_request_data(data):
         return messages.EMAIL_FIELD_IS_MISSING
     if "terms_and_conditions_checked" not in data:
         return messages.TERMS_AND_CONDITIONS_FIELD_IS_MISSING
-
+    
     name = data["name"]
     username = data["username"]
     password = data["password"]
     email = data["email"]
     terms_and_conditions_checked = data["terms_and_conditions_checked"]
-
+    
     if not (
         isinstance(name, str)
         and isinstance(username, str)
@@ -76,7 +75,6 @@ def validate_user_registration_request_data(data):
     if not is_valid.get("is_valid"):
         return is_valid.get("message")
 
-    # Verify business logic of request body
     if not terms_and_conditions_checked:
         return messages.TERMS_AND_CONDITIONS_ARE_NOT_CHECKED
 
@@ -93,7 +91,6 @@ def validate_user_registration_request_data(data):
 
 
 def validate_resend_email_request_data(data):
-    # Verify if request body has required fields
     if "email" not in data:
         return messages.EMAIL_FIELD_IS_MISSING
 
@@ -105,11 +102,13 @@ def validate_resend_email_request_data(data):
 
 
 def validate_update_profile_request_data(data):
-    # todo this does not check if non expected fields are being sent
-
     if not data:
         return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT
-
+    if "name" not in data:
+        return messages.NAME_FIELD_IS_MISSING
+    if "username" not in data:
+        return messages.USERNAME_FIELD_IS_MISSING
+    
     username = data.get("username", None)
     if username:
         is_valid = validate_length(
@@ -159,13 +158,13 @@ def validate_update_profile_request_data(data):
         if not is_valid.get("is_valid"):
             return is_valid.get("message")
 
-    organization = data.get("organization", None)
-    if organization:
+    current_organization = data.get("current_organization", None)
+    if current_organization:
         is_valid = validate_length(
-            len(get_stripped_string(organization)),
+            len(get_stripped_string(current_organization)),
             0,
             ORGANIZATION_MAX_LENGTH,
-            "organization",
+            "current_organization",
         )
         if not is_valid.get("is_valid"):
             return is_valid.get("message")

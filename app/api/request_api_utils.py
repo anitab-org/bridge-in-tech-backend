@@ -44,6 +44,68 @@ def post_request(request_string, data):
 
 def get_request(request_string, token):
     request_url = f"{BASE_MS_API_URL}{request_string}" 
+    is_wrong_token = validate_token(token)
+
+    if not is_wrong_token:
+        try: 
+            response = requests.get(
+                request_url,
+                headers={"Authorization": AUTH_COOKIE["Authorization"].value, "Accept": "application/json"}, 
+            )
+            response.raise_for_status()
+            response_message = response.json()
+            response_code = response.status_code
+        except requests.exceptions.ConnectionError as e:
+            response_message = messages.INTERNAL_SERVER_ERROR
+            response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
+            logging.fatal(f"{e}")
+        except requests.exceptions.HTTPError as e:
+            response_message = e.response.json()
+            response_code = e.response.status_code
+        except Exception as e:
+            response_message = messages.INTERNAL_SERVER_ERROR
+            response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
+            logging.fatal(f"{e}")
+        finally:
+            if request_string == "/user" and response_code == HTTPStatus.OK:
+                AUTH_COOKIE["user_id"] = response_message.get("id")
+            logging.fatal(f"{response_message}")
+            return response_message, response_code
+    return is_wrong_token
+
+
+def put_request(request_string, token, data):
+    request_url = f"{BASE_MS_API_URL}{request_string}" 
+    is_wrong_token = validate_token(token)
+
+    if not is_wrong_token:
+        try: 
+            response = requests.put(
+                request_url, 
+                json=data, 
+                headers={"Authorization": AUTH_COOKIE["Authorization"].value, "Accept": "application/json"}, 
+            )
+            response.raise_for_status()
+            response_message = response.json()
+            response_code = response.status_code
+        except requests.exceptions.ConnectionError as e:
+            response_message = messages.INTERNAL_SERVER_ERROR
+            response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
+            logging.fatal(f"{e}")
+        except requests.exceptions.HTTPError as e:
+            response_message = e.response.json()
+            response_code = e.response.status_code
+        except Exception as e:
+            response_message = messages.INTERNAL_SERVER_ERROR
+            response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
+            logging.fatal(f"{e}")
+        finally:
+            logging.fatal(f"{response_message}")
+            return response_message, response_code
+    return is_wrong_token
+
+
+def validate_token(token):
     if not token or not AUTH_COOKIE:
         return messages.AUTHORISATION_TOKEN_IS_MISSING, HTTPStatus.UNAUTHORIZED
     if AUTH_COOKIE:
@@ -51,32 +113,8 @@ def get_request(request_string, token):
             return messages.TOKEN_IS_INVALID, HTTPStatus.UNAUTHORIZED
         if  datetime.utcnow().timestamp() > AUTH_COOKIE["Authorization"]["expires"]:
             return messages.TOKEN_HAS_EXPIRED, HTTPStatus.UNAUTHORIZED
-        
-    try: 
-        response = requests.get(
-            request_url, 
-            headers={"Authorization": AUTH_COOKIE["Authorization"].value, "Accept": "application/json"}, 
-        )
-        response.raise_for_status()
-        response_message = response.json()
-        response_code = response.status_code
-    except requests.exceptions.ConnectionError as e:
-        response_message = messages.INTERNAL_SERVER_ERROR
-        response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
-        logging.fatal(f"{e}")
-    except requests.exceptions.HTTPError as e:
-        response_message = e.response.json()
-        response_code = e.response.status_code
-    except Exception as e:
-        response_message = messages.INTERNAL_SERVER_ERROR
-        response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
-        logging.fatal(f"{e}")
-    finally:
-        if request_string == "/user" and response_code == HTTPStatus.OK:
-            AUTH_COOKIE["user_id"] = response_message.get("id")
-        logging.fatal(f"{response_message}")
-        return response_message, response_code
-
+        return ()
+      
 
 @http_response_namedtuple_converter
 def http_response_checker(result):

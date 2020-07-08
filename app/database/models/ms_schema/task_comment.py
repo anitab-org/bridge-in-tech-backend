@@ -19,7 +19,7 @@ class TaskCommentModel(db.Model):
     # Specifying database table used for TaskCommentModel
     __tablename__ = "tasks_comments"
     __table_args__ = {"schema": "public", "extend_existing": True}
-
+    
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("public.users.id"))
     task_id = db.Column(db.Integer, db.ForeignKey("public.tasks_list.id"))

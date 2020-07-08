@@ -30,7 +30,7 @@ class MentorshipRelationModel(db.Model):
     # Specifying database table used for MentorshipRelationModel
     __tablename__ = "mentorship_relations"
     __table_args__ = {"schema": "public", "extend_existing": True}
-
+    
     id = db.Column(db.Integer, primary_key=True)
 
     
