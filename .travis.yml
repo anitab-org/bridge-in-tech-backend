@@ -27,3 +27,4 @@ install:
   - pip3 install -r requirements.txt
 script:
   - python -m unittest discover tests -v
+  - pytest --cov tests

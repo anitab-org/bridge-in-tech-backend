@@ -1,5 +1,6 @@
 import json
-from http import HTTPStatus
+from http import HTTPStatus, cookies
+from datetime import datetime, timedelta
 from flask import request
 from flask_jwt_extended import (
     jwt_required,
@@ -8,12 +9,12 @@ from flask_jwt_extended import (
     create_refresh_token,
     get_jwt_identity,
 )
-from flask_restx import Resource, Namespace
-from app.api.ms_api_utils import post_request, BASE_MS_API_URL, http_response_checker
+from flask_restx import Resource, marshal, Namespace
+from app.api.ms_api_utils import post_request, get_request, http_response_checker, AUTH_COOKIE
 from app import messages
 from app.api.models.user import *
 from app.api.validations.user import *
-
+from app.api.resources.common import auth_header_parser
 
 users_ns = Namespace("Users", description="Operations related to users")
 add_models_to_namespace(users_ns)
@@ -65,7 +66,7 @@ class UserRegister(Resource):
         if is_valid != {}:
             return is_valid, HTTPStatus.BAD_REQUEST
             
-        result = post_request(f"{BASE_MS_API_URL}/register", data)
+        result = post_request("/register", data)
 
         return http_response_checker(result)
 
@@ -78,7 +79,7 @@ class LoginUser(Resource):
     @users_ns.response(
         HTTPStatus.BAD_REQUEST,
         f"{messages.USERNAME_FIELD_IS_MISSING}\n" 
-        f"{messages.PASSWORD_FIELD_IS_MISSING}",
+        f"{messages.PASSWORD_FIELD_IS_MISSING}"
     )
     @users_ns.response(HTTPStatus.UNAUTHORIZED, f"{messages.WRONG_USERNAME_OR_PASSWORD}")
     @users_ns.response(HTTPStatus.FORBIDDEN, f"{messages.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN}")
@@ -105,6 +106,33 @@ class LoginUser(Resource):
         if not password:
             return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
 
-        result = post_request(f"{BASE_MS_API_URL}/login", data)
+        result = post_request("/login", data)
 
+        return http_response_checker(result)
+        
+
+@users_ns.route("user/personal_details")
+class MyProfilePersonalDetails(Resource):
+    @classmethod
+    @users_ns.doc("get_user")
+    @users_ns.response(HTTPStatus.OK, "Successful request", full_user_api_model)
+    @users_ns.response(
+        HTTPStatus.UNAUTHORIZED,
+        f"{messages.TOKEN_HAS_EXPIRED}\n"
+        f"{messages.TOKEN_IS_INVALID}\n"
+        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
+    )
+    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
+    @users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
+    @users_ns.expect(auth_header_parser, validate=True)
+    def get(cls):
+        """
+        Returns details of current user.
+
+        A user with valid access token can use this endpoint to view his/her own
+        user details. The endpoint doesn't take any other input.
+        """
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+        
+        result = get_request("/user", token)
         return http_response_checker(result)
