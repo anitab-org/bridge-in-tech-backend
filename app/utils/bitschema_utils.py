@@ -102,6 +102,7 @@ class Religion(Enum):
 class PhysicalAbility(Enum):
     WITH_DISABILITY = "With/had limited physical ability (or with/had some type of physical disability/ies)"
     WITHOUT_DISABILITY = "Without/have no limitation to physical ability/ies"
+    OTHER = "Other"
     DECLINED = "Prefer not to say"
     NOT_APPLICABLE = "Not Applicable"
 
@@ -113,6 +114,7 @@ class PhysicalAbility(Enum):
 class MentalAbility(Enum):
     WITH_DISORDER = "With/previously had some type of mental disorders"
     WITHOUT_DISORDER = "Without/have no mental disorders"
+    OTHER = "Other"
     DECLINED = "Prefer not to say"
     NOT_APPLICABLE = "Not Applicable"
 
@@ -127,6 +129,7 @@ class SocioEconomic(Enum):
     LOWER_MIDDLE = "Lower Middle class (e.g. blue collars in skilled trades/Paralegals/Bank tellers/Sales/Clerical-Admin/other support workers)"
     WORKING = "Working class (e.g. craft workers, factory labourers, restaurant/delivery services workers"
     BELOW_POVERTY = "Underclass, working but with wages under poverty line, receiving Social Benefit from Government"
+    OTHER = "Other"
     DECLINED = "Prefer not to say"
     NOT_APPLICABLE = "Not Applicable"
 
@@ -153,9 +156,9 @@ class HighestEducation(Enum):
 @unique
 class YearsOfExperience(Enum):
     UNDER_ONE = "Less than a year"
-    UP_TO_3 = "Up to 3 years"
-    UP_TO_5 = "Up to 5 years"
-    UP_TO_10 = "Up to 10 year"
+    UP_TO_3 = "Between 1 to 3 years"
+    UP_TO_5 = "Between 3 to 5 years"
+    UP_TO_10 = "Between 5 to 10 year"
     OVER_10 = "Over 10 years of experience"
     DECLINED = "Prefer not to say"
     NOT_APPLICABLE = "Not Applicable"

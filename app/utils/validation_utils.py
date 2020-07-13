@@ -26,6 +26,11 @@ For the "username" field to be valid, it may contain one or more character from:
     - letter "a" to "z" and/or "A" to "Z",
     - number "0" to "9", and/or
     - special character "-".
+
+For the "phone" or "mobile" field to be valid, it must have the following format:
+    - must contain numbers from "0" to "9" 
+    - may contain one or more character from special character "-"
+    - may contain one or more character from whitespace " "
 """
 import re
 from app import messages
@@ -34,7 +39,7 @@ from app import messages
 name_regex = r"(^[a-zA-Z\s\-]+$)"
 email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 username_regex = r"(^[a-zA-Z0-9_]+$)"
-
+phone_regex = r"(^[0-9\s\-\+]+$)"
 
 def is_name_valid(name):
     """Checks if name input is within the acceptable pattern defined in name_regex.
@@ -157,3 +162,15 @@ def expected_fields_validator(user_input, data_model):
     if len(expected_fields) != len(data_model):
         return {"is_field_valid": False, "message": messages.UNEXPECTED_INPUT}
     return {"is_field_valid": True, "message": {}}
+
+def is_phone_valid(phone):
+    """Checks if phone or mobile input is within the acceptable pattern defined in phone_regex.
+    
+    Args:
+        name: string input for phone or mobile.
+    
+    Return:
+        True: if string input for phone or mobile is within the acceptable phone_regex pattern.
+        False: if string input for phone or mobile is not according to phone_regex pattern.
+    """
+    return re.match(phone_regex, phone)

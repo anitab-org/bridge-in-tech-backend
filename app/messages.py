@@ -14,6 +14,12 @@ FIELD_AVAILABLE_TO_MENTOR_IS_INVALID = {
 PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH = {
     "message": f"The password field has to be at least {PASSWORD_MIN_LENGTH} characters and no more than {PASSWORD_MAX_LENGTH} characters."
 }
+PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT = {
+    "message": "Phone and mobile fields must be in number format. It must contain numbers and may contain dash ""-"" or space "" "" characters."
+}
+WEBSITE_URL_IS_INVALID = {
+    "message": "The website url is not in valid format. It must have ""http*"
+}
 
 # Not found
 MENTORSHIP_RELATION_REQUEST_DOES_NOT_EXIST = {
@@ -49,6 +55,8 @@ NEW_PASSWORD_FIELD_IS_MISSING = {"message": "New password field is missing."}
 AUTHORISATION_TOKEN_IS_MISSING = {"message": "The authorization token is" " missing!"}
 DESCRIPTION_FIELD_IS_MISSING = {"message": "Description field is missing."}
 COMMENT_FIELD_IS_MISSING = {"message": "Comment field is missing."}
+TIMEZONE_FIELD_IS_MISSING = {"message": "Timezone information is missing."}
+IS_ORGANIZATION_REP_FIELD_IS_MISSING = {"message": "Please indicate whether or not you represent an organization that is registered/going to be registered with BridgeInTech."}
 
 # Admin
 USER_IS_ALREADY_AN_ADMIN = {"message": "User is already an Admin."}
@@ -94,10 +102,20 @@ TASK_COMMENT_WAS_NOT_CREATED_BY_YOU_DELETE = {
     "message": "You have not created the comment and therefore cannot " "delete it."
 }
 
-# Update
+# Update/Create
 NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT = {
     "message": "No data for updating" "profile was sent."
 }
+ADDITIONAL_INFORMATION_DOES_NOT_EXIST = {
+    "message": "No additional information found with your data. Please provide them now."
+}
+ADDITIONAL_INFORMATION_OF_USER_ALREADY_EXIST = {
+    "message": "Additional information already exist with your data. You may update it."
+}
+USER_EXTENSION_DATA_HAS_MISSING_FIELD = {
+    "message": "Additional information is missing one of its field."
+}
+
 
 # Relation constraints
 MENTOR_ID_SAME_AS_MENTEE_ID = {
@@ -272,6 +290,7 @@ TASK_COMMENT_WAS_DELETED_SUCCESSFULLY = {
 LIST_TASK_COMMENTS_WITH_SUCCESS = {
     "message": "List task comments from a mentorship relation with success."
 }
+ADDITIONAL_INFO_SUCCESSFULLY_CREATED = {"message": "User additional info successfully created."}
 
 # confimation
 ACCOUNT_ALREADY_CONFIRMED = {"message": "Account already confirmed."}
@@ -291,3 +310,6 @@ INTERNAL_SERVER_ERROR = {
 }
 
 UNEXPECTED_INPUT = {"message": "Unexpected input is detected. Please check your input to make sure only approved fields are to be submitted."}
+USER_ID_IS_NOT_RETRIEVED = {
+    "message": "You must view your personal details first before you can proceed."
+}
