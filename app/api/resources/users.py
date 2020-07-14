@@ -258,7 +258,7 @@ class MyProfileAdditionalInfo(Resource):
 
         A user with valid access token can use this endpoint to add additional information to their own data. 
         The endpoint takes any of the given parameters (is_organization_rep (true or false value), timezone 
-        (with value as per Timezine Enum Name) and additional_info (dictionary of phone, mobile and personal_website)).
+        (with value as per Timezone Enum Name) and additional_info (dictionary of phone, mobile and personal_website)).
         The response contains a success or error message. This request only accessible once user confirm 
         their additional information have not already exist in the data through sending GET request for 
         additional information.
