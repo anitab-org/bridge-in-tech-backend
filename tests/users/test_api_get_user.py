@@ -7,7 +7,7 @@ from flask import json
 from flask_restx import marshal
 from app import messages
 from tests.base_test_case import BaseTestCase
-from app.api.ms_api_utils import post_request, BASE_MS_API_URL, AUTH_COOKIE
+from app.api.request_api_utils import post_request, BASE_MS_API_URL, AUTH_COOKIE
 from app.api.resources.users import MyProfilePersonalDetails
 from app.api.models.user import full_user_api_model
 from tests.test_data import user1

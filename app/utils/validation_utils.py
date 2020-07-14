@@ -28,7 +28,8 @@ For the "username" field to be valid, it may contain one or more character from:
     - special character "-".
 """
 import re
-from collections import namedtuple
+from app import messages
+
 
 name_regex = r"(^[a-zA-Z\s\-]+$)"
 email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
@@ -136,3 +137,23 @@ def get_stripped_string(string_with_whitespaces):
         A new string which is the string_with_whitespaces with whitespaces been removed.
     """
     return "".join(string_with_whitespaces.split())
+
+def expected_fields_validator(user_input, data_model):
+    """Validates data fields. Confirms whether or not user input fields contains only the expected fields of the data model.
+    
+    Args:
+        user_input: A list of keys of all fields that are submitted by user to the payload. 
+        data_model: A list of keys of all fields that are expected to be on the payload.
+        
+    Return:
+        False, error_message: A dictionary with a boolean value stating input fields are not valid and an error message. 
+        True, {}: A dictionary with a boolean value stating input fields are valid and no other message given.
+    """
+    expected_fields = []
+    for field_input in user_input:
+        for field_expected in data_model:
+            if field_input == field_expected:
+                expected_fields.append(field_input)
+    if len(expected_fields) != len(data_model):
+        return {"is_field_valid": False, "message": messages.UNEXPECTED_INPUT}
+    return {"is_field_valid": True, "message": {}}

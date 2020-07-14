@@ -10,10 +10,11 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 from flask_restx import Resource, marshal, Namespace
-from app.api.ms_api_utils import post_request, get_request, http_response_checker, AUTH_COOKIE
+from app.api.request_api_utils import post_request, get_request, put_request, http_response_checker, AUTH_COOKIE
 from app import messages
 from app.api.models.user import *
 from app.api.validations.user import *
+from app.utils.validation_utils import expected_fields_validator
 from app.api.resources.common import auth_header_parser
 
 users_ns = Namespace("Users", description="Operations related to users")
@@ -38,7 +39,8 @@ class UserRegister(Resource):
         f"{messages.USERNAME_INPUT_BY_USER_IS_INVALID}\n"
         f"{messages.EMAIL_INPUT_BY_USER_IS_INVALID}\n"
         f"{messages.PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH}\n"
-        f"{messages.TERMS_AND_CONDITIONS_ARE_NOT_CHECKED}"
+        f"{messages.TERMS_AND_CONDITIONS_ARE_NOT_CHECKED}\n"
+        f"{messages.UNEXPECTED_INPUT}"
     )
     @users_ns.response(
         HTTPStatus.CONFLICT,
@@ -61,10 +63,13 @@ class UserRegister(Resource):
 
         data = request.json
 
-        is_valid = validate_user_registration_request_data(data)
+        is_field_valid = expected_fields_validator(data, register_user_api_model)
+        if not is_field_valid.get("is_field_valid"):
+            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
 
-        if is_valid != {}:
-            return is_valid, HTTPStatus.BAD_REQUEST
+        is_not_valid = validate_user_registration_request_data(data)
+        if is_not_valid:
+            return is_not_valid, HTTPStatus.BAD_REQUEST
             
         result = post_request("/register", data)
 
@@ -101,6 +106,10 @@ class LoginUser(Resource):
         username = data.get("username", None)
         password = data.get("password", None)
 
+        is_field_valid = expected_fields_validator(data, login_request_body_model)
+        if not is_field_valid.get("is_field_valid"):
+            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+
         if not username:
             return messages.USERNAME_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
         if not password:
@@ -135,4 +144,51 @@ class MyProfilePersonalDetails(Resource):
         token = request.headers.environ["HTTP_AUTHORIZATION"]
         
         result = get_request("/user", token)
+        
         return http_response_checker(result)
+
+
+    @classmethod
+    @users_ns.doc("update_user_profile")
+    @users_ns.response(HTTPStatus.OK, f"{messages.USER_SUCCESSFULLY_UPDATED}")
+    @users_ns.response(HTTPStatus.BAD_REQUEST, "Invalid input.")
+    @users_ns.response( 
+         HTTPStatus.UNAUTHORIZED,
+        f"{messages.TOKEN_HAS_EXPIRED}\n"
+        f"{messages.TOKEN_IS_INVALID}\n"
+        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
+    )
+    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
+    @users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
+    @users_ns.expect(auth_header_parser, update_user_request_body_model, validate=True,)
+    def put(cls):
+        """
+        Updates user profile
+
+        A user with valid access token can use this endpoint to edit his/her own
+        user details. The endpoint takes any of the given parameters (name, username,
+        bio, location, occupation, organization, slack_username, social_media_links,
+        skills, interests, resume_url, photo_url, need_mentoring, available_to_mentor).
+        The response contains a success message.
+        """
+
+        data = request.json
+        
+        if not data:
+            return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT
+
+        is_field_valid = expected_fields_validator(data, update_user_request_body_model)
+        if not is_field_valid.get("is_field_valid"):
+            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+        
+        is_not_valid = validate_update_profile_request_data(data)
+        if is_not_valid:
+            return is_not_valid, HTTPStatus.BAD_REQUEST
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+        
+        result = put_request("/user", token, data)
+        return http_response_checker(result)
+
+    
+  

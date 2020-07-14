@@ -6,7 +6,7 @@ from requests.exceptions import HTTPError
 from flask import json
 from app import messages
 from tests.base_test_case import BaseTestCase
-from app.api.ms_api_utils import post_request, BASE_MS_API_URL
+from app.api.request_api_utils import post_request, BASE_MS_API_URL
 from app.api.resources.users import UserRegister
 from tests.test_data import user1
 
