@@ -1,8 +1,5 @@
 from enum import Enum, unique
 
-# from sqlalchemy import Enum
-# from sqlalchemy.dialects.postgresql import ENUM
-
 
 @unique
 class ProgramStatus(Enum):
