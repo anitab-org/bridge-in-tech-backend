@@ -116,7 +116,7 @@ class PersonalBackgroundModel(db.Model):
         )
 
     @classmethod
-    def find_by_id(cls, user_id) -> "PersonalBackgroundModel":
+    def find_by_user_id(cls, user_id) -> "PersonalBackgroundModel":
 
         """Returns the user's background that has the passed user id.
            Args:

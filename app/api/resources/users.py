@@ -22,6 +22,7 @@ from app.api.validations.user import *
 from app.api.resources.common import auth_header_parser
 from app.api.models.user import *
 from app.api.dao.user_extension import UserExtensionDAO
+from app.api.dao.personal_background import PersonalBackgroundDAO
 from app.utils.validation_utils import expected_fields_validator
 from app.database.models.bit_schema.user_extension import UserExtensionModel
 
@@ -169,7 +170,7 @@ class MyProfilePersonalDetails(Resource):
         data = request.json
         
         if not data:
-            return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT
+            return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
 
         is_field_valid = expected_fields_validator(data, update_user_details_request_body_model)
         if not is_field_valid.get("is_field_valid"):
@@ -212,7 +213,7 @@ class MyProfileAdditionalInfo(Resource):
         Returns additional information of current user
 
         A user with valid access token can use this endpoint to view their additional information details. 
-        The endpoint doesn't take any other input. This request only accessible once user retrieve their user_id
+        The endpoint doesn't take any other input. This request only accessible once user retrieves their user_id
         by sending GET /user/personal_details.
         """
 
@@ -259,7 +260,7 @@ class MyProfileAdditionalInfo(Resource):
         A user with valid access token can use this endpoint to add additional information to their own data. 
         The endpoint takes any of the given parameters (is_organization_rep (true or false value), timezone 
         (with value as per Timezone Enum Value) and additional_info (dictionary of phone, mobile and personal_website)).
-        The response contains a success or error message. This request only accessible once user retrieve their user_id
+        The response contains a success or error message. This request only accessible once user retrieves their user_id
         by sending GET /user/personal_details.
         """
 
@@ -269,7 +270,7 @@ class MyProfileAdditionalInfo(Resource):
         if not is_wrong_token:
             data = request.json
             if not data:
-                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT
+                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
 
             is_field_valid = expected_fields_validator(data, user_extension_request_body_model)
             if not is_field_valid.get("is_field_valid"):
@@ -287,7 +288,7 @@ class MyProfileAdditionalInfo(Resource):
     @classmethod
     @users_ns.doc("update_user_additional_info")
     @users_ns.response(
-        HTTPStatus.CREATED, f"{messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED}"
+        HTTPStatus.OK, f"{messages.ADDITIONAL_INFO_SUCCESSFULLY_UPDATED}"
     )
     @users_ns.response(
         HTTPStatus.BAD_REQUEST,
@@ -310,7 +311,7 @@ class MyProfileAdditionalInfo(Resource):
         A user with valid access token can use this endpoint to update additional information to their own data. 
         The endpoint takes any of the given parameters (is_organization_rep (true or false value), timezone 
         (with value as per Timezone Enum Value) and additional_info (dictionary of phone, mobile and personal_website)).
-        The response contains a success or error message. This request only accessible once user retrieve their user_id
+        The response contains a success or error message. This request only accessible once user retrieves their user_id
         by sending GET /user/personal_details.
         """
 
@@ -320,7 +321,7 @@ class MyProfileAdditionalInfo(Resource):
         if not is_wrong_token:
             data = request.json
             if not data:
-                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT
+                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
 
             is_field_valid = expected_fields_validator(data, user_extension_request_body_model)
             if not is_field_valid.get("is_field_valid"):
@@ -330,8 +331,101 @@ class MyProfileAdditionalInfo(Resource):
             if is_not_valid:
                 return is_not_valid, HTTPStatus.BAD_REQUEST
 
-            return UserExtensionDAO.update_user_additional_info(data);
+            return UserExtensionDAO.update_user_additional_info(data)
              
         return is_wrong_token
     
+
+@users_ns.doc(
+    responses={
+        HTTPStatus.INTERNAL_SERVER_ERROR: f"{messages.INTERNAL_SERVER_ERROR['message']}"
+    }
+)
+@users_ns.response( 
+    HTTPStatus.UNAUTHORIZED,
+    f"{messages.TOKEN_HAS_EXPIRED}\n"
+    f"{messages.TOKEN_IS_INVALID}\n"
+    f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
+)
+@users_ns.response(
+        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED}"
+)
+@users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
+@users_ns.route("user/personal_background")
+class MyProfilePersonalBackground(Resource):
+    @classmethod
+    @users_ns.doc("get_user_personal_background")
+    @users_ns.response(HTTPStatus.OK, "Successful request", get_user_personal_background_response_model)
+    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST}")
+    @users_ns.expect(auth_header_parser, validate=True)
+    def get(cls):
+        """
+        Returns personal background information of current user
+
+        A user with valid access token can use this endpoint to view their personal background information. 
+        The endpoint doesn't take any other input. This request only accessible once user retrieves their user_id
+        by sending GET /user/personal_details.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+
+        is_wrong_token = validate_token(token)
+
+        if not is_wrong_token:
+            user_id = int(AUTH_COOKIE["user_id"].value)
+            if user_id == 0:    
+                return messages.USER_ID_IS_NOT_RETRIEVED, HTTPStatus.FORBIDDEN
+            result = PersonalBackgroundDAO.get_user_personal_background_info(user_id)
+            if not result:
+                return messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
+            return result 
+        return is_wrong_token
     
+ 
+    @classmethod
+    @users_ns.doc("create_user_personal_background")
+    @users_ns.response(
+        HTTPStatus.CREATED, f"{messages.PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED}"
+    )
+    @users_ns.response(
+        HTTPStatus.BAD_REQUEST,
+        f"{messages.USER_ID_IS_NOT_VALID}\n"
+        f"{messages.PERSONAL_BACKGROUND_DATA_HAS_MISSING_FIELD}\n"
+        f"{messages.UNEXPECTED_INPUT}"
+    )
+    @users_ns.response(
+        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+    )
+    @users_ns.expect(auth_header_parser, user_personal_background_request_body_model)
+    def post(cls):
+        """
+        Creates user personal background.
+
+        A user with valid access token can use this endpoint to add personal background information to their own data. 
+        The endpoint takes any of the given parameters (gender, age, ethnicity, sexusl_orientation, religion, physical_ability,
+        mental_ability, socio_economic, highest_education, years_of_experience enums) using each enum VALUE as input, others (dictionary of any additional 
+        information the user added from the background fields) and is_public (boolean value true or false which 
+        indicates whether or not the user agrees to make their personal background information public to other BridgeInTech members).
+        The response contains a success or error message. This request only accessible once user retrieves their user_id
+        by sending GET /user/personal_details.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+        is_wrong_token = validate_token(token)
+        
+        if not is_wrong_token:
+            data = request.json
+            if not data:
+                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
+
+            is_field_valid = expected_fields_validator(data, user_personal_background_request_body_model)
+            if not is_field_valid.get("is_field_valid"):
+                return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+            
+            is_not_valid = validate_update_personal_background_info_request(data)
+            if is_not_valid:
+                return is_not_valid, HTTPStatus.BAD_REQUEST
+
+            return PersonalBackgroundDAO.create_user_personal_background(data)
+             
+        return is_wrong_token

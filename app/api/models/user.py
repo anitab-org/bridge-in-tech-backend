@@ -9,7 +9,9 @@ def add_models_to_namespace(api_namespace):
     api_namespace.models[update_user_details_request_body_model.name] = update_user_details_request_body_model
     api_namespace.models[get_user_extension_response_model.name] = get_user_extension_response_model
     api_namespace.models[user_extension_request_body_model.name] = user_extension_request_body_model
-    
+    api_namespace.models[get_user_personal_background_response_model.name] = get_user_personal_background_response_model
+    api_namespace.models[user_personal_background_request_body_model.name] = user_personal_background_request_body_model
+
 register_user_api_model = Model(
     "User registration model",
     {
@@ -149,5 +151,57 @@ user_extension_request_body_model = Model(
         "phone": fields.String(required=False, description="phone"),
         "mobile": fields.String(required=False, description="mobile"),
         "personal_website": fields.String(required=False, description="personal_website"),
+    }
+)
+
+get_user_personal_background_response_model = Model(
+    "Retrieve personal background infomation response data model",
+    {
+        "user_id": fields.Integer(required=True, description="user_id"),
+        "gender": fields.String(required=True, description="gender"),
+        "age": fields.String(required=True, description="age"),
+        "ethnicity": fields.String(required=True, description="ethnicity"),
+        "sexual_orientation": fields.String(required=True, description="sexual_orientation"),
+        "religion": fields.String(required=True, description="religion"),
+        "physical_ability": fields.String(required=True, description="physical_ability"),
+        "mental_ability": fields.String(required=True, description="mental_ability"),
+        "socio_economic": fields.String(required=True, description="socio_economic"),
+        "highest_education": fields.String(required=True, description="highest_education"),
+        "years_of_experience": fields.String(required=True, description="years_of_experience"),
+        "others": fields.String(required=True, description="others"),
+        "gender_other": fields.String(required=False, description="gender_other"),
+        "ethnicity_other": fields.String(required=False, description="ethnicity_other"),
+        "sexual_orientation_other": fields.String(required=False, description="sexual_orientation_other"),
+        "religion_other": fields.String(required=False, description="religion_other"),
+        "physical_ability_other": fields.String(required=False, description="physical_ability_other"),
+        "mental_ability_other": fields.String(required=False, description="mental_ability_other"),
+        "socio_economic_other": fields.String(required=False, description="socio_economic_other"),
+        "highest_education_other": fields.String(required=False, description="highest_education_other"),
+        "is_public": fields.Boolean(required=True, description="is_public"),
+    }
+)
+
+user_personal_background_request_body_model = Model(
+    "Create or update personal background information request model",
+    {
+        "gender": fields.String(required=True, description="gender"),
+        "age": fields.String(required=True, description="age"),
+        "ethnicity": fields.String(required=True, description="ethnicity"),
+        "sexual_orientation": fields.String(required=True, description="sexual_orientation"),
+        "religion": fields.String(required=True, description="religion"),
+        "physical_ability": fields.String(required=True, description="physical_ability"),
+        "mental_ability": fields.String(required=True, description="mental_ability"),
+        "socio_economic": fields.String(required=True, description="socio_economic"),
+        "highest_education": fields.String(required=True, description="highest_education"),
+        "years_of_experience": fields.String(required=True, description="years_of_experience"),
+        "gender_other": fields.String(required=False, description="gender_other"),
+        "ethnicity_other": fields.String(required=False, description="ethnicity_other"),
+        "sexual_orientation_other": fields.String(required=False, description="sexual_orientation_other"),
+        "religion_other": fields.String(required=False, description="religion_other"),
+        "physical_ability_other": fields.String(required=False, description="physical_ability_other"),
+        "mental_ability_other": fields.String(required=False, description="mental_ability_other"),
+        "socio_economic_other": fields.String(required=False, description="socio_economic_other"),
+        "highest_education_other": fields.String(required=False, description="highest_education_other"),
+        "is_public": fields.Boolean(required=True, description="is_public"),
     }
 )
