@@ -59,7 +59,7 @@ class TestGetUserAdditionalInfoApi(BaseTestCase):
         AUTH_COOKIE["user_id"] = self.test_user_data.id
 
         self.response_additional_info = {
-            "user_id": self.test_user_data.id,
+            "user_id": int(AUTH_COOKIE["user_id"].value),
             "is_organization_rep": True,
             "timezone": "UTC-01:00/Cape Verde Time",
             "phone": "123-456-789",
