@@ -113,7 +113,6 @@ def validate_token(token):
             return messages.TOKEN_IS_INVALID, HTTPStatus.UNAUTHORIZED
         if  datetime.utcnow().timestamp() > AUTH_COOKIE["Authorization"]["expires"]:
             return messages.TOKEN_HAS_EXPIRED, HTTPStatus.UNAUTHORIZED
-        return ()
       
 
 @http_response_namedtuple_converter

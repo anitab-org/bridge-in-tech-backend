@@ -6,8 +6,10 @@ def add_models_to_namespace(api_namespace):
     api_namespace.models[login_request_body_model.name] = login_request_body_model
     api_namespace.models[login_response_body_model.name] = login_response_body_model
     api_namespace.models[full_user_api_model.name] = full_user_api_model
-    api_namespace.models[update_user_request_body_model.name] = update_user_request_body_model
-
+    api_namespace.models[update_user_details_request_body_model.name] = update_user_details_request_body_model
+    api_namespace.models[get_user_extension_response_model.name] = get_user_extension_response_model
+    api_namespace.models[user_extension_request_body_model.name] = user_extension_request_body_model
+    
 register_user_api_model = Model(
     "User registration model",
     {
@@ -97,8 +99,8 @@ full_user_api_model = Model(
     },
 )
 
-update_user_request_body_model = Model(
-    "Update User request data model",
+update_user_details_request_body_model = Model(
+    "Update User details request data model",
     {
         "name": fields.String(required=False, description="User name"),
         "username": fields.String(required=False, description="User username"),
@@ -125,4 +127,27 @@ update_user_request_body_model = Model(
             required=False, description="User availability to mentor indication"
         ),
     },
+)
+
+get_user_extension_response_model = Model(
+    "Retrieve additional information response data model",
+    {
+        "user_id": fields.Integer(required=True, description="User Id"),
+        "is_organization_rep": fields.Boolean(required=True, description="User represents organization"),
+        "timezone": fields.String(required=True, description="User's timezone"),
+        "phone": fields.String(required=False, description="phone"),
+        "mobile": fields.String(required=False, description="mobile"),
+        "personal_website": fields.String(required=False, description="personal_website"),
+    }
+)
+
+user_extension_request_body_model = Model(
+    "Create or Update user's additional information data model",
+    {
+        "is_organization_rep": fields.Boolean(required=True, description="User represents organization"),
+        "timezone": fields.String(required=True, description="User's timezone"),
+        "phone": fields.String(required=False, description="phone"),
+        "mobile": fields.String(required=False, description="mobile"),
+        "personal_website": fields.String(required=False, description="personal_website"),
+    }
 )

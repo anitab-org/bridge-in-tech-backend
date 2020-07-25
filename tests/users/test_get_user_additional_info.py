@@ -13,7 +13,7 @@ from app.api.models.user import full_user_api_model
 from tests.test_data import user1
 
 
-class TestGetUserApi(BaseTestCase):
+class TestGetUserAdditionalInfoApi(BaseTestCase):
     
     @patch("requests.get")
     @patch("requests.post")

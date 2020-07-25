@@ -31,12 +31,12 @@ class UserExtensionModel(db.Model):
 
     """Initialises UserExtensionModel class."""
     ## required fields
-    def __init__(self, user_id, is_organization_rep, timezone):
+    def __init__(self, user_id, timezone):
         self.user_id = user_id
         self.timezone = timezone
 
         # default value
-        self.is_organization_rep = is_organization_rep
+        self.is_organization_rep = False
         self.additional_info = None
 
     def json(self):

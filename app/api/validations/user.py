@@ -3,6 +3,7 @@ from app.utils.validation_utils import (
     is_name_valid,
     is_email_valid,
     is_username_valid,
+    is_phone_valid,
     validate_length,
     get_stripped_string,
 )
@@ -241,3 +242,20 @@ def validate_new_password(data):
         return is_valid.get("message")
 
     return {}
+
+def validate_update_additional_info_request(data):
+    if "is_organization_rep" not in data:
+        return messages.IS_ORGANIZATION_REP_FIELD_IS_MISSING
+    if "timezone" not in data:
+        return messages.TIMEZONE_FIELD_IS_MISSING
+
+    phone = data.get("phone", None)
+    mobile = data.get("mobile", None)
+    
+    if phone:
+        if not is_phone_valid(phone):
+            return messages.PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT
+    if mobile:
+        if not is_phone_valid(mobile):
+            return messages.PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT
+    

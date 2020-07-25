@@ -9,16 +9,16 @@ from app import messages
 from tests.base_test_case import BaseTestCase
 from app.api.request_api_utils import post_request, BASE_MS_API_URL, AUTH_COOKIE
 from app.api.resources.users import MyProfilePersonalDetails
-from app.api.models.user import update_user_request_body_model
+from app.api.models.user import update_user_details_request_body_model
 from tests.test_data import user1
 
 
 
-class TestUpdateUserApi(BaseTestCase):
+class TestUpdateUserDetailsApi(BaseTestCase):
     
     @patch("requests.post")
     def setUp(self, mock_login):
-        super(TestUpdateUserApi, self).setUp()
+        super(TestUpdateUserDetailsApi, self).setUp()
 
         success_login_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
         success_login_code = HTTPStatus.OK
@@ -59,11 +59,10 @@ class TestUpdateUserApi(BaseTestCase):
             "need_mentoring": True,
             "available_to_mentor": True
         }
-        
-
+    
 
     @patch("requests.put")
-    def test_api_update_user_with_correct_payload(self, mock_update_user):
+    def test_api_update_user_details_with_correct_payload(self, mock_update_user):
         expected_put_message = messages.USER_SUCCESSFULLY_UPDATED
         expected_put_code = HTTPStatus.OK
 
@@ -89,7 +88,7 @@ class TestUpdateUserApi(BaseTestCase):
 
 
     @patch("requests.put")
-    def test_api_get_user_with_new_username_invalid(self, mock_update_user):
+    def test_api_update_user_details_with_new_username_invalid(self, mock_update_user):
         user_invalid_details = {
             "name": "test update",
             "username": "testupdate?",
@@ -134,7 +133,7 @@ class TestUpdateUserApi(BaseTestCase):
 
 
     @patch("requests.put")
-    def test_api_get_user_with_internal_server_error(self, mock_update_user):
+    def test_api_update_user_details_with_internal_server_error(self, mock_update_user):
 
         error_message = messages.INTERNAL_SERVER_ERROR
         error_code = HTTPStatus.INTERNAL_SERVER_ERROR
