@@ -65,54 +65,70 @@ you should see the following
 <img width="971" alt="Screen Shot 2020-06-28 at 2 56 28 pm" src="https://user-images.githubusercontent.com/29667122/85938323-92858400-b94f-11ea-803b-cf2cea70d94f.png">
 
 1. Run the next command to show the existing search_path
-> $ psql -c 'show search_path;' -U postgres -d bit_schema_test
+> $ psql -c 'show search_path;' -U postgres -d bit_schema
 
 2. Then run this command to set new search_path to both bitschema and public
-> psql -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema
+> psql -c "ALTER DATABASE bit_schema SET search_path TO bitschema,public;" -U postgres -d bit_schema
 
 3. Finally, run the same command on step 2 to check if the new path has been set
 
 Do the same steps to set new search_path on bit_schema_test. You just need to set bitschema and public as it is done here (no need to set search path for test_schema and test_schema_2 as there are the default postgresql test schemas)
 
-Now we are ready to create the tables using Flask-Migrate.
+Now when you run the application using `python run.py` from the terminal, you should see that the tables are created under each schemas.
 
-## 7th, Set up migration script
-1. Go to your project folder and look for the `migrations` folder. 
-<img width="271" alt="Screen Shot 2020-06-14 at 10 01 05 pm" src="https://user-images.githubusercontent.com/29667122/84592646-92cf4b00-ae8a-11ea-9e17-4748c7c09182.png">
+<img width="647" alt="Screen Shot 2020-07-15 at 5 39 46 pm" src="https://user-images.githubusercontent.com/29667122/87517460-38f8b580-c6c2-11ea-9bfb-a0117f0ee848.png">
 
-2. Copy and paste the folder (and its content) to the desktop.
-3. Delete the original folder inside your project directory.
-4. Run: `flask db init`. This should create a new `migrations` folder inside your project directory.
-5. Replace the files in the newly created folder called `alembic.ini`, `env.py`, and `script.py.mako` with the same files from inside the `migrations` folder you placed on your desktop before.
-6. Run: `flask db migrate -m 'initial migration'`. This will create an Alembic migration script under `versions` folder.
-7. Open the migration script that newly created as well as the same file that has `......initial_migration.py` from the desktop `migrations` folder.
-8. Except on the version informations, make the following changes to the new migration script inside the project folder:
-  - copy paste lines 11 from the old file (on desktop) and replace the same sections on the new one.
-<img width="543" alt="Screen Shot 2020-06-14 at 10 07 28 pm" src="https://user-images.githubusercontent.com/29667122/84592795-8b5c7180-ae8b-11ea-8d45-24a171816603.png">
+## 7th, Create the `.env` file using `.env.template`
+Update the values of corresponding environment variables or make sure you exported the following [environment variables - tba]():
 
-   - change schema names (both on upgrade and downgrade). The auto-generated file will have 'bitschema' on all tables. Change to `public` on the relevant tables (for example, the `tasks-list` should have `public` as schema name)
-The following tables belong to MS `public` schema: `users, mentorship_relations, tasks_list, tasks_comments`. Whereas `organizations, programs, personal_backgrounds, mentorship_relations_extension` belong to BIT `bitschema`.
- 
-<img width="663" alt="Screen Shot 2020-05-07 at 9 28 24 pm" src="https://user-images.githubusercontent.com/29667122/81350596-9b06ce80-9105-11ea-8a42-340c0bbf02f5.png">
-<img width="570" alt="Screen Shot 2020-06-14 at 10 11 17 pm" src="https://user-images.githubusercontent.com/29667122/84592874-176e9900-ae8c-11ea-8985-321be0b6db3c.png">
+```
+export FLASK_ENVIRONMENT_CONFIG = <dev-or-test-or-prod>
+export SECRET_KEY = <your-secret-key>
+export SECURITY_PASSWORD_SALT = <your-security-password-salt>
+export MAIL_DEFAULT_SENDER = <mail-default-sender>
+export MAIL_SERVER = <mail-server>
+export APP_MAIL_USERNAME = <app-mail-username>
+export APP_MAIL_PASSWORD = <app-mail-password>
+export MOCK_EMAIL = <True-or-False>
+export FLASK_APP=run.py
+```
 
+If you're testing any environment other than "local", then you have to also set these other variables:
 
-   - Make sure you see the correct schema name at the front of each foreign key references. So **public.** should be the schema name for `ForeignKeyConstraints` within tables of `public` schema and **bitschema** should be the schema name for tables on `bitschema` side.
-(for example, in `users_extension` table, instead of [users.id] you should have [public.users.id]
-<img width="540" alt="Screen Shot 2020-06-14 at 10 16 00 pm" src="https://user-images.githubusercontent.com/29667122/84593006-ec387980-ae8c-11ea-954a-958e17b50a5e.png">
+```
+export DB_TYPE=postgresql
+export DB_USERNAME= <db-username>
+export DB_PASSWORD= <db-password>
+export DB_ENDPOINT= <db-endpoint>
+export DB_NAME=bit_schema
+export DB_TEST_NAME=bit_schema_test
+```
 
+Run the app: `python run.py`
 
-   - remove path reference on custom data type (JsonCustomType) inside `tasks_list` (the images shown what it should look like):
-<img width="568" alt="Screen Shot 2020-05-07 at 9 35 46 pm" src="https://user-images.githubusercontent.com/29667122/81350784-15375300-9106-11ea-929c-c4c51009a4e0.png">
+Navigate to `http://localhost:5000` in your browser
 
-9. Do final check by comparing the old file vs new file of migration scripts.
-10. Once done, run: `flask db upgrade`. This will create the tables inside your database.
+When you are done using the app, deactivate the virtual environment: `deactivate`
 
-<img width="226" alt="Screen Shot 2020-06-14 at 10 22 25 pm" src="https://user-images.githubusercontent.com/29667122/84593110-987a6000-ae8d-11ea-9f68-bed06ed736c0.png">
+## 8th, Run unittest
+To run the unitests run the following command in the terminal (while the virtual environment is activated):
 
-Note: The steps above are only for creating the `bit_schema` tables, not the `bit_schema_test`. The `bit_schema_test` tables will be automatically created, populated and dropped as part of the db test lifecycle when running the test cases.
+`python -m unittest discover tests`
 
+## 9th, Connect to MS-for-BIT backend server
+**IMPORTANT!!! For BIT project, you need to run a BIT version of MS backend server (at least until BIT and MS backend are fully integrated)**. 
+Setup MS-for-BIT server by following the setup instruction for Mentorship Backend [here](https://github.com/anitab-org/mentorship-backend) but using the code base from Maya Treacy's fork repository [ms-backend-server](https://github.com/mtreacy002/mentorship-backend/tree/ms-backend-server) branch. To do this, run the following codes on the terminal after you fork and clone the MS backend repository:
+```quote
+$ git checkout -b bit-ms-backend-server develop
+$ git pull https://github.com/mtreacy002/mentorship-backend.git ms-backend-server
+```
 
+Follow the rest of the setup instructions (providing the environment credentials) mentioned on the [MS README Run app section](https://github.com/anitab-org/mentorship-backend). Note Notice that since BIT already occupies **port 5000** of your localhost, the MS server is set to run on **port 4000** for this BridgeInTech project.
+
+**---**
+
+Now you have setup the BIT and MS backend servers which connected to one postgresql database.
+You can run both BIT and MS backend servers and try the application starting with creating then login as a new user.
 
 That's it. Happy hacking 👌
 
