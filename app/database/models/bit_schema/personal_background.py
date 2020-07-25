@@ -103,7 +103,7 @@ class PersonalBackgroundModel(db.Model):
         """Returns user's background."""
 
         return (
-            f"Users's id is {self.user_id}.\n"
+            f"User's id is {self.user_id}.\n"
             f"User's age is: {self.age}\n"
             f"User's ethnicity is: {self.ethnicity}\n"
             f"User's sexual orientation is: {self.sexual_orientation}\n"

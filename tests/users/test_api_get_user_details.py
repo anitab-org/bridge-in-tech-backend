@@ -43,7 +43,6 @@ class TestGetUserDetailsApi(BaseTestCase):
                 content_type="application/json",
             )
       
-        access_token_header = "Bearer this is fake token"
         expected_user = marshal(user1, full_user_api_model)
         success_code = HTTPStatus.OK
 
@@ -57,7 +56,7 @@ class TestGetUserDetailsApi(BaseTestCase):
         with self.client:
             get_response = self.client.get(
                 "/user/personal_details",
-                headers={"Authorization": access_token_header},
+                headers={"Authorization": AUTH_COOKIE["Authorization"].value},
                 follow_redirects=True,
             )
             
@@ -93,8 +92,6 @@ class TestGetUserDetailsApi(BaseTestCase):
                 content_type="application/json",
             )
       
-        access_token_header = "Bearer this is fake token"
-
         error_message = messages.TOKEN_HAS_EXPIRED
         error_code = HTTPStatus.UNAUTHORIZED
 
@@ -110,7 +107,7 @@ class TestGetUserDetailsApi(BaseTestCase):
         with self.client:
             get_response = self.client.get(
                 "/user/personal_details",
-                headers={"Authorization": access_token_header},
+                headers={"Authorization": AUTH_COOKIE["Authorization"].value},
                 follow_redirects=True,
             )
             
@@ -121,8 +118,6 @@ class TestGetUserDetailsApi(BaseTestCase):
 
     @patch("requests.get")
     def test_api_get_user_details_with_internal_server_error(self, mock_get_user):
-
-        access_token_header = "Bearer this is fake token"
         error_message = messages.INTERNAL_SERVER_ERROR
         error_code = HTTPStatus.INTERNAL_SERVER_ERROR
         
@@ -138,7 +133,7 @@ class TestGetUserDetailsApi(BaseTestCase):
         with self.client:
             get_response = self.client.get(
                 "/user/personal_details",
-                headers={"Authorization": access_token_header},
+                headers={"Authorization": AUTH_COOKIE["Authorization"].value},
                 follow_redirects=True,
             )
             
