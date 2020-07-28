@@ -363,7 +363,7 @@ class MyProfilePersonalBackground(Resource):
         mental_ability, socio_economic, highest_education, years_of_experience enums), others (dictionary of any additional 
         information the user added from any of the background fields) and is_public (boolean value true or false which 
         indicates whether or not the user agrees to make their personal background information public to other BridgeInTech members).
-        The response contains a success or error message. This request only accessible once user retrieve their user_id
+        The response contains a success or error message. This request only accessible once user retrieves their user_id
         by sending GET /user/personal_details.
         """
 
@@ -428,3 +428,37 @@ class UsersList(Resource):
         
         return http_response_checker(get_request("/users/verified", token, params))
         
+
+@users_ns.route("users/<int:user_id>")
+@users_ns.param("user_id", "The user identifier")
+class OtherUser(Resource):
+    @classmethod
+    @users_ns.doc("get_member_details")
+    @users_ns.expect(auth_header_parser)
+    @users_ns.response(HTTPStatus.OK, "Success.", public_user_personal_details_response_model)
+    @users_ns.response(HTTPStatus.BAD_REQUEST, f"{messages.USER_ID_IS_NOT_VALID}")
+    @users_ns.response(
+        HTTPStatus.UNAUTHORIZED,
+        f"{messages.TOKEN_HAS_EXPIRED}\n"
+        f"{messages.TOKEN_IS_INVALID}\n"
+        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
+    )
+    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
+    @users_ns.response(
+        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+    )
+    def get(cls, user_id):
+        """
+        Returns a user.
+
+        A user with valid access token can view the details of another user. The endpoint
+        takes "user_id" of such user has input. This request only accessible once user retrieves their user_id
+        by sending GET /user/personal_details.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+        is_wrong_token = validate_token(token)
+        
+        if not is_wrong_token:
+            return http_response_checker(get_request(f"/users/{user_id}", token, params=None))
+        return is_wrong_token

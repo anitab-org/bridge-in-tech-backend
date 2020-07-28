@@ -10,6 +10,7 @@ from app.utils.decorator_utils import http_response_namedtuple_converter
 BASE_MS_API_URL = "http://127.0.0.1:4000"
 AUTH_COOKIE = cookies.SimpleCookie()
 
+
 def post_request(request_string, data):
     request_url = f"{BASE_MS_API_URL}{request_string}" 
     try:
