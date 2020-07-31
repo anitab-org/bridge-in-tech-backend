@@ -36,6 +36,7 @@ def post_request(request_string, data):
             access_expiry_cookie = response_message.get("access_expiry")
             AUTH_COOKIE["Authorization"] = f"Bearer {access_token_cookie}"
             AUTH_COOKIE["Authorization"]["expires"] = access_expiry_cookie
+            AUTH_COOKIE["user_id"] = None
             response_message = {"access_token": response_message.get("access_token"), "access_expiry": response_message.get("access_expiry")}
 
         logging.fatal(f"{response_message}")
@@ -106,7 +107,7 @@ def put_request(request_string, token, data):
 
 
 def validate_token(token):
-    if not token or not AUTH_COOKIE:
+    if not token:
         return messages.AUTHORISATION_TOKEN_IS_MISSING, HTTPStatus.UNAUTHORIZED
     if AUTH_COOKIE:
         if token != AUTH_COOKIE["Authorization"].value:

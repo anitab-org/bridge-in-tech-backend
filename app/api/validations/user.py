@@ -7,6 +7,7 @@ from app.utils.validation_utils import (
     validate_length,
     get_stripped_string,
 )
+from app.utils.bitschema_utils import Timezone
 
 # Field character limit
 
@@ -249,9 +250,14 @@ def validate_update_additional_info_request(data):
     if "timezone" not in data:
         return messages.TIMEZONE_FIELD_IS_MISSING
 
+    timezone_value = data.get("timezone")
     phone = data.get("phone", None)
     mobile = data.get("mobile", None)
     
+    try:
+        timezone = Timezone(timezone_value).name
+    except ValueError:
+        return messages.TIMEZONE_INPUT_IS_INVALID
     if phone:
         if not is_phone_valid(phone):
             return messages.PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT

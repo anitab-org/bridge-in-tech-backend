@@ -20,6 +20,9 @@ PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT = {
 WEBSITE_URL_IS_INVALID = {
     "message": "The website url is not in valid format. It must have ""http*"
 }
+TIMEZONE_INPUT_IS_INVALID = {
+    "messages": "The Timezone input is not within the approved list"
+}
 
 # Not found
 MENTORSHIP_RELATION_REQUEST_DOES_NOT_EXIST = {
@@ -37,6 +40,7 @@ TASK_COMMENT_DOES_NOT_EXIST = {"message": "Task comment does not exist."}
 TASK_COMMENT_WITH_GIVEN_TASK_ID_DOES_NOT_EXIST = {
     "message": "Task comment with given task id does not exist."
 }
+
 
 # Missing fields
 MENTOR_ID_FIELD_IS_MISSING = {"message": "Mentor ID field is missing."}
@@ -114,6 +118,9 @@ ADDITIONAL_INFORMATION_OF_USER_ALREADY_EXIST = {
 }
 USER_EXTENSION_DATA_HAS_MISSING_FIELD = {
     "message": "Additional information is missing one of its field."
+}
+ADDITIONAL_INFO_SUCCESSFULLY_UPDATED = {
+    "message": "Your additional information is successfully updated."
 }
 
 

@@ -184,8 +184,13 @@ class MyProfilePersonalDetails(Resource):
         return http_response_checker(put_request("/user", token, data))
 
     
+@users_ns.doc(
+    responses={
+        HTTPStatus.INTERNAL_SERVER_ERROR: f"{messages.INTERNAL_SERVER_ERROR['message']}"
+    }
+)
 @users_ns.response( 
-        HTTPStatus.UNAUTHORIZED,
+    HTTPStatus.UNAUTHORIZED,
     f"{messages.TOKEN_HAS_EXPIRED}\n"
     f"{messages.TOKEN_IS_INVALID}\n"
     f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
@@ -207,8 +212,8 @@ class MyProfileAdditionalInfo(Resource):
         Returns additional information of current user
 
         A user with valid access token can use this endpoint to view their additional information details. 
-        The endpoint doesn't take any other input. But the user must get their personal details first 
-        before they can send this request for getting the additional information.
+        The endpoint doesn't take any other input. This request only accessible once user retrieve their user_id
+        by sending GET /user/personal_details.
         """
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]
@@ -217,24 +222,19 @@ class MyProfileAdditionalInfo(Resource):
 
         if not is_wrong_token:
             try:
-                user_id = AUTH_COOKIE["user_id"].value
-            except KeyError:
-                return messages.USER_ID_IS_NOT_RETRIEVED, HTTPStatus.FORBIDDEN
-                
+                user_id = int(AUTH_COOKIE["user_id"].value)
+            except ValueError:
+                return messages.USER_ID_IS_NOT_RETRIEVED, HTTPStatus.FORBIDDEN    
             result = UserExtensionDAO.get_user_additional_data_info(user_id)
             if not result:
                 return messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
             return result 
+            
         return is_wrong_token
     
 
     @classmethod
     @users_ns.doc("create_user_additional_info")
-    @users_ns.doc(
-        responses={
-            HTTPStatus.INTERNAL_SERVER_ERROR: f"{messages.INTERNAL_SERVER_ERROR['message']}"
-        }
-    )
     @users_ns.response(
         HTTPStatus.CREATED, f"{messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED}"
     )
@@ -258,10 +258,9 @@ class MyProfileAdditionalInfo(Resource):
 
         A user with valid access token can use this endpoint to add additional information to their own data. 
         The endpoint takes any of the given parameters (is_organization_rep (true or false value), timezone 
-        (with value as per Timezone Enum Name) and additional_info (dictionary of phone, mobile and personal_website)).
-        The response contains a success or error message. This request only accessible once user confirm 
-        their additional information have not already exist in the data through sending GET request for 
-        additional information.
+        (with value as per Timezone Enum Value) and additional_info (dictionary of phone, mobile and personal_website)).
+        The response contains a success or error message. This request only accessible once user retrieve their user_id
+        by sending GET /user/personal_details.
         """
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]
@@ -283,4 +282,56 @@ class MyProfileAdditionalInfo(Resource):
             return UserExtensionDAO.create_user_additional_info(data)
              
         return is_wrong_token
+
+
+    @classmethod
+    @users_ns.doc("update_user_additional_info")
+    @users_ns.response(
+        HTTPStatus.CREATED, f"{messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED}"
+    )
+    @users_ns.response(
+        HTTPStatus.BAD_REQUEST,
+        f"{messages.USER_ID_IS_NOT_VALID}\n"
+        f"{messages.IS_ORGANIZATION_REP_FIELD_IS_MISSING}\n"
+        f"{messages.TIMEZONE_FIELD_IS_MISSING}"
+        f"{messages.UNEXPECTED_INPUT}"
+    )
+    @users_ns.response(
+        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED}"
+    )
+    @users_ns.response(
+        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+    )
+    @users_ns.expect(auth_header_parser, user_extension_request_body_model, validate=True)
+    def put(cls):
+        """
+        Updates user additional information
+
+        A user with valid access token can use this endpoint to update additional information to their own data. 
+        The endpoint takes any of the given parameters (is_organization_rep (true or false value), timezone 
+        (with value as per Timezone Enum Value) and additional_info (dictionary of phone, mobile and personal_website)).
+        The response contains a success or error message. This request only accessible once user retrieve their user_id
+        by sending GET /user/personal_details.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+        is_wrong_token = validate_token(token)
+        
+        if not is_wrong_token:
+            data = request.json
+            if not data:
+                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT
+
+            is_field_valid = expected_fields_validator(data, user_extension_request_body_model)
+            if not is_field_valid.get("is_field_valid"):
+                return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+            
+            is_not_valid = validate_update_additional_info_request(data)
+            if is_not_valid:
+                return is_not_valid, HTTPStatus.BAD_REQUEST
+
+            return UserExtensionDAO.update_user_additional_info(data);
+             
+        return is_wrong_token
+    
     
