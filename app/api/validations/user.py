@@ -7,7 +7,7 @@ from app.utils.validation_utils import (
     validate_length,
     get_stripped_string,
 )
-from app.utils.bitschema_utils import Timezone
+from app.utils.bitschema_utils import *
 
 # Field character limit
 
@@ -264,4 +264,20 @@ def validate_update_additional_info_request(data):
     if mobile:
         if not is_phone_valid(mobile):
             return messages.PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT
+    
+def validate_update_personal_background_info_request(data):
+    approved = []
+    try:
+        approved.append(Gender(data["gender"]).name)
+        approved.append(Age(data["age"]).name)
+        approved.append(Ethnicity(data["ethnicity"]).name)
+        approved.append(SexualOrientation(data["sexual_orientation"]).name)
+        approved.append(Religion(data["religion"]).name)
+        approved.append(PhysicalAbility(data["physical_ability"]).name)
+        approved.append(MentalAbility(data["mental_ability"]).name)
+        approved.append(SocioEconomic(data["socio_economic"]).name)
+        approved.append(HighestEducation(data["highest_education"]).name)
+        approved.append(YearsOfExperience(data["years_of_experience"]).name)
+    except ValueError:
+        return messages.PERSONAL_BACKGROUND_IS_INVALID
     

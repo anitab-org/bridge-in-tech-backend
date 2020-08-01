@@ -23,6 +23,9 @@ WEBSITE_URL_IS_INVALID = {
 TIMEZONE_INPUT_IS_INVALID = {
     "messages": "The Timezone input is not within the approved list"
 }
+PERSONAL_BACKGROUND_IS_INVALID = {
+    "messages": "One or more of the personal background fields input provided is/are not within the given list."
+}
 
 # Not found
 MENTORSHIP_RELATION_REQUEST_DOES_NOT_EXIST = {
@@ -106,7 +109,7 @@ TASK_COMMENT_WAS_NOT_CREATED_BY_YOU_DELETE = {
     "message": "You have not created the comment and therefore cannot " "delete it."
 }
 
-# Update/Create
+# Update
 NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT = {
     "message": "No data for updating" "profile was sent."
 }
@@ -121,6 +124,18 @@ USER_EXTENSION_DATA_HAS_MISSING_FIELD = {
 }
 ADDITIONAL_INFO_SUCCESSFULLY_UPDATED = {
     "message": "Your additional information is successfully updated."
+}
+PERSONAL_BACKGROUND_OF_USER_ALREADY_EXIST = {
+    "message": "Personal background information already exist with your data. You may update it."
+}
+PERSONAL_BACKGROUND_DOES_NOT_EXIST = {
+    "message": "No personal background information found with your data. Please provide them now."
+}
+PERSONAL_BACKGROUND_SUCCESSFULLY_UPDATED = {
+    "message": "Your personal backgound information is successfully updated."
+}
+PERSONAL_BACKGROUND_DATA_HAS_MISSING_FIELD = {
+    "messages": "Personal background information has missing one of its fields"
 }
 
 
@@ -298,6 +313,7 @@ LIST_TASK_COMMENTS_WITH_SUCCESS = {
     "message": "List task comments from a mentorship relation with success."
 }
 ADDITIONAL_INFO_SUCCESSFULLY_CREATED = {"message": "User additional info successfully created."}
+PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED = {"message": "User personal background information successfully created."}
 
 # confimation
 ACCOUNT_ALREADY_CONFIRMED = {"message": "Account already confirmed."}

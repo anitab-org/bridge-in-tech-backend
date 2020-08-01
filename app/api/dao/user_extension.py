@@ -19,7 +19,8 @@ class UserExtensionDAO:
             the user is representing an organization, as well as their timezone
     
         Returns:
-                A dictionary containing "message" which indicates whether or not the user_exension was created successfully and "code" for the HTTP response code.
+                A dictionary containing "message" which indicates whether or not 
+                the user_exension was created successfully and "code" for the HTTP response code.
         """
 
         try:
@@ -60,7 +61,7 @@ class UserExtensionDAO:
             user_id: The ID of the user to be searched.
 
         Returns:
-            The UserModel class of the user whose ID was searched, containing their additional information.
+            The UserExtensionModel class of the user whose ID was searched, containing their additional information.
         """
 
         result = UserExtensionModel.find_by_user_id(user_id)
@@ -84,7 +85,8 @@ class UserExtensionDAO:
             the user is representing an organization, as well as their timezone
     
         Returns:
-                A dictionary containing "message" which indicates whether or not the user_exension was created successfully and "code" for the HTTP response code.
+                A dictionary containing "message" which indicates whether or not 
+                the user_exension was updated successfully and "code" for the HTTP response code.
         """
 
         try:
