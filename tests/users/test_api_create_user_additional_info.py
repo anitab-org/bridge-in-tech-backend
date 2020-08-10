@@ -67,7 +67,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
             "personal_website": ""
         }
         
-    @patch("requests.post")
+    @patch("requests.put")
     def test_api_dao_create_user_additional_info_successfully(self, mock_create_additional_info):
         success_message = messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED
         success_code = HTTPStatus.CREATED
@@ -80,7 +80,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
         mock_create_additional_info.raise_for_status = json.dumps(success_code)
 
         with self.client:
-            response = self.client.post(
+            response = self.client.put(
                 "/user/additional_info",
                 headers={"Authorization": AUTH_COOKIE["Authorization"].value},
                 data=json.dumps(
@@ -101,7 +101,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
         self.assertEqual(response.status_code, success_code)
 
     
-    @patch("requests.post")
+    @patch("requests.put")
     def test_api_dao_create_user_additional_info_invalid_payload(self, mock_create_additional_info):
         error_message = messages.PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT
         error_code = HTTPStatus.BAD_REQUEST
@@ -126,7 +126,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
         }
         
         with self.client:
-            response = self.client.post(
+            response = self.client.put(
                 "/user/additional_info",
                 headers={"Authorization": AUTH_COOKIE["Authorization"].value},
                 data=json.dumps(
@@ -138,53 +138,6 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
 
         test_user_additional_info_data = UserExtensionModel.query.filter_by(user_id=self.test_user_data.id).first()
         self.assertEqual(test_user_additional_info_data, None)
-        self.assertEqual(response.json, error_message)
-        self.assertEqual(response.status_code, error_code)
-
-
-    @patch("requests.post")
-    def test_api_dao_create_additional_info_with_existing_additional_info(self, mock_create_additional_info):
-        error_message = messages.ADDITIONAL_INFORMATION_OF_USER_ALREADY_EXIST
-        error_code = HTTPStatus.CONFLICT
-        
-        mock_response = Mock()
-        http_error = requests.exceptions.HTTPError()
-        mock_response.raise_for_status.side_effect = http_error
-        mock_create_additional_info.return_value = mock_response
-        
-        mock_error = Mock()
-        mock_error.json.return_value = error_message
-        mock_error.status_code = error_code
-        mock_create_additional_info.side_effect = requests.exceptions.HTTPError(response=mock_error)
-        
-        # prepare existing additional info
-        additional_info = {
-            "phone": self.correct_payload_additional_info["phone"],
-            "mobile": self.correct_payload_additional_info["mobile"],
-            "personal_website": self.correct_payload_additional_info["personal_website"]
-        }
-
-        user_extension = UserExtensionModel(
-            self.correct_payload_additional_info["user_id"], 
-            "CAPE_VERDE_TIME",
-        )
-        user_extension.is_organization_rep = self.correct_payload_additional_info["is_organization_rep"]
-        user_extension.additional_info = additional_info
-        
-        user_extension.save_to_db()
-        
-        with self.client:
-            response = self.client.post(
-                "/user/additional_info",
-                headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-                data=json.dumps(
-                    dict(self.correct_payload_additional_info)
-                ),
-                follow_redirects=True,
-                content_type="application/json",
-            )
-
-        mock_create_additional_info.assert_not_called()
         self.assertEqual(response.json, error_message)
         self.assertEqual(response.status_code, error_code)
 

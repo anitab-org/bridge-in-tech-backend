@@ -115,38 +115,6 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
         self.assertEqual(response.json, success_message)
         self.assertEqual(response.status_code, success_code)
 
-    
-    @patch("requests.put")
-    def test_api_dao_update_user_additional_info_not_exist(self, mock_update_additional_info):
-        error_message = messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST
-        error_code = HTTPStatus.NOT_FOUND
-
-        mock_response = Mock()
-        http_error = requests.exceptions.HTTPError()
-        mock_response.raise_for_status.side_effect = http_error
-        mock_update_additional_info.return_value = mock_response
-
-        mock_error = Mock()
-        mock_error.json.return_value = error_message
-        mock_error.status_code = error_code
-        mock_update_additional_info.side_effect = requests.exceptions.HTTPError(response=mock_error)
-
-        with self.client:
-            response = self.client.put(
-                "/user/additional_info",
-                headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-                data=json.dumps(
-                    dict(self.correct_payload_update_additional_info)
-                ),
-                follow_redirects=True,
-                content_type="application/json",
-            )
-
-        test_user_additional_info_data = UserExtensionModel.query.filter_by(user_id=self.test_user_data.id).first()
-        self.assertEqual(test_user_additional_info_data, None)
-        self.assertEqual(response.json, error_message)
-        self.assertEqual(response.status_code, error_code)
-
 
     @patch("requests.put")
     def test_api_dao_update_additional_info_with_invalid_timezone(self, mock_update_additional_info):
