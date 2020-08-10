@@ -16,8 +16,9 @@ from app.database.models.bit_schema.personal_background import PersonalBackgroun
 
 class TestCreatePersonalBackgroundApi(BaseTestCase):
     
+    @patch("requests.get")
     @patch("requests.post")
-    def setUp(self, mock_login):
+    def setUp(self, mock_login, mock_get_user):
         super(TestCreatePersonalBackgroundApi, self).setUp()
 
         success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
@@ -29,6 +30,15 @@ class TestCreatePersonalBackgroundApi(BaseTestCase):
         mock_login.return_value = mock_login_response
         mock_login.raise_for_status = json.dumps(success_code)
 
+        expected_user = marshal(user1, full_user_api_model)
+        
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+        
         user_login_success = {
             "username": user1.get("username"),
             "password": user1.get("password")
@@ -56,8 +66,7 @@ class TestCreatePersonalBackgroundApi(BaseTestCase):
 
         self.test_user_data = UserModel.find_by_email(test_user.email)
 
-        AUTH_COOKIE["user_id"] = self.test_user_data.id
-        
+        AUTH_COOKIE["user"] = marshal(self.test_user_data, full_user_api_model)
         self.correct_payload_personal_background = {
             "gender": "Female",
             "age": "Between 55 to 64 yo",
@@ -81,17 +90,9 @@ class TestCreatePersonalBackgroundApi(BaseTestCase):
         }
         
         
-    @patch("requests.put")
-    def test_api_dao_create_user_personal_background_successfully(self, mock_create_personal_background):
+    def test_api_dao_create_user_personal_background_successfully(self):
         success_message = messages.PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED
         success_code = HTTPStatus.CREATED
-
-        mock_get_response = Mock()
-        mock_get_response.json.return_value = success_message
-        mock_get_response.status_code = success_code
-
-        mock_create_personal_background.return_value = mock_get_response
-        mock_create_personal_background.raise_for_status = json.dumps(success_code)
 
         with self.client:
             response = self.client.put(
@@ -105,7 +106,7 @@ class TestCreatePersonalBackgroundApi(BaseTestCase):
             )
 
         test_user_personal_background_data = PersonalBackgroundModel.query.filter_by(user_id=self.test_user_data.id).first()
-        self.assertEqual(str(test_user_personal_background_data.user_id), AUTH_COOKIE["user_id"].value)
+        self.assertEqual(test_user_personal_background_data.user_id, self.test_user_data.id)
         self.assertEqual(test_user_personal_background_data.gender.value, self.correct_payload_personal_background["gender"])
         self.assertEqual(test_user_personal_background_data.age.value, self.correct_payload_personal_background["age"])
         self.assertEqual(test_user_personal_background_data.ethnicity.value, self.correct_payload_personal_background["ethnicity"])
@@ -129,20 +130,9 @@ class TestCreatePersonalBackgroundApi(BaseTestCase):
         self.assertEqual(response.status_code, success_code)
 
     
-    @patch("requests.put")
-    def test_api_dao_create_user_personal_background_invalid_payload(self, mock_create_personal_background):
+    def test_api_dao_create_user_personal_background_invalid_payload(self):
         error_message = messages.PERSONAL_BACKGROUND_IS_INVALID
         error_code = HTTPStatus.BAD_REQUEST
-
-        mock_response = Mock()
-        http_error = requests.exceptions.HTTPError()
-        mock_response.raise_for_status.side_effect = http_error
-        mock_create_personal_background.return_value = mock_response
-
-        mock_error = Mock()
-        mock_error.json.return_value = error_message
-        mock_error.status_code = error_code
-        mock_create_personal_background.side_effect = requests.exceptions.HTTPError(response=mock_error)
 
         test_user_personal_background = {
             "gender": "Some random value",

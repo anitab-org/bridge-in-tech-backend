@@ -1,3 +1,4 @@
+import ast
 from http import HTTPStatus
 from flask import json
 from app.database.models.bit_schema.user_extension import UserExtensionModel
@@ -44,17 +45,14 @@ class UserExtensionDAO:
                 the user_exension was updated successfully and "code" for the HTTP response code.
         """
 
-        try:
-            user_id = int(AUTH_COOKIE["user_id"].value)
-        except ValueError:
-            return messages.USER_ID_IS_NOT_RETRIEVED, HTTPStatus.FORBIDDEN    
-
         timezone_value = data["timezone"]
         timezone = Timezone(timezone_value).name   
 
-        user_additional_info = UserExtensionModel.find_by_user_id(user_id)
+        user_json = (AUTH_COOKIE["user"].value)
+        user = ast.literal_eval(user_json)
+        user_additional_info = UserExtensionModel.find_by_user_id(int(user["id"]))
         if not user_additional_info:
-            user_additional_info = UserExtensionModel(user_id, timezone)
+            user_additional_info = UserExtensionModel(int(user["id"]), timezone)
             return update(user_additional_info, data, timezone, messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED, HTTPStatus.CREATED)    
         return update(user_additional_info, data, timezone, messages.ADDITIONAL_INFO_SUCCESSFULLY_UPDATED, HTTPStatus.OK)     
     

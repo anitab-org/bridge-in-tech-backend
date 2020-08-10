@@ -15,7 +15,7 @@ PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH = {
     "message": f"The password field has to be at least {PASSWORD_MIN_LENGTH} characters and no more than {PASSWORD_MAX_LENGTH} characters."
 }
 PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT = {
-    "message": "Phone and mobile fields must be in number format. It must contain numbers and may contain dash ""-"" or space "" "" characters."
+    "message": "Phone or mobile fields must be in number format. It must contain numbers and may contain dash ""-"" or space characters."
 }
 WEBSITE_URL_IS_INVALID = {
     "message": "The website url is not in valid format. It must have ""http*"
@@ -25,6 +25,9 @@ TIMEZONE_INPUT_IS_INVALID = {
 }
 PERSONAL_BACKGROUND_IS_INVALID = {
     "messages": "One or more of the personal background fields input provided is/are not within the given list."
+}
+STATUS_INPUT_IS_INVALID = {
+    "message": "Status inpust must be either Draft, Publish, or Archived"
 }
 
 # Not found
@@ -43,7 +46,12 @@ TASK_COMMENT_DOES_NOT_EXIST = {"message": "Task comment does not exist."}
 TASK_COMMENT_WITH_GIVEN_TASK_ID_DOES_NOT_EXIST = {
     "message": "Task comment with given task id does not exist."
 }
-
+ORGANIZATION_DOES_NOT_EXIST = {
+    "message": "Organization does not exist."
+}
+ORGANITATION_ENUM_FIELD_IS_INVALID = {
+    "message": "Either Timezone or Status fields are invalid."
+}
 
 # Missing fields
 MENTOR_ID_FIELD_IS_MISSING = {"message": "Mentor ID field is missing."}
@@ -83,6 +91,9 @@ USER_REVOKE_NOT_ADMIN = {
     "message": "You don't have admin status. You can't" " revoke other admin user."
 }
 USER_IS_NOW_AN_ADMIN = {"message": "User is now an Admin."}
+ORGANIZATION_STATUS_FIELD_IS_MISSING = {
+    "messages": "The status information is missing."
+}
 
 # Mentor availability
 MENTOR_NOT_AVAILABLE_TO_MENTOR = {
@@ -92,10 +103,10 @@ MENTOR_ALREADY_IN_A_RELATION = {"message": "Mentor user is already in a relation
 
 # Mentee availability
 MENTEE_NOT_AVAIL_TO_BE_MENTORED = {
-    "message": "Mentee user is not available" " to be mentored."
+    "message": "Mentee user is not available to be mentored."
 }
 MENTEE_ALREADY_IN_A_RELATION = {
-    "message": "Mentee user is already in a" " relationship."
+    "message": "Mentee user is already in a relationship."
 }
 
 # Mismatch of fields
@@ -106,12 +117,12 @@ TASK_COMMENT_WAS_NOT_CREATED_BY_YOU = {
     "message": "You have not created the comment and therefore cannot " "modify it."
 }
 TASK_COMMENT_WAS_NOT_CREATED_BY_YOU_DELETE = {
-    "message": "You have not created the comment and therefore cannot " "delete it."
+    "message": "You have not created the comment and therefore cannot delete it."
 }
 
 # Update
 NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT = {
-    "message": "No data for updating" "profile was sent."
+    "message": "No data for updating profile was sent."
 }
 ADDITIONAL_INFORMATION_DOES_NOT_EXIST = {
     "message": "No additional information found with your data. Please provide them now."
@@ -314,6 +325,8 @@ LIST_TASK_COMMENTS_WITH_SUCCESS = {
 }
 ADDITIONAL_INFO_SUCCESSFULLY_CREATED = {"message": "User additional info successfully created."}
 PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED = {"message": "User personal background information successfully created."}
+ORGANIZATION_SUCCESSFULLY_CREATED = {"message": "Organization was created successfully."}
+ORGANIZATION_SUCCESSFULLY_UPDATED = {"message": "Organization was updated successfully."}
 
 # confimation
 ACCOUNT_ALREADY_CONFIRMED = {"message": "Account already confirmed."}
@@ -333,6 +346,12 @@ INTERNAL_SERVER_ERROR = {
 }
 
 UNEXPECTED_INPUT = {"message": "Unexpected input is detected. Please check your input to make sure only approved fields are to be submitted."}
-USER_ID_IS_NOT_RETRIEVED = {
+USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER = {
     "message": "You must view your personal details first before you can proceed."
+}
+USER_ID_IS_NOT_RETRIEVED_WITH_GET_ORGANIZATION = {
+    "message": "You must send GET /organization request first before you can proceed."
+}
+NOT_ORGANIZATION_REPRESENTATIVE = {
+    "message": "You have not declared that you are representing an organization."
 }

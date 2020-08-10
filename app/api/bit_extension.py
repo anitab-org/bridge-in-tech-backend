@@ -15,5 +15,7 @@ api.namespaces.clear()
 
 # Adding namespaces
 from app.api.resources.users import users_ns as user_namespace
-
 api.add_namespace(user_namespace, path="/")
+
+from app.api.resources.organizations import organizations_ns as organization_namespace
+api.add_namespace(organization_namespace, path="/")

@@ -4,17 +4,23 @@ from unittest.mock import patch, Mock
 import requests
 from requests.exceptions import HTTPError
 from flask import json
+from flask_restx import marshal
 from app import messages
 from tests.base_test_case import BaseTestCase
 from app.api.request_api_utils import post_request, BASE_MS_API_URL
 from app.api.resources.users import LoginUser
+from app.api.models.user import full_user_api_model
 from tests.test_data import user1
 
 
 class TestUserLoginApi(BaseTestCase):
+    @patch("requests.get")
     @patch("requests.post")
-    def test_api_login_successful(self, mock_login):
-        success_message = {"access_token": "this is fake token", "access_expiry": 1593144238}
+    def test_api_login_successful(self, mock_login, mock_get_user):
+        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
+        # This date need to be adjusted accordingly once the development is near/pass the stated date
+        # to make sure the test still pass.
+        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
         success_code = HTTPStatus.OK
 
         mock_response = Mock()
@@ -28,6 +34,14 @@ class TestUserLoginApi(BaseTestCase):
             "password": user1.get("password")
         }
 
+        expected_user = marshal(user1, full_user_api_model)
+        
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
         
         with self.client:
             response = self.client.post(

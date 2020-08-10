@@ -1,3 +1,4 @@
+import ast
 import unittest
 from http import HTTPStatus, cookies
 from unittest.mock import patch, Mock
@@ -16,8 +17,9 @@ from app.database.models.bit_schema.personal_background import PersonalBackgroun
 
 class TestGetUserPersonalBackgroundApi(BaseTestCase):
     
+    @patch("requests.get")
     @patch("requests.post")
-    def setUp(self, mock_login):
+    def setUp(self, mock_login, mock_get_user):
         super(TestGetUserPersonalBackgroundApi, self).setUp()
 
         success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
@@ -29,6 +31,15 @@ class TestGetUserPersonalBackgroundApi(BaseTestCase):
         mock_login.return_value = mock_login_response
         mock_login.raise_for_status = json.dumps(success_code)
 
+        expected_user = marshal(user1, full_user_api_model)
+        
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+        
         user_login_success = {
             "username": user1.get("username"),
             "password": user1.get("password")
@@ -56,10 +67,9 @@ class TestGetUserPersonalBackgroundApi(BaseTestCase):
 
         self.test_user_data = UserModel.find_by_email(test_user.email)
 
-        AUTH_COOKIE["user_id"] = self.test_user_data.id
-
+        AUTH_COOKIE["user"] = marshal(self.test_user_data, full_user_api_model)
         self.response_personal_background = {
-            "user_id": int(AUTH_COOKIE["user_id"].value),
+            "user_id": self.test_user_data.id,
             "gender": "Female",
             "age": "Between 55 to 64 yo",
             "ethnicity": "Middle Eastern/North African (MENA)",
@@ -82,17 +92,9 @@ class TestGetUserPersonalBackgroundApi(BaseTestCase):
         }
         
         
-    @patch("requests.get")
-    def test_api_dao_get_user_personal_background_successfully(self, mock_get_personal_background):
+    def test_api_dao_get_user_personal_background_successfully(self):
         success_message = self.response_personal_background
         success_code = HTTPStatus.OK
-
-        mock_get_response = Mock()
-        mock_get_response.json.return_value = success_message
-        mock_get_response.status_code = success_code
-
-        mock_get_personal_background.return_value = mock_get_response
-        mock_get_personal_background.raise_for_status = json.dumps(success_code)
 
         # prepare existing personal background
         others = {
@@ -107,7 +109,7 @@ class TestGetUserPersonalBackgroundApi(BaseTestCase):
         }
 
         personal_background = PersonalBackgroundModel(
-            int(AUTH_COOKIE["user_id"].value), 
+            self.test_user_data.id, 
             "FEMALE",
             "AGE_55_TO_64",
             "MIDDLE_EASTERN",
@@ -157,21 +159,9 @@ class TestGetUserPersonalBackgroundApi(BaseTestCase):
         self.assertEqual(response.status_code, success_code)
 
         
-        
-    
-    @patch("requests.get")
-    def test_api_dao_get_non_existence_additional_info(self, mock_get_personal_background):
+    def test_api_dao_get_non_existence_additional_info(self):
         error_message = messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST
         error_code = HTTPStatus.NOT_FOUND
-
-        mock_response = Mock()
-        mock_error = Mock()
-        http_error = requests.exceptions.HTTPError()
-        mock_response.raise_for_status.side_effect = http_error
-        mock_get_personal_background.return_value = mock_response
-        mock_error.json.return_value = error_message
-        mock_error.status_code = error_code
-        mock_get_personal_background.side_effect = requests.exceptions.HTTPError(response=mock_error)
 
         with self.client:
             response = self.client.get(

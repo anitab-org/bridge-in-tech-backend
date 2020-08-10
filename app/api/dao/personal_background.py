@@ -1,3 +1,4 @@
+import ast
 from http import HTTPStatus
 from flask import json
 from app.database.models.bit_schema.personal_background import PersonalBackgroundModel
@@ -63,11 +64,6 @@ class PersonalBackgroundDAO:
                 was created or updated successfully and "code" for the HTTP response code.
         """
 
-        try:
-            user_id = int(AUTH_COOKIE["user_id"].value)
-        except ValueError:
-            return messages.USER_ID_IS_NOT_RETRIEVED, HTTPStatus.FORBIDDEN
-
         others_data = {}
         try:
             others_data["gender_other"] = data["gender_other"]
@@ -80,12 +76,14 @@ class PersonalBackgroundDAO:
             others_data["highest_education_other"] = data["highest_education_other"]
         except KeyError as e:
             return e, HTTPStatus.BAD_REQUEST
-            
-        existing_personal_background = PersonalBackgroundModel.find_by_user_id(user_id)
+        
+        user_json = (AUTH_COOKIE["user"].value)
+        user = ast.literal_eval(user_json)
+        existing_personal_background = PersonalBackgroundModel.find_by_user_id(int(user["id"]))
         if not existing_personal_background:
             try:
                 personal_background = PersonalBackgroundModel(
-                    user_id=user_id,
+                    user_id=int(user["id"]),
                     gender=Gender(data["gender"]).name,
                     age=Age(data["age"]).name,
                     ethnicity=Ethnicity(data["ethnicity"]).name,

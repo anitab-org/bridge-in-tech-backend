@@ -39,6 +39,8 @@ user2 = {
     "username": "user2",
     "password": "user2_pwd",
     "terms_and_conditions_checked": True,
+    "available_to_mentor": False,
+    "need_mentoring": True,
 }
 
 user3 = {
@@ -47,6 +49,8 @@ user3 = {
     "username": "user3",
     "password": "user3_pwd",
     "terms_and_conditions_checked": True,
+    "available_to_mentor": True,
+    "need_mentoring": False,
 }
 
 user4 = {

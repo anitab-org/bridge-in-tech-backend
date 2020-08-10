@@ -16,8 +16,9 @@ from app.database.models.bit_schema.user_extension import UserExtensionModel
 
 class TestUpdateUserAdditionalInfoApi(BaseTestCase):
     
+    @patch("requests.get")
     @patch("requests.post")
-    def setUp(self, mock_login):
+    def setUp(self, mock_login, mock_get_user):
         super(TestUpdateUserAdditionalInfoApi, self).setUp()
 
         success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
@@ -29,6 +30,15 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
         mock_login.return_value = mock_login_response
         mock_login.raise_for_status = json.dumps(success_code)
 
+        expected_user = marshal(user1, full_user_api_model)
+        
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+        
         user_login_success = {
             "username": user1.get("username"),
             "password": user1.get("password")
@@ -56,8 +66,8 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
 
         self.test_user_data = UserModel.find_by_email(test_user.email)
 
-        AUTH_COOKIE["user_id"] = self.test_user_data.id
-
+        AUTH_COOKIE["user"] = marshal(self.test_user_data, full_user_api_model)
+        
         self.correct_payload_update_additional_info = {
             "is_organization_rep": True,
             "timezone": "UTC-01:00/Cape Verde Time",
@@ -67,17 +77,9 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
         }
         
     
-    @patch("requests.put")
-    def test_api_dao_update_user_additional_info_successfully(self, mock_update_additional_info):
+    def test_api_dao_update_user_additional_info_successfully(self):
         success_message = messages.ADDITIONAL_INFO_SUCCESSFULLY_UPDATED
         success_code = HTTPStatus.OK
-
-        mock_get_response = Mock()
-        mock_get_response.json.return_value = success_message
-        mock_get_response.status_code = success_code
-
-        mock_update_additional_info.return_value = mock_get_response
-        mock_update_additional_info.raise_for_status = json.dumps(success_code)
 
         # prepare existing additional info
         additional_info = {
@@ -87,7 +89,7 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
         }
 
         user_extension = UserExtensionModel(
-            user_id=AUTH_COOKIE["user_id"].value,
+            user_id=self.test_user_data.id,
             timezone="NEWFOUNDLAND_STANDARD_TIME"
         )
         user_extension.is_organization_rep = False
@@ -116,20 +118,9 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
         self.assertEqual(response.status_code, success_code)
 
 
-    @patch("requests.put")
-    def test_api_dao_update_additional_info_with_invalid_timezone(self, mock_update_additional_info):
+    def test_api_dao_update_additional_info_with_invalid_timezone(self):
         error_message = messages.TIMEZONE_INPUT_IS_INVALID
         error_code = HTTPStatus.BAD_REQUEST
-        
-        mock_response = Mock()
-        http_error = requests.exceptions.HTTPError()
-        mock_response.raise_for_status.side_effect = http_error
-        mock_update_additional_info.return_value = mock_response
-        
-        mock_error = Mock()
-        mock_error.json.return_value = error_message
-        mock_error.status_code = error_code
-        mock_update_additional_info.side_effect = requests.exceptions.HTTPError(response=mock_error)
         
         # prepare existing additional info
         additional_info = {
@@ -139,7 +130,7 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
         }
 
         user_extension = UserExtensionModel(
-            user_id=AUTH_COOKIE["user_id"].value,
+            user_id=self.test_user_data.id,
             timezone="NEWFOUNDLAND_STANDARD_TIME"
         )
         user_extension.is_organization_rep = False
@@ -166,7 +157,6 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
                 content_type="application/json",
             )
 
-        mock_update_additional_info.assert_not_called()
         self.assertEqual(response.json, error_message)
         self.assertEqual(response.status_code, error_code)
 
