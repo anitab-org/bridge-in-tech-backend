@@ -59,7 +59,6 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
         AUTH_COOKIE["user_id"] = self.test_user_data.id
         
         self.correct_payload_additional_info = {
-            "user_id": self.test_user_data.id,
             "is_organization_rep": True,
             "timezone": "UTC-01:00/Cape Verde Time",
             "phone": "123-456-789",
@@ -91,7 +90,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
             )
 
         test_user_additional_info_data = UserExtensionModel.query.filter_by(user_id=self.test_user_data.id).first()
-        self.assertEqual(test_user_additional_info_data.user_id, self.correct_payload_additional_info["user_id"])
+        self.assertEqual(test_user_additional_info_data.user_id, int(AUTH_COOKIE["user_id"].value))
         self.assertEqual(test_user_additional_info_data.is_organization_rep, self.correct_payload_additional_info["is_organization_rep"])
         self.assertEqual(test_user_additional_info_data.timezone.value, self.correct_payload_additional_info["timezone"])
         self.assertEqual(test_user_additional_info_data.additional_info["phone"], self.correct_payload_additional_info["phone"])
@@ -117,7 +116,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
         mock_create_additional_info.side_effect = requests.exceptions.HTTPError(response=mock_error)
 
         test_user_additional_info = {
-            "user_id": self.test_user_data.id,
+            # "user_id": self.test_user_data.id,
             "is_organization_rep": True,
             "timezone": "UTC-01:00/Cape Verde Time",
             "phone": "128abc",
