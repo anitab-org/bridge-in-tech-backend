@@ -88,6 +88,8 @@ class TestGetOrganizationApi(BaseTestCase):
         
         db.session.add(organization)
         db.session.commit()
+
+        organization1_data = OrganizationModel.find_by_representative(self.test_user1_data.id)
         
         test_user_extension = UserExtensionModel(
             user_id=self.test_user1_data.id,
@@ -97,6 +99,7 @@ class TestGetOrganizationApi(BaseTestCase):
         test_user_extension.save_to_db()
 
         response_organization = {
+            "id": organization1_data.id,
             "representative_id": self.test_user1_data.id,
             "representative_name": self.test_user1_data.name,
             "representative_department": "H&R Department",

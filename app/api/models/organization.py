@@ -23,6 +23,9 @@ update_organization_request_model = Model(
 get_organization_response_model = Model(
     "Retrieves organization response model",
     {
+        "id": fields.Integer(
+            readOnly=True, description="The unique identifier of an organization"
+        ),
         "representative_id": fields.Integer(required=True, description="Representative id"),
         "representative_name": fields.String(required=True, description="Representative name"),
         "representative_department": fields.String(required=True, description="Representative department"),

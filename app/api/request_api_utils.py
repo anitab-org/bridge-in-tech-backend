@@ -62,6 +62,14 @@ def get_headers(request_string, params):
             "per_page": str(params["per_page"]),
             "Accept": "application/json"
         }
+    if request_string == "/organizations":
+        return {
+            "Authorization": AUTH_COOKIE["Authorization"].value, 
+            "name": params["name"],
+            "page": str(params["page"]),
+            "per_page": str(params["per_page"]),
+            "Accept": "application/json"
+        }
     return {
         "Authorization": AUTH_COOKIE["Authorization"].value,
         "Accept": "application/json"
