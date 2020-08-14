@@ -11,6 +11,7 @@ def add_models_to_namespace(api_namespace):
     api_namespace.models[user_extension_request_body_model.name] = user_extension_request_body_model
     api_namespace.models[get_user_personal_background_response_model.name] = get_user_personal_background_response_model
     api_namespace.models[user_personal_background_request_body_model.name] = user_personal_background_request_body_model
+    api_namespace.models[public_user_personal_details_response_model.name] = public_user_personal_details_response_model
 
 register_user_api_model = Model(
     "User registration model",
@@ -204,4 +205,34 @@ user_personal_background_request_body_model = Model(
         "highest_education_other": fields.String(required=False, description="highest_education_other"),
         "is_public": fields.Boolean(required=True, description="is_public"),
     }
+)
+
+public_user_personal_details_response_model = Model(
+    "User personal details list model",
+    {
+        "id": fields.Integer(
+            readOnly=True, description="The unique identifier of a user"
+        ),
+        "username": fields.String(required=True, description="User username"),
+        "name": fields.String(required=True, description="User name"),
+        "slack_username": fields.String(
+            required=True, description="User Slack username"
+        ),
+        "bio": fields.String(required=True, description="User bio"),
+        "location": fields.String(required=True, description="User location"),
+        "occupation": fields.String(required=True, description="User occupation"),
+        "current_organization": fields.String(required=True, description="User current_organization"),
+        "interests": fields.String(required=True, description="User interests"),
+        "skills": fields.String(required=True, description="User skills"),
+        "need_mentoring": fields.Boolean(
+            required=True, description="User need to be mentored indication"
+        ),
+        "available_to_mentor": fields.Boolean(
+            required=True, description="User availability to mentor indication"
+        ),
+        "is_available": fields.Boolean(
+            required=True,
+            description="User availability to mentor or to be mentored indication",
+        ),
+    },
 )

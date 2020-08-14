@@ -13,7 +13,7 @@ from flask_restx import Resource, marshal, Namespace
 from app import messages
 from app.api.request_api_utils import (
     post_request, 
-    get_request, 
+    get_request,
     put_request, 
     http_response_checker, 
     AUTH_COOKIE, 
@@ -25,6 +25,7 @@ from app.api.dao.user_extension import UserExtensionDAO
 from app.api.dao.personal_background import PersonalBackgroundDAO
 from app.utils.validation_utils import expected_fields_validator
 from app.database.models.bit_schema.user_extension import UserExtensionModel
+from app.utils.ms_constants import DEFAULT_PAGE, DEFAULT_USERS_PER_PAGE
 
 users_ns = Namespace("Users", description="Operations related to users")
 add_models_to_namespace(users_ns)
@@ -148,7 +149,7 @@ class MyProfilePersonalDetails(Resource):
         """
         token = request.headers.environ["HTTP_AUTHORIZATION"]
 
-        return http_response_checker(get_request("/user", token))
+        return http_response_checker(get_request("/user", token, params=None))
 
 
     @classmethod
@@ -362,7 +363,7 @@ class MyProfilePersonalBackground(Resource):
         mental_ability, socio_economic, highest_education, years_of_experience enums), others (dictionary of any additional 
         information the user added from any of the background fields) and is_public (boolean value true or false which 
         indicates whether or not the user agrees to make their personal background information public to other BridgeInTech members).
-        The response contains a success or error message. This request only accessible once user retrieve their user_id
+        The response contains a success or error message. This request only accessible once user retrieves their user_id
         by sending GET /user/personal_details.
         """
 
@@ -386,3 +387,78 @@ class MyProfilePersonalBackground(Resource):
              
         return is_wrong_token
     
+
+@users_ns.route("users")
+class UsersList(Resource):
+    @classmethod
+    @users_ns.doc("list_users", params={"search": "Search query", "page": "specify page of users", "per_page": "specify number of users per page"})
+    @users_ns.response(
+        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+    )
+    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
+    @users_ns.response( 
+    HTTPStatus.UNAUTHORIZED,
+        f"{messages.TOKEN_HAS_EXPIRED}\n"
+        f"{messages.TOKEN_IS_INVALID}\n"
+        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
+    )
+    @users_ns.response(HTTPStatus.OK, "Successful request", public_user_personal_details_response_model)
+    @users_ns.expect(auth_header_parser)
+    def get(cls):
+        """
+        Returns list of all verified users whose names contain the given query.
+
+        A user with valid access token can view the list of verified users. The endpoint
+        doesn't take any other input. A JSON array having an object for each user is
+        returned. The array contains id, username, name, slack_username, bio,
+        location, occupation, current_organization, interests, skills, need_mentoring,
+        available_to_mentor. The current user's details are not returned.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+        search = request.args.get("search", "")
+        page = request.args.get("page", default=DEFAULT_PAGE, type=int)
+        per_page = request.args.get("per_page", default=DEFAULT_USERS_PER_PAGE, type=int)
+        
+        params = {
+            "search": search,
+            "page": page,
+            "per_page": per_page
+        }
+        
+        return http_response_checker(get_request("/users/verified", token, params))
+        
+
+@users_ns.route("users/<int:user_id>")
+@users_ns.param("user_id", "The user identifier")
+class OtherUser(Resource):
+    @classmethod
+    @users_ns.doc("get_member_details")
+    @users_ns.expect(auth_header_parser)
+    @users_ns.response(HTTPStatus.OK, "Success.", public_user_personal_details_response_model)
+    @users_ns.response(HTTPStatus.BAD_REQUEST, f"{messages.USER_ID_IS_NOT_VALID}")
+    @users_ns.response(
+        HTTPStatus.UNAUTHORIZED,
+        f"{messages.TOKEN_HAS_EXPIRED}\n"
+        f"{messages.TOKEN_IS_INVALID}\n"
+        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
+    )
+    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
+    @users_ns.response(
+        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+    )
+    def get(cls, user_id):
+        """
+        Returns a user.
+
+        A user with valid access token can view the details of another user. The endpoint
+        takes "user_id" of such user has input. This request only accessible once user retrieves their user_id
+        by sending GET /user/personal_details.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+        is_wrong_token = validate_token(token)
+        
+        if not is_wrong_token:
+            return http_response_checker(get_request(f"/users/{user_id}", token, params=None))
+        return is_wrong_token

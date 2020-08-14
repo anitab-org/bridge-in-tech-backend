@@ -10,6 +10,7 @@ from app.utils.decorator_utils import http_response_namedtuple_converter
 BASE_MS_API_URL = "http://127.0.0.1:4000"
 AUTH_COOKIE = cookies.SimpleCookie()
 
+
 def post_request(request_string, data):
     request_url = f"{BASE_MS_API_URL}{request_string}" 
     try:
@@ -43,7 +44,24 @@ def post_request(request_string, data):
         return response_message, response_code
 
 
-def get_request(request_string, token):
+def get_headers(request_string, params):
+    if request_string == "/user":
+        return {"Authorization": AUTH_COOKIE["Authorization"].value, "Accept": "application/json"}
+    if request_string == "/users/verified":
+        return {
+            "Authorization": AUTH_COOKIE["Authorization"].value, 
+            "search": params["search"],
+            "page": str(params["page"]),
+            "per_page": str(params["per_page"]),
+            "Accept": "application/json"
+        }
+    return {
+        "Authorization": AUTH_COOKIE["Authorization"].value,
+        "Accept": "application/json"
+    }
+
+
+def get_request(request_string, token, params):
     request_url = f"{BASE_MS_API_URL}{request_string}" 
     is_wrong_token = validate_token(token)
 
@@ -51,7 +69,7 @@ def get_request(request_string, token):
         try: 
             response = requests.get(
                 request_url,
-                headers={"Authorization": AUTH_COOKIE["Authorization"].value, "Accept": "application/json"}, 
+                headers=get_headers(request_string, params)
             )
             response.raise_for_status()
             response_message = response.json()
