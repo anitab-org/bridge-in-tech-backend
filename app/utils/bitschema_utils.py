@@ -216,3 +216,4 @@ class Timezone(Enum):
 
     def timezone(self):
         return list(map(str, self))
+

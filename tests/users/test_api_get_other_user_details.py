@@ -17,7 +17,9 @@ from app.api.models.user import public_user_personal_details_response_model
 class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
     @patch("requests.get")
     @patch("requests.post")
-    def test_api_other_user_personal_details_with_correct_token(self, mock_login, mock_get_users):
+    def setUp(self, mock_login, mock_get_user):
+        super(TestGetOtherUserPersonalDetailsApi, self).setUp()
+
         # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
         # This date need to be adjusted accordingly once the development is near/pass the stated date
         # to make sure the test still pass.
@@ -30,6 +32,15 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
         mock_login.return_value = mock_login_response
         mock_login.raise_for_status = json.dumps(success_code)
 
+        expected_user = marshal(user1, full_user_api_model)
+        
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+        
         user_login_success = {
             "username": user1.get("username"),
             "password": user1.get("password")
@@ -42,7 +53,24 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
                 follow_redirects=True,
                 content_type="application/json",
             )
-      
+
+        test_user1 = UserModel(
+            name=user1["name"],
+            username=user1["username"],
+            password=user1["password"], 
+            email=user1["email"], 
+            terms_and_conditions_checked=user1["terms_and_conditions_checked"]
+        )
+        test_user1.need_mentoring = user1["need_mentoring"]
+        test_user1.available_to_mentor = user1["available_to_mentor"]
+
+        test_user1.save_to_db()
+        test_user1_data = UserModel.find_by_email(test_user1.email)
+        AUTH_COOKIE["user"] = marshal(test_user1_data, full_user_api_model)
+        
+    
+    @patch("requests.get")
+    def test_api_other_user_personal_details_with_correct_token(self, mock_get_users):
         expected_response = {
             "id": 2,
             "username": "usertest",
@@ -83,32 +111,7 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
 
     
     @patch("requests.get")
-    @patch("requests.post")
-    def test_api_other_user_personal_details_with_token_expired(self, mock_login, mock_get_users):
-        # The access_expiry on this test is set to Friday, 26-Jun-20 04:03:58 UTC.
-        # to make sure the test pass for expired token.
-        success_message = {"access_token": "this is fake token", "access_expiry": 1593144238}
-        success_code = HTTPStatus.OK
-
-        mock_login_response = Mock()
-        mock_login_response.json.return_value = success_message
-        mock_login_response.status_code = success_code
-        mock_login.return_value = mock_login_response
-        mock_login.raise_for_status = json.dumps(success_code)
-
-        user_login_success = {
-            "username": user1.get("username"),
-            "password": user1.get("password")
-        }
-        
-        with self.client:
-            login_response = self.client.post(
-                "/login",
-                data=json.dumps(user_login_success),
-                follow_redirects=True,
-                content_type="application/json",
-            )
-      
+    def test_api_other_user_personal_details_with_token_expired(self, mock_get_users):
         error_message = messages.TOKEN_HAS_EXPIRED
         error_code = HTTPStatus.UNAUTHORIZED
 
@@ -130,6 +133,6 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
                 }, 
                 follow_redirects=True,
             )
-        mock_get_users.assert_not_called()
+        mock_get_users.assert_called()
         self.assertEqual(get_response.json, error_message)
         self.assertEqual(get_response.status_code, error_code)

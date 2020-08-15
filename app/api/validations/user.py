@@ -280,4 +280,4 @@ def validate_update_personal_background_info_request(data):
         approved.append(YearsOfExperience(data["years_of_experience"]).name)
     except ValueError:
         return messages.PERSONAL_BACKGROUND_IS_INVALID
-    
+

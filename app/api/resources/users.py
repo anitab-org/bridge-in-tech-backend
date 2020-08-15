@@ -1,14 +1,8 @@
+import ast
 import json
 from http import HTTPStatus, cookies
 from datetime import datetime, timedelta
 from flask import request
-from flask_jwt_extended import (
-    jwt_required,
-    jwt_refresh_token_required,
-    create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-)
 from flask_restx import Resource, marshal, Namespace
 from app import messages
 from app.api.request_api_utils import (
@@ -67,7 +61,7 @@ class UserRegister(Resource):
         Creates a new user.
 
         The endpoint accepts user input related to Mentorship System API (name, username, password, email,
-        terms_and_conditions_checked(true/false), need_mentoring(true/false),
+        terms_and_conditions_checked(true/false), need_mentoring(true/false), 
         available_to_mentor(true/false)).
         A success message is displayed and verification email is sent to the user's email ID.
         """
@@ -132,7 +126,6 @@ class LoginUser(Resource):
         f"{messages.TOKEN_IS_INVALID}\n"
         f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
 )
-@users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
 @users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
 @users_ns.route("user/personal_details")
 class MyProfilePersonalDetails(Resource):
@@ -149,8 +142,13 @@ class MyProfilePersonalDetails(Resource):
         """
         token = request.headers.environ["HTTP_AUTHORIZATION"]
 
-        return http_response_checker(get_request("/user", token, params=None))
-
+        is_wrong_token = validate_token(token)
+        if not is_wrong_token:
+            user_json = (AUTH_COOKIE["user"].value)
+            user = ast.literal_eval(user_json)
+            return user, HTTPStatus.OK 
+        return is_wrong_token
+        
 
     @classmethod
     @users_ns.doc("update_user_personal_details")
@@ -198,7 +196,7 @@ class MyProfilePersonalDetails(Resource):
     f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
 )
 @users_ns.response(
-        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED}"
+        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
 )
 @users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
 @users_ns.route("user/additional_info")
@@ -214,8 +212,7 @@ class MyProfileAdditionalInfo(Resource):
         Returns additional information of current user
 
         A user with valid access token can use this endpoint to view their additional information details. 
-        The endpoint doesn't take any other input. This request only accessible once user retrieves their user_id
-        by sending GET /user/personal_details.
+        The endpoint doesn't take any other input. 
         """
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]
@@ -223,11 +220,9 @@ class MyProfileAdditionalInfo(Resource):
         is_wrong_token = validate_token(token)
 
         if not is_wrong_token:
-            try:
-                user_id = int(AUTH_COOKIE["user_id"].value)
-            except ValueError:
-                return messages.USER_ID_IS_NOT_RETRIEVED, HTTPStatus.FORBIDDEN    
-            result = UserExtensionDAO.get_user_additional_data_info(user_id)
+            user_json = (AUTH_COOKIE["user"].value)
+            user = ast.literal_eval(user_json)
+            result = UserExtensionDAO.get_user_additional_data_info(int(user['id']))
             if not result:
                 return messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
             return result 
@@ -251,7 +246,7 @@ class MyProfileAdditionalInfo(Resource):
         f"{messages.UNEXPECTED_INPUT}"
     )
     @users_ns.response(
-        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED}"
+        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
     )
     @users_ns.response(
         HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
@@ -264,8 +259,7 @@ class MyProfileAdditionalInfo(Resource):
         A user with valid access token can use this endpoint to create or update additional information to their own data. 
         The endpoint takes any of the given parameters (is_organization_rep (true or false value), timezone 
         (with value as per Timezone Enum Value) and additional_info (dictionary of phone, mobile and personal_website)).
-        The response contains a success or error message. This request only accessible once user retrieves their user_id
-        by sending GET /user/personal_details.
+        The response contains a success or error message. 
         """
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]
@@ -301,7 +295,7 @@ class MyProfileAdditionalInfo(Resource):
     f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
 )
 @users_ns.response(
-        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED}"
+        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
 )
 @users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
 @users_ns.route("user/personal_background")
@@ -316,8 +310,7 @@ class MyProfilePersonalBackground(Resource):
         Returns personal background information of current user
 
         A user with valid access token can use this endpoint to view their personal background information. 
-        The endpoint doesn't take any other input. This request only accessible once user retrieves their user_id
-        by sending GET /user/personal_details.
+        The endpoint doesn't take any other input. 
         """
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]
@@ -325,11 +318,9 @@ class MyProfilePersonalBackground(Resource):
         is_wrong_token = validate_token(token)
 
         if not is_wrong_token:
-            try:
-                user_id = int(AUTH_COOKIE["user_id"].value)
-            except ValueError:
-                return messages.USER_ID_IS_NOT_RETRIEVED, HTTPStatus.FORBIDDEN    
-            result = PersonalBackgroundDAO.get_user_personal_background_info(user_id)
+            user_json = (AUTH_COOKIE["user"].value)
+            user = ast.literal_eval(user_json)
+            result = PersonalBackgroundDAO.get_user_personal_background_info(int(user['id']))
             if not result:
                 return messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
             return result 
@@ -363,8 +354,7 @@ class MyProfilePersonalBackground(Resource):
         mental_ability, socio_economic, highest_education, years_of_experience enums), others (dictionary of any additional 
         information the user added from any of the background fields) and is_public (boolean value true or false which 
         indicates whether or not the user agrees to make their personal background information public to other BridgeInTech members).
-        The response contains a success or error message. This request only accessible once user retrieves their user_id
-        by sending GET /user/personal_details.
+        The response contains a success or error message. 
         """
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]
@@ -452,8 +442,7 @@ class OtherUser(Resource):
         Returns a user.
 
         A user with valid access token can view the details of another user. The endpoint
-        takes "user_id" of such user has input. This request only accessible once user retrieves their user_id
-        by sending GET /user/personal_details.
+        takes "user_id" of such user has input. 
         """
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]

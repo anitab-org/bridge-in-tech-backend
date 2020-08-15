@@ -1,3 +1,4 @@
+import ast
 import unittest
 from http import HTTPStatus, cookies
 from unittest.mock import patch, Mock
@@ -16,7 +17,8 @@ from tests.test_data import user1
 class TestGetUserDetailsApi(BaseTestCase):
     @patch("requests.get")
     @patch("requests.post")
-    def test_api_get_user_details_with_correct_token(self, mock_login, mock_get_user):
+    def setUp(self, mock_login, mock_get_user):
+        super(TestGetUserDetailsApi, self).setUp()
         # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
         # This date need to be adjusted accordingly once the development is near/pass the stated date
         # to make sure the test still pass.
@@ -29,6 +31,15 @@ class TestGetUserDetailsApi(BaseTestCase):
         mock_login.return_value = mock_login_response
         mock_login.raise_for_status = json.dumps(success_code)
 
+        expected_user = marshal(user1, full_user_api_model)
+        
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+        
         user_login_success = {
             "username": user1.get("username"),
             "password": user1.get("password")
@@ -42,15 +53,12 @@ class TestGetUserDetailsApi(BaseTestCase):
                 content_type="application/json",
             )
       
-        expected_user = marshal(user1, full_user_api_model)
+
+    def test_api_get_user_details_with_correct_token(self):
+      
+        user_json = (AUTH_COOKIE["user"].value)
+        user = ast.literal_eval(user_json)
         success_code = HTTPStatus.OK
-
-        mock_get_response = Mock()
-        mock_get_response.json.return_value = expected_user
-        mock_get_response.status_code = success_code
-
-        mock_get_user.return_value = mock_get_response
-        mock_get_user.raise_for_status = json.dumps(success_code)
 
         with self.client:
             get_response = self.client.get(
@@ -59,17 +67,17 @@ class TestGetUserDetailsApi(BaseTestCase):
                 follow_redirects=True,
             )
             
-        mock_get_user.assert_called()
-        self.assertEqual(get_response.json, expected_user)
+        self.assertEqual(get_response.json, user)
         self.assertEqual(get_response.status_code, success_code)
 
 
     @patch("requests.get")
     @patch("requests.post")
-    def test_api_get_user_details_with_token_expired(self, mock_login, mock_get_user):
-        # The access_expiry on this test is set to Friday, 26-Jun-20 04:03:58 UTC.
-        # to make sure the test pass for expired token.
-        success_message = {"access_token": "this is fake token", "access_expiry": 1593144238}
+    def test_api_get_user_details_with_incorrect_token(self, mock_login, mock_get_user):
+        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
+        # This date need to be adjusted accordingly once the development is near/pass the stated date
+        # to make sure the test still pass.
+        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -78,6 +86,15 @@ class TestGetUserDetailsApi(BaseTestCase):
         mock_login.return_value = mock_login_response
         mock_login.raise_for_status = json.dumps(success_code)
 
+        expected_user = marshal(user1, full_user_api_model)
+        
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+       
         user_login_success = {
             "username": user1.get("username"),
             "password": user1.get("password")
@@ -91,52 +108,16 @@ class TestGetUserDetailsApi(BaseTestCase):
                 content_type="application/json",
             )
       
-        error_message = messages.TOKEN_HAS_EXPIRED
+        error_message = messages.TOKEN_IS_INVALID
         error_code = HTTPStatus.UNAUTHORIZED
 
-        mock_response = Mock()
-        mock_error = Mock()
-        http_error = requests.exceptions.HTTPError()
-        mock_response.raise_for_status.side_effect = http_error
-        mock_get_user.return_value = mock_response
-        mock_error.json.return_value = error_message
-        mock_error.status_code = error_code
-        mock_get_user.side_effect = requests.exceptions.HTTPError(response=mock_error)
-
         with self.client:
             get_response = self.client.get(
                 "/user/personal_details",
-                headers={"Authorization": AUTH_COOKIE["Authorization"].value},
+                headers={"Authorization": "Bearer Token incorrect"},
                 follow_redirects=True,
             )
             
-        mock_get_user.assert_not_called()
-        self.assertEqual(get_response.json, error_message)
-        self.assertEqual(get_response.status_code, error_code)
-
-
-    @patch("requests.get")
-    def test_api_get_user_details_with_internal_server_error(self, mock_get_user):
-        error_message = messages.INTERNAL_SERVER_ERROR
-        error_code = HTTPStatus.INTERNAL_SERVER_ERROR
-        
-        mock_response = Mock()
-        mock_error = Mock()
-        http_error = requests.exceptions.HTTPError()
-        mock_response.raise_for_status.side_effect = http_error
-        mock_get_user.return_value = mock_response
-        mock_error.json.return_value = error_message
-        mock_error.status_code = error_code
-        mock_get_user.side_effect = requests.exceptions.HTTPError(response=mock_error)
-        
-        with self.client:
-            get_response = self.client.get(
-                "/user/personal_details",
-                headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-                follow_redirects=True,
-            )
-            
-        mock_get_user.assert_called()
         self.assertEqual(get_response.json, error_message)
         self.assertEqual(get_response.status_code, error_code)
 

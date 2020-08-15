@@ -37,11 +37,18 @@ def post_request(request_string, data):
             access_expiry_cookie = response_message.get("access_expiry")
             AUTH_COOKIE["Authorization"] = f"Bearer {access_token_cookie}"
             AUTH_COOKIE["Authorization"]["expires"] = access_expiry_cookie
-            AUTH_COOKIE["user_id"] = None
+            result = http_response_checker(get_user(AUTH_COOKIE["Authorization"].value))
+            if result.status_code != 200:
+                response_message = result.message
+                response_code = result.status_code
             response_message = {"access_token": response_message.get("access_token"), "access_expiry": response_message.get("access_expiry")}
-
         logging.fatal(f"{response_message}")
         return response_message, response_code
+
+
+def get_user(token):
+    request_url = "/user" 
+    return get_request(request_url, token, params=None)
 
 
 def get_headers(request_string, params):
@@ -87,7 +94,7 @@ def get_request(request_string, token, params):
             logging.fatal(f"{e}")
         finally:
             if request_string == "/user" and response_code == HTTPStatus.OK:
-                AUTH_COOKIE["user_id"] = response_message.get("id")
+                AUTH_COOKIE["user"] = response_message
             logging.fatal(f"{response_message}")
             return response_message, response_code
     return is_wrong_token

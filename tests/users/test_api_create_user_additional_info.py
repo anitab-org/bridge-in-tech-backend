@@ -1,3 +1,4 @@
+import ast
 import unittest
 from http import HTTPStatus, cookies
 from unittest.mock import patch, Mock
@@ -16,8 +17,9 @@ from app.database.models.bit_schema.user_extension import UserExtensionModel
 
 class TestCreateUserAdditionalInfoApi(BaseTestCase):
     
+    @patch("requests.get")
     @patch("requests.post")
-    def setUp(self, mock_login):
+    def setUp(self, mock_login, mock_get_user):
         super(TestCreateUserAdditionalInfoApi, self).setUp()
 
         success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
@@ -29,6 +31,16 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
         mock_login.return_value = mock_login_response
         mock_login.raise_for_status = json.dumps(success_code)
 
+        expected_user = marshal(user1, full_user_api_model)
+        
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+        
+        
         user_login_success = {
             "username": user1.get("username"),
             "password": user1.get("password")
@@ -56,8 +68,8 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
 
         self.test_user_data = UserModel.find_by_email(test_user.email)
 
-        AUTH_COOKIE["user_id"] = self.test_user_data.id
-        
+        AUTH_COOKIE["user"] = marshal(self.test_user_data, full_user_api_model)
+
         self.correct_payload_additional_info = {
             "is_organization_rep": True,
             "timezone": "UTC-01:00/Cape Verde Time",
@@ -66,17 +78,9 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
             "personal_website": ""
         }
         
-    @patch("requests.put")
-    def test_api_dao_create_user_additional_info_successfully(self, mock_create_additional_info):
+    def test_api_dao_create_user_additional_info_successfully(self):
         success_message = messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED
         success_code = HTTPStatus.CREATED
-
-        mock_get_response = Mock()
-        mock_get_response.json.return_value = success_message
-        mock_get_response.status_code = success_code
-
-        mock_create_additional_info.return_value = mock_get_response
-        mock_create_additional_info.raise_for_status = json.dumps(success_code)
 
         with self.client:
             response = self.client.put(
@@ -90,7 +94,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
             )
 
         test_user_additional_info_data = UserExtensionModel.query.filter_by(user_id=self.test_user_data.id).first()
-        self.assertEqual(test_user_additional_info_data.user_id, int(AUTH_COOKIE["user_id"].value))
+        self.assertEqual(test_user_additional_info_data.user_id, self.test_user_data.id)
         self.assertEqual(test_user_additional_info_data.is_organization_rep, self.correct_payload_additional_info["is_organization_rep"])
         self.assertEqual(test_user_additional_info_data.timezone.value, self.correct_payload_additional_info["timezone"])
         self.assertEqual(test_user_additional_info_data.additional_info["phone"], self.correct_payload_additional_info["phone"])
@@ -100,23 +104,11 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
         self.assertEqual(response.status_code, success_code)
 
     
-    @patch("requests.put")
-    def test_api_dao_create_user_additional_info_invalid_payload(self, mock_create_additional_info):
+    def test_api_dao_create_user_additional_info_invalid_payload(self):
         error_message = messages.PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT
         error_code = HTTPStatus.BAD_REQUEST
 
-        mock_response = Mock()
-        http_error = requests.exceptions.HTTPError()
-        mock_response.raise_for_status.side_effect = http_error
-        mock_create_additional_info.return_value = mock_response
-
-        mock_error = Mock()
-        mock_error.json.return_value = error_message
-        mock_error.status_code = error_code
-        mock_create_additional_info.side_effect = requests.exceptions.HTTPError(response=mock_error)
-
         test_user_additional_info = {
-            # "user_id": self.test_user_data.id,
             "is_organization_rep": True,
             "timezone": "UTC-01:00/Cape Verde Time",
             "phone": "128abc",
