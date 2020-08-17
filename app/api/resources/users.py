@@ -118,7 +118,26 @@ class LoginUser(Resource):
         if not password:
             return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
 
-        return http_response_checker(post_request("/login", data))
+        result = http_response_checker(post_request("/login", data))
+        if result.status_code == 200:
+            try:
+                user_json = (AUTH_COOKIE["user"].value)
+                user = ast.literal_eval(user_json)
+                user_extension = UserExtensionDAO.get_user_additional_data_info(int(user['id']))
+                is_organization_representative = user_extension["is_organization_rep"]
+                return {
+                    "access_token": result.message["access_token"],
+                    "access_expiry": result.message["access_expiry"],
+                    "is_organization_representative": is_organization_representative
+                }
+            except TypeError:
+                return {
+                    "access_token": result.message["access_token"],
+                    "access_expiry": result.message["access_expiry"],
+                    "is_organization_representative": False
+                }
+        return result
+                    
         
 @users_ns.response(
         HTTPStatus.UNAUTHORIZED,

@@ -24,14 +24,27 @@ class UserExtensionDAO:
 
         result = UserExtensionModel.find_by_user_id(user_id)
         if result:
-            return {
-                "user_id": result.user_id,
-                "is_organization_rep": result.is_organization_rep,
-                "timezone": result.timezone.value,
-                "phone": result.additional_info["phone"],
-                "mobile": result.additional_info["mobile"],
-                "personal_website": result.additional_info["personal_website"]
-            }
+            try:
+                phone = result.additional_info["phone"]
+                mobile = result.additional_info["mobile"]
+                personal_website = result.additional_info["personal_website"]
+                return {
+                    "user_id": result.user_id,
+                    "is_organization_rep": result.is_organization_rep,
+                    "timezone": result.timezone.value,
+                    "phone": phone,
+                    "mobile": mobile,
+                    "personal_website": personal_website
+                }
+            except TypeError:
+                return {
+                    "user_id": result.user_id,
+                    "is_organization_rep": result.is_organization_rep,
+                    "timezone": result.timezone.value,
+                    "phone": "",
+                    "mobile": "",
+                    "personal_website": ""
+                }
         return
 
     @staticmethod

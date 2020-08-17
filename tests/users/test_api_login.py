@@ -10,17 +10,37 @@ from tests.base_test_case import BaseTestCase
 from app.api.request_api_utils import post_request, BASE_MS_API_URL
 from app.api.resources.users import LoginUser
 from app.api.models.user import full_user_api_model
+from app.database.models.ms_schema.user import UserModel
+from app.database.models.bit_schema.user_extension import UserExtensionModel
 from tests.test_data import user1
 
 
 class TestUserLoginApi(BaseTestCase):
+    def setUp(self):
+        super(TestUserLoginApi, self).setUp()
+
+        test_user1 = UserModel(
+            name=user1["name"],
+            username=user1["username"],
+            password=user1["password"], 
+            email=user1["email"], 
+            terms_and_conditions_checked=user1["terms_and_conditions_checked"]
+        )
+        test_user1.need_mentoring = user1["need_mentoring"]
+        test_user1.available_to_mentor = user1["available_to_mentor"]
+
+        test_user1.save_to_db()
+        self.test_user1_data = UserModel.find_by_email(test_user1.email)
+        self.expected_user = marshal(self.test_user1_data, full_user_api_model)
+        
+    
     @patch("requests.get")
     @patch("requests.post")
-    def test_api_login_successful(self, mock_login, mock_get_user):
+    def test_api_login_with_user_as_representative_successful(self, mock_login, mock_get_user):
         # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
         # This date need to be adjusted accordingly once the development is near/pass the stated date
         # to make sure the test still pass.
-        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
+        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236, "is_organization_representative": True}
         success_code = HTTPStatus.OK
 
         mock_response = Mock()
@@ -33,11 +53,16 @@ class TestUserLoginApi(BaseTestCase):
             "username": user1.get("username"),
             "password": user1.get("password")
         }
-
-        expected_user = marshal(user1, full_user_api_model)
         
+        test_user_extension = UserExtensionModel(
+            user_id=self.test_user1_data.id,
+            timezone="ALASKA_STANDARD_TIME"
+        )
+        test_user_extension.is_organization_rep = True
+        test_user_extension.save_to_db()
+
         mock_get_response = Mock()
-        mock_get_response.json.return_value = expected_user
+        mock_get_response.json.return_value = self.expected_user
         mock_get_response.status_code = success_code
 
         mock_get_user.return_value = mock_get_response
@@ -56,6 +81,93 @@ class TestUserLoginApi(BaseTestCase):
         self.assertEqual(response.status_code, success_code)
     
 
+    @patch("requests.get")
+    @patch("requests.post")
+    def test_api_login_with_user_not_representative_successful(self, mock_login, mock_get_user):
+        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
+        # This date need to be adjusted accordingly once the development is near/pass the stated date
+        # to make sure the test still pass.
+        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236, "is_organization_representative": False}
+        success_code = HTTPStatus.OK
+
+        mock_response = Mock()
+        mock_response.json.return_value = success_message
+        mock_response.status_code = success_code
+        mock_login.return_value = mock_response
+        mock_login.raise_for_status = json.dumps(success_code)
+
+        user_login_success = {
+            "username": user1.get("username"),
+            "password": user1.get("password")
+        }
+        
+        test_user_extension = UserExtensionModel(
+            user_id=self.test_user1_data.id,
+            timezone="ALASKA_STANDARD_TIME"
+        )
+        test_user_extension.is_organization_rep = False
+        test_user_extension.save_to_db()
+
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = self.expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+        
+        with self.client:
+            response = self.client.post(
+                "/login",
+                data=json.dumps(user_login_success),
+                follow_redirects=True,
+                content_type="application/json",
+            )
+        
+        mock_login.assert_called()
+        self.assertEqual(response.json, success_message)
+        self.assertEqual(response.status_code, success_code)
+    
+
+    @patch("requests.get")
+    @patch("requests.post")
+    def test_api_login_with_no_additional_info_instance_successful(self, mock_login, mock_get_user):
+        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
+        # This date need to be adjusted accordingly once the development is near/pass the stated date
+        # to make sure the test still pass.
+        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236, "is_organization_representative": False}
+        success_code = HTTPStatus.OK
+
+        mock_response = Mock()
+        mock_response.json.return_value = success_message
+        mock_response.status_code = success_code
+        mock_login.return_value = mock_response
+        mock_login.raise_for_status = json.dumps(success_code)
+
+        user_login_success = {
+            "username": user1.get("username"),
+            "password": user1.get("password")
+        }
+
+        mock_get_response = Mock()
+        mock_get_response.json.return_value = self.expected_user
+        mock_get_response.status_code = success_code
+
+        mock_get_user.return_value = mock_get_response
+        mock_get_user.raise_for_status = json.dumps(success_code)
+        
+        with self.client:
+            response = self.client.post(
+                "/login",
+                data=json.dumps(user_login_success),
+                follow_redirects=True,
+                content_type="application/json",
+            )
+        
+        mock_login.assert_called()
+        self.assertEqual(response.json, success_message)
+        self.assertEqual(response.status_code, success_code)
+    
+    
     @patch("requests.post")
     def test_api_wrong_password(self, mock_login):
         error_message = messages.WRONG_USERNAME_OR_PASSWORD
