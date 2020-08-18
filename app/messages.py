@@ -49,6 +49,9 @@ TASK_COMMENT_WITH_GIVEN_TASK_ID_DOES_NOT_EXIST = {
 ORGANIZATION_DOES_NOT_EXIST = {
     "message": "Organization does not exist."
 }
+NO_ORGANIZATION_FOUND = {
+    "message": "No organization found on the record."
+}
 ORGANITATION_ENUM_FIELD_IS_INVALID = {
     "message": "Either Timezone or Status fields are invalid."
 }

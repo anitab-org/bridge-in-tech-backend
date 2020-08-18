@@ -78,11 +78,12 @@ class OrganizationModel(db.Model):
     def __repr__(self):
         """Returns the organization."""
         return (
+            f"Organization's id is {self.id}\n"
             f"Organization's representative is {self.rep_id}\n"
-            f"Organization's name is {self.c_name}.\n"
-            f"Organization's email is {self.c_email}\n"
-            f"Organization's address is {self.c_address}\n"
-            f"Organization's website is {self.c_website}\n"
+            f"Organization's name is {self.name}.\n"
+            f"Organization's email is {self.email}\n"
+            f"Organization's address is {self.address}\n"
+            f"Organization's website is {self.website}\n"
             f"Organization's timezone is {self.timezone}"
         )
 

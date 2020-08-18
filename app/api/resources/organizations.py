@@ -15,6 +15,8 @@ from app.api.dao.organization import OrganizationDAO
 from app.utils.validation_utils import expected_fields_validator
 from app.api.models.organization import *
 from app.api.validations.organization import validate_update_organization
+from app.utils.bit_constants import DEFAULT_PAGE, DEFAULT_ORGANIZATIONS_PER_PAGE
+
 
 organizations_ns = Namespace("Organizations", description="Operations related to organizations")
 add_models_to_namespace(organizations_ns)
@@ -95,5 +97,44 @@ class Organization(Resource):
         return is_wrong_token
 
     
+    @organizations_ns.route("organizations")
+    class OrganizationsList(Resource):
+        @classmethod
+        @organizations_ns.doc("list_organizations", params={"name": "Search by organization name", "page": "Specify page of organizations", "per_page": "Specify number of organizations per page"})
+        @organizations_ns.response(
+            HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+        )
+        @organizations_ns.response(HTTPStatus.NOT_FOUND, f"{messages.ORGANIZATION_DOES_NOT_EXIST}")
+        @organizations_ns.response( 
+        HTTPStatus.UNAUTHORIZED,
+            f"{messages.TOKEN_HAS_EXPIRED}\n"
+            f"{messages.TOKEN_IS_INVALID}\n"
+            f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
+        )
+        @organizations_ns.response(HTTPStatus.OK, "Successful request", get_organization_response_model)
+        @organizations_ns.expect(auth_header_parser, validate=True)
+        def get(cls):
+            """
+            Returns list of all organizations whose names contain the given query.
+
+            A user with valid access token can view the list of organizations. The endpoint
+            doesn't take any other input. A JSON array having an object for each organization is
+            returned. The array contains the representative id, rep_department, organization name, email, about, 
+            address, website, timezone (with value as per Timezone Enum Value), phone, status 
+            (with value as per OrganizationStatus Enum Value) and join date.
+            """
+
+            token = request.headers.environ["HTTP_AUTHORIZATION"]
+            page = request.args.get("page", default=DEFAULT_PAGE, type=int)
+            per_page = request.args.get("per_page", default=DEFAULT_ORGANIZATIONS_PER_PAGE, type=int)
+
+            is_wrong_token = validate_token(token)
+
+            if not is_wrong_token:
+                return OrganizationDAO.list_organizations(request.args.get("name", ""), page, per_page, token)
+            return is_wrong_token
+
+
+        
 
 
