@@ -116,8 +116,9 @@ class ProgramModel(db.Model):
     def __repr__(self):
         """Returns the program name, creation/start/end date and organization id."""
         return (
+            f"Program id is {self.program.id}\n"
             f"Program name is {self.program_name}.\n"
-            f"Organization's id is {self.company_id}.\n"
+            f"Organization's id is {self.organization_id}.\n"
             f"Program start date is {self.start_date}\n"
             f"Program end date is {self.end_date}\n"
             f"Program creation date is {self.creation_date}\n"
@@ -137,13 +138,21 @@ class ProgramModel(db.Model):
 
         """Returns the Program that has the passed name.
            Args:
-                _id: The id of a Program.
+                program_name: The name of a Program.
         """
         return cls.query.filter_by(program_name=program_name).first()
-
+    
     @classmethod
-    def get_all_programs(cls, rep_id):
-        """Returns all the programs where representative id is the passed id. """
+    def get_all_programs_by_organization(cls, organization_id):
+        """Returns list of programs that has the passed organization id.
+           Args:
+                _id: The id of an Organization.
+        """
+        return cls.query.filter_by(organization_id=organization_id).all()
+    
+    @classmethod
+    def get_all_programs_by_representative(cls, rep_id):
+        """Returns list of programs that where their representative ID is the passedid."""
         return cls.query.filter_by(rep_id=rep_id).all()
 
     def save_to_db(self) -> None:

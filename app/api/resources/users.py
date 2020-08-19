@@ -118,25 +118,7 @@ class LoginUser(Resource):
         if not password:
             return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
 
-        result = http_response_checker(post_request("/login", data))
-        if result.status_code == 200:
-            try:
-                user_json = (AUTH_COOKIE["user"].value)
-                user = ast.literal_eval(user_json)
-                user_extension = UserExtensionDAO.get_user_additional_data_info(int(user['id']))
-                is_organization_representative = user_extension["is_organization_rep"]
-                return {
-                    "access_token": result.message["access_token"],
-                    "access_expiry": result.message["access_expiry"],
-                    "is_organization_representative": is_organization_representative
-                }
-            except TypeError:
-                return {
-                    "access_token": result.message["access_token"],
-                    "access_expiry": result.message["access_expiry"],
-                    "is_organization_representative": False
-                }
-        return result
+        return http_response_checker(post_request("/login", data))
                     
         
 @users_ns.response(
@@ -173,7 +155,7 @@ class MyProfilePersonalDetails(Resource):
     @users_ns.doc("update_user_personal_details")
     @users_ns.response(HTTPStatus.OK, f"{messages.USER_SUCCESSFULLY_UPDATED}")
     @users_ns.response(HTTPStatus.BAD_REQUEST, "Invalid input.")
-    @users_ns.expect(auth_header_parser, update_user_details_request_body_model, validate=True,)
+    @users_ns.expect(auth_header_parser, update_user_details_request_body_model, validate=True)
     def put(cls):
         """
         Updates user personal details

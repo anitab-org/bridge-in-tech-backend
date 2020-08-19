@@ -47,7 +47,6 @@ login_response_body_model = Model(
         "access_expiry": fields.Float(
             required=True, description="Access token expiry UNIX timestamp"
         ),
-        "is_organization_representative": fields.Boolean(required=True, description="User organization representative status"), 
     },
 )
 

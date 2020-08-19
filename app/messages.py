@@ -21,13 +21,16 @@ WEBSITE_URL_IS_INVALID = {
     "message": "The website url is not in valid format. It must have ""http*"
 }
 TIMEZONE_INPUT_IS_INVALID = {
-    "messages": "The Timezone input is not within the approved list"
+    "messages": "The Timezone input is not within the approved list."
 }
 PERSONAL_BACKGROUND_IS_INVALID = {
     "messages": "One or more of the personal background fields input provided is/are not within the given list."
 }
-STATUS_INPUT_IS_INVALID = {
-    "message": "Status inpust must be either Draft, Publish, or Archived"
+ORGANIZATION_STATUS_INPUT_IS_INVALID = {
+    "message": "Organization status inpust must be either Draft, Publish, or Archived."
+}
+PROGRAM_STATUS_INPUT_IS_INVALID = {
+    "message": "Program status inpust must be either Draft, Open, In_Progress, Completed, or Closed."
 }
 
 # Not found
@@ -49,8 +52,14 @@ TASK_COMMENT_WITH_GIVEN_TASK_ID_DOES_NOT_EXIST = {
 ORGANIZATION_DOES_NOT_EXIST = {
     "message": "Organization does not exist."
 }
+PROGRAM_DOES_NOT_EXIST = {
+    "message": "The program you are looking for does not exist in this organization."
+}
 NO_ORGANIZATION_FOUND = {
     "message": "No organization found on the record."
+}
+NO_PROGRAM_FOUND = {
+    "message": "No program found on the record."
 }
 ORGANITATION_ENUM_FIELD_IS_INVALID = {
     "message": "Either Timezone or Status fields are invalid."
@@ -75,6 +84,7 @@ DESCRIPTION_FIELD_IS_MISSING = {"message": "Description field is missing."}
 COMMENT_FIELD_IS_MISSING = {"message": "Comment field is missing."}
 TIMEZONE_FIELD_IS_MISSING = {"message": "Timezone information is missing."}
 IS_ORGANIZATION_REP_FIELD_IS_MISSING = {"message": "Please indicate whether or not you represent an organization that is registered/going to be registered with BridgeInTech."}
+PHONE_FIELD_IS_MISSING = {"message": "Phone field is missing."}
 
 # Admin
 USER_IS_ALREADY_AN_ADMIN = {"message": "User is already an Admin."}
@@ -94,7 +104,7 @@ USER_REVOKE_NOT_ADMIN = {
     "message": "You don't have admin status. You can't" " revoke other admin user."
 }
 USER_IS_NOW_AN_ADMIN = {"message": "User is now an Admin."}
-ORGANIZATION_STATUS_FIELD_IS_MISSING = {
+ORGANIZATION_OR_PROGRAM_STATUS_FIELD_IS_MISSING = {
     "messages": "The status information is missing."
 }
 
@@ -221,6 +231,9 @@ USER_INPUTS_INCORRECT_CONFIGURATION_VALUE = {
     " these values: prod,"
     "dev, test."
 }
+USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE = {
+    "message": "You are not the representative of this Organization."
+}
 
 # Mentorship state
 NOT_PENDING_STATE_RELATION = {
@@ -330,6 +343,12 @@ ADDITIONAL_INFO_SUCCESSFULLY_CREATED = {"message": "User additional info success
 PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED = {"message": "User personal background information successfully created."}
 ORGANIZATION_SUCCESSFULLY_CREATED = {"message": "Organization was created successfully."}
 ORGANIZATION_SUCCESSFULLY_UPDATED = {"message": "Organization was updated successfully."}
+PROGRAM_SUCCESSFULLY_CREATED = {
+    "message": "Program was created successfully."
+}
+PROGRAM_SUCCESSFULLY_UPDATED = {
+    "message": "Program was updated successfully."
+}
 
 # confimation
 ACCOUNT_ALREADY_CONFIRMED = {"message": "Account already confirmed."}

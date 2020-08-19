@@ -176,9 +176,9 @@ class ContactType(Enum):
 
 @unique
 class Zone(Enum):
-    LOCAL = ("Local",)
-    NATIONAL = ("National",)
-    GLOBAL = ("Global",)
+    LOCAL = "Local"
+    NATIONAL = "National"
+    GLOBAL = "Global"
 
     def zone(self):
         return list(map(str, self))

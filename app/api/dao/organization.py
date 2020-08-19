@@ -15,7 +15,7 @@ from app.utils.decorator_utils import http_response_namedtuple_converter
 
 class OrganizationDAO:
     
-    """Data Access Object for Users_Extension functionalities"""
+    """Data Access Object for Organization functionalities"""
 
     @staticmethod
     def get_organization(representative_id, representative_name):
