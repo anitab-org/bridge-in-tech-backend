@@ -52,3 +52,4 @@ def http_response_namedtuple_converter(user_function):
         converted_result = HttpNamedTupleResponse(*result)
         return user_function(converted_result)
     return tuple_to_namedtuple_http_response
+

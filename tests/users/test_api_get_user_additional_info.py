@@ -73,7 +73,7 @@ class TestGetUserAdditionalInfoApi(BaseTestCase):
         self.response_additional_info = {
             "user_id": self.test_user_data.id,
             "is_organization_rep": True,
-            "timezone": "UTC-01:00/Cape Verde Time",
+            "timezone": "Australia/Melbourne",
             "phone": "123-456-789",
             "mobile": "",
             "personal_website": ""
@@ -93,7 +93,7 @@ class TestGetUserAdditionalInfoApi(BaseTestCase):
 
         user_extension = UserExtensionModel(
             self.response_additional_info["user_id"], 
-            "CAPE_VERDE_TIME",
+            "AUSTRALIA_MELBOURNE",
         )
         user_extension.is_organization_rep = self.response_additional_info["is_organization_rep"]
         user_extension.additional_info = additional_info

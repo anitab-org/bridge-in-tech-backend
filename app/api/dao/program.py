@@ -1,6 +1,8 @@
 import ast
+import datetime
 import logging
 from http import HTTPStatus
+import pytz
 from app.database.models.bit_schema.organization import OrganizationModel
 from app.database.models.bit_schema.program import ProgramModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
@@ -8,6 +10,7 @@ from app import messages
 from app.api.request_api_utils import AUTH_COOKIE, get_request, http_response_checker
 from app.utils.bitschema_utils import *
 from app.utils.bit_constants import MAX_PROGRAMS_PER_PAGE
+from app.utils.date_converter import convert_human_date_to_timestamp, convert_timestamp_to_human_date
 
 
 class ProgramDAO:
@@ -98,7 +101,10 @@ class ProgramDAO:
                     return messages.ORGANIZATION_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
                 if int(user["id"]) != organization.rep_id:
                     return messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
-                program = ProgramModel(program_name, organization, start_date, end_date)
+
+                timestamp_start_date = convert_human_date_to_timestamp(start_date, representative_additional_info.timezone.value)
+                timestamp_end_date = convert_human_date_to_timestamp(end_date, representative_additional_info.timezone.value)
+                program = ProgramModel(program_name, organization, timestamp_start_date, timestamp_end_date)
                 return update(program, data, messages.PROGRAM_SUCCESSFULLY_CREATED, HTTPStatus.CREATED)  
         except AttributeError:
             return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
@@ -137,8 +143,11 @@ class ProgramDAO:
                     return messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
                 program = ProgramModel.find_by_id(program_id)
                 program.program_name = program_name
-                program.start_date = start_date
-                program.end_date = end_date
+                
+                timestamp_start_date = convert_human_date_to_timestamp(start_date, representative_additional_info.timezone.value)
+                timestamp_end_date = convert_human_date_to_timestamp(end_date, representative_additional_info.timezone.value)
+                program.start_date = timestamp_start_date
+                program.end_date = timestamp_end_date
                 return update(program, data, messages.PROGRAM_SUCCESSFULLY_UPDATED, HTTPStatus.OK)  
         except AttributeError:
             return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
@@ -146,6 +155,14 @@ class ProgramDAO:
 
 def get_program(program, organization, user):
     try:
+        user_json = (AUTH_COOKIE["user"].value)
+        user = ast.literal_eval(user_json)
+        representative_additional_info = UserExtensionModel.find_by_user_id(int(user["id"]))
+        
+        readable_start_date = convert_timestamp_to_human_date(program.start_date, representative_additional_info.timezone.value)
+        readable_end_date = convert_timestamp_to_human_date(program.end_date, representative_additional_info.timezone.value)
+        readable_creation_date = convert_timestamp_to_human_date(program.creation_date, representative_additional_info.timezone.value)
+
         return {
             "id":program.id,
             "program_name": program.program_name,
@@ -153,8 +170,8 @@ def get_program(program, organization, user):
             "organization_name": organization.name,
             "representative_id": user["id"],
             "representative_name": user["name"],
-            "start_date": program.start_date,  
-            "end_date": program.end_date,
+            "start_date": readable_start_date,  
+            "end_date": readable_end_date,
             "description": program.description,
             "target_skills": program.target_skills,
             "target_candidate_gender": program.target_candidate["target_candidate_gender"],
@@ -188,7 +205,7 @@ def get_program(program, organization, user):
             "irc_channel": program.irc_channel,
             "tags": program.tags,
             "status": program.status.value,
-            "creation_date":program.creation_date
+            "creation_date":readable_creation_date
         }
     except TypeError as e:
         return e, HTTPStatus.BAD_REQUEST
