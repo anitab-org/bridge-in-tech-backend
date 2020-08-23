@@ -10,10 +10,30 @@ from tests.base_test_case import BaseTestCase
 from app.api.request_api_utils import post_request, BASE_MS_API_URL
 from app.api.resources.users import LoginUser
 from app.api.models.user import full_user_api_model
+from app.database.models.ms_schema.user import UserModel
+from app.database.models.bit_schema.user_extension import UserExtensionModel
 from tests.test_data import user1
 
 
 class TestUserLoginApi(BaseTestCase):
+    def setUp(self):
+        super(TestUserLoginApi, self).setUp()
+
+        test_user1 = UserModel(
+            name=user1["name"],
+            username=user1["username"],
+            password=user1["password"], 
+            email=user1["email"], 
+            terms_and_conditions_checked=user1["terms_and_conditions_checked"]
+        )
+        test_user1.need_mentoring = user1["need_mentoring"]
+        test_user1.available_to_mentor = user1["available_to_mentor"]
+
+        test_user1.save_to_db()
+        self.test_user1_data = UserModel.find_by_email(test_user1.email)
+        self.expected_user = marshal(self.test_user1_data, full_user_api_model)
+        
+    
     @patch("requests.get")
     @patch("requests.post")
     def test_api_login_successful(self, mock_login, mock_get_user):
@@ -54,7 +74,7 @@ class TestUserLoginApi(BaseTestCase):
         mock_login.assert_called()
         self.assertEqual(response.json, success_message)
         self.assertEqual(response.status_code, success_code)
-    
+
 
     @patch("requests.post")
     def test_api_wrong_password(self, mock_login):

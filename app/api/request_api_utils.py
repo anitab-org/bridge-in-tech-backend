@@ -37,11 +37,12 @@ def post_request(request_string, data):
             access_expiry_cookie = response_message.get("access_expiry")
             AUTH_COOKIE["Authorization"] = f"Bearer {access_token_cookie}"
             AUTH_COOKIE["Authorization"]["expires"] = access_expiry_cookie
-            result = http_response_checker(get_user(AUTH_COOKIE["Authorization"].value))
-            if result.status_code != 200:
-                response_message = result.message
-                response_code = result.status_code
-            response_message = {"access_token": response_message.get("access_token"), "access_expiry": response_message.get("access_expiry")}
+            set_user = http_response_checker(get_user(AUTH_COOKIE["Authorization"].value))
+            if set_user.status_code != 200:
+                response_message = set_user.message
+                response_code = set_user.status_code
+            else:
+                response_message = {"access_token": response_message.get("access_token"), "access_expiry": response_message.get("access_expiry")}
         logging.fatal(f"{response_message}")
         return response_message, response_code
 

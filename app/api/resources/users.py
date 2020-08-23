@@ -119,6 +119,7 @@ class LoginUser(Resource):
             return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
 
         return http_response_checker(post_request("/login", data))
+                    
         
 @users_ns.response(
         HTTPStatus.UNAUTHORIZED,
@@ -154,7 +155,7 @@ class MyProfilePersonalDetails(Resource):
     @users_ns.doc("update_user_personal_details")
     @users_ns.response(HTTPStatus.OK, f"{messages.USER_SUCCESSFULLY_UPDATED}")
     @users_ns.response(HTTPStatus.BAD_REQUEST, "Invalid input.")
-    @users_ns.expect(auth_header_parser, update_user_details_request_body_model, validate=True,)
+    @users_ns.expect(auth_header_parser, update_user_details_request_body_model, validate=True)
     def put(cls):
         """
         Updates user personal details
