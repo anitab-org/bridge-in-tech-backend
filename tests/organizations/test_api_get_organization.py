@@ -70,7 +70,7 @@ class TestGetOrganizationApi(BaseTestCase):
         self.test_user1_data = UserModel.find_by_email(test_user1.email)
         AUTH_COOKIE["user"] = marshal(self.test_user1_data, full_user_api_model)
         
-
+        
     def test_api_dao_get_organization_successfully(self):
         organization = OrganizationModel(
             rep_id=self.test_user1_data.id, 
@@ -78,13 +78,13 @@ class TestGetOrganizationApi(BaseTestCase):
             email="companyabc@mail.com",
             address="506 Elizabeth St, Melbourne VIC 3000, Australia",
             website="https://www.ames.net.au",
-            timezone="ALASKA_STANDARD_TIME",
+            timezone="AUSTRALIA_MELBOURNE",
         )
         organization.rep_department = "H&R Department"
         organization.about = "This is about ABC"
         organization.phone = "321-456-789"
         organization.status = "DRAFT"
-        organization.join_date = 1601478236
+        organization.join_date = 1601424000
         
         db.session.add(organization)
         db.session.commit()
@@ -93,7 +93,7 @@ class TestGetOrganizationApi(BaseTestCase):
         
         test_user_extension = UserExtensionModel(
             user_id=self.test_user1_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = True
         test_user_extension.save_to_db()
@@ -108,10 +108,10 @@ class TestGetOrganizationApi(BaseTestCase):
             "about": "This is about ABC",
             "address": "506 Elizabeth St, Melbourne VIC 3000, Australia",
             "website": "https://www.ames.net.au",
-            "timezone": "UTC-09:00/Alaska Standard Time",
+            "timezone": "Australia/Melbourne",
             "phone": "321-456-789",
             "status": "Draft",
-            "join_date": 1601478236
+            "join_date": "2020-09-30 10:00 AEST+1000"
         }
         success_code = HTTPStatus.OK
         
@@ -128,7 +128,7 @@ class TestGetOrganizationApi(BaseTestCase):
     def test_api_dao_get_organization_not_exist(self):
         test_user_extension = UserExtensionModel(
             user_id=self.test_user1_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = True
         test_user_extension.save_to_db()
@@ -146,7 +146,7 @@ class TestGetOrganizationApi(BaseTestCase):
     def test_api_dao_get_organization_not_representative(self):
         test_user_extension = UserExtensionModel(
             user_id=self.test_user1_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = False
         test_user_extension.save_to_db()

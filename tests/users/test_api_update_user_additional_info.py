@@ -70,7 +70,7 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
         
         self.correct_payload_update_additional_info = {
             "is_organization_rep": True,
-            "timezone": "UTC-01:00/Cape Verde Time",
+            "timezone": "Australia/Melbourne",
             "phone": "123-456-789",
             "mobile": "",
             "personal_website": ""
@@ -90,7 +90,7 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
 
         user_extension = UserExtensionModel(
             user_id=self.test_user_data.id,
-            timezone="NEWFOUNDLAND_STANDARD_TIME"
+            timezone="EUROPE_KIEV"
         )
         user_extension.is_organization_rep = False
         user_extension.additional_info = additional_info
@@ -131,7 +131,7 @@ class TestUpdateUserAdditionalInfoApi(BaseTestCase):
 
         user_extension = UserExtensionModel(
             user_id=self.test_user_data.id,
-            timezone="NEWFOUNDLAND_STANDARD_TIME"
+            timezone="EUROPE_KIEV"
         )
         user_extension.is_organization_rep = False
         user_extension.additional_info = additional_info

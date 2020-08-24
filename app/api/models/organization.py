@@ -48,8 +48,8 @@ update_program_request_model = Model(
     "Creates or updates program request model",
     {
         "program_name": fields.String(required=True, description="Program name"),
-        "start_date": fields.Float(required=True, description="The start date of the program"),
-        "end_date": fields.Float(required=True, description="The end date of the program"),
+        "start_date": fields.String(required=True, description="The start date of the program with format YYYY-MM-DD HH:MM"),
+        "end_date": fields.String(required=True, description="The end date of the program with format YYYY-MM-DD HH:MM"),
         "description": fields.String(required=False, description="The program description"),
         "target_skills": fields.List(fields.String, required=False, description="The target skills required for the program"),
         "target_candidate_gender": fields.String(required=False, description="The target candidate for the program from gender category"),
@@ -102,8 +102,8 @@ get_program_response_model = Model(
             readOnly=True, description="The unique identifier of the user representative",
         ),
         "representative_name": fields.String(required=True, description="The organization representative name"),
-        "start_date": fields.Float(required=True, description="The start date of the program"),
-        "end_date": fields.Float(required=True, description="The end date of the program"),
+        "start_date": fields.String(required=True, description="The start date of the program"),
+        "end_date": fields.String(required=True, description="The end date of the program"),
         "description": fields.String(required=False, description="The program description"),
         "target_skills": fields.List(fields.String, required=False, description="The target skills required for the program"),
         "target_candidate_gender": fields.String(required=False, description="The target candidate for the program from gender category"),
@@ -137,6 +137,6 @@ get_program_response_model = Model(
         "irc_channel": fields.String(required=False, description="The program IRC channel link"),
         "tags": fields.List(fields.String, required=False, description="The program tags which can be based on skills or type of candidates"),
         "status": fields.String(required=False, description="The program current status"),
-        "creation_date": fields.Float(required=False, description="The creation date of the program"),
+        "creation_date": fields.String(required=False, description="The creation date of the program"),
     }
 )
