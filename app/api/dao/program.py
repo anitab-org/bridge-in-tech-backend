@@ -158,10 +158,14 @@ def get_program(program, organization, user):
         user_json = (AUTH_COOKIE["user"].value)
         user = ast.literal_eval(user_json)
         representative_additional_info = UserExtensionModel.find_by_user_id(int(user["id"]))
-        
-        readable_start_date = convert_timestamp_to_human_date(program.start_date, representative_additional_info.timezone.value)
-        readable_end_date = convert_timestamp_to_human_date(program.end_date, representative_additional_info.timezone.value)
-        readable_creation_date = convert_timestamp_to_human_date(program.creation_date, representative_additional_info.timezone.value)
+        try:
+            readable_start_date = convert_timestamp_to_human_date(program.start_date, representative_additional_info.timezone.value)
+            readable_end_date = convert_timestamp_to_human_date(program.end_date, representative_additional_info.timezone.value)
+            readable_creation_date = convert_timestamp_to_human_date(program.creation_date, representative_additional_info.timezone.value)
+        except AttributeError:
+            readable_start_date = convert_timestamp_to_human_date(program.start_date, Timezone.GMT0.value)
+            readable_end_date = convert_timestamp_to_human_date(program.end_date, Timezone.GMT0.value)
+            readable_creation_date = convert_timestamp_to_human_date(program.creation_date, Timezone.GMT0.value)
 
         return {
             "id":program.id,

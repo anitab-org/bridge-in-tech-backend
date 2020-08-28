@@ -134,7 +134,11 @@ class OrganizationDAO:
                         try:
                             if member_additional_info.is_organization_rep:
                                 if organization["rep_id"] == user["id"]:
-                                    readable_join_date = convert_timestamp_to_human_date(organization["join_date"], user_additional_info.timezone.value)
+                                    readable_join_date = ""
+                                    try:
+                                        readable_join_date = convert_timestamp_to_human_date(organization["join_date"], user_additional_info.timezone.value)
+                                    except AttributeError:
+                                            readable_join_date = convert_timestamp_to_human_date(organization["join_date"], Timezone.GMT0.value)
                                     organization_item = {
                                         "id": organization["id"],
                                         "representative_id": organization["rep_id"],
