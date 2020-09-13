@@ -104,12 +104,12 @@ class OrganizationModel(db.Model):
     @classmethod
     def find_by_name(cls, name: str) -> "OrganizationModel":
         """Returns the organization that has the name user searched for. """
-        return cls.query.filter_by(c_name=name).first()
+        return cls.query.filter_by(name=name).first()
 
     @classmethod
     def find_by_email(cls, email: str) -> "OrganizationModel":
         """Returns the organization that has the email user searched for. """
-        return cls.query.filter_by(c_email=email).first()
+        return cls.query.filter_by(email=email).first()
 
     def save_to_db(self) -> None:
         """Adds an organization to the database. """
