@@ -25,10 +25,13 @@ Install all dependencies in the `requirements.txt` file: `pip install -r require
 3. If you are not currently connected as `postgres`, run the following to connect to the database you've just created as the superuser `postgres`.
 > \c bit_schema postgres
 
+<img width="971" alt="Screen Shot 2020-09-18 at 7 02 31 am" src="https://user-images.githubusercontent.com/45851538/93510910-9e6b5b80-f92a-11ea-924b-04d89d9ea446.png">
+
 4. Create the BIT schema: `create schema bitschema;`
 5. Confirm to check the new schema has been added. 
 
 You should see 2 schemas, public and bitschema.
+<img width="971" alt="Screen Shot 2020-09-18 at 8 30 30 am" src="https://user-images.githubusercontent.com/45851538/93559344-2fbceb00-f988-11ea-8053-e42659f523db.png">
 
 You can now closed the psql shell by typing `\q` and hit `enter`.
 
