@@ -64,17 +64,17 @@ To make sure the second schema bitschema is discoverable, set the search_path to
 you should see the following
 <img width="971" alt="Screen Shot 2020-06-28 at 2 56 28 pm" src="https://user-images.githubusercontent.com/29667122/85938323-92858400-b94f-11ea-803b-cf2cea70d94f.png">
 
-1. Run the next command to show the existing search_path
+2. Run the next command to show the existing search_path
 > $ psql -c 'show search_path;' -U postgres -d bit_schema
 
 ![Step1](https://imgur.com/ObUbS9E.jpg)
 
-2. Then run this command to set new search_path to both bitschema and public
+3. Then run this command to set new search_path to both bitschema and public
 > psql -c "ALTER DATABASE bit_schema SET search_path TO bitschema,public;" -U postgres -d bit_schema
 
 ![Step2](https://imgur.com/jHhuq3K.jpg)
 
-3. Finally, run the same command on step 1 to check if the new path has been set
+4. Finally, run the same command on step 2 to check if the new path has been set
 
 ![Step3](https://imgur.com/bsuoU6e.jpg)
 
