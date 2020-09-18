@@ -80,7 +80,7 @@ you should see the following
 
 Do the same steps to set new search_path on bit_schema_test. You just need to set bitschema and public as it is done here (no need to set search path for test_schema and test_schema_2 as there are the default postgresql test schemas)
 
-Now when you run the application using `python run.py` from the terminal, you should see that the tables are created under each schemas.
+Now when you run the application using `python run.py` (after first completing step 7) from the terminal, you should see that the tables are created under each schemas.
 
 <img width="647" alt="Screen Shot 2020-07-15 at 5 39 46 pm" src="https://user-images.githubusercontent.com/29667122/87517460-38f8b580-c6c2-11ea-9bfb-a0117f0ee848.png">
 
