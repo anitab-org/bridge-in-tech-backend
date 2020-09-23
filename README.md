@@ -28,6 +28,7 @@ This project has live documents that contain information on:
 - Planning - [BridgeInTech Proposal Review](https://docs.google.com/document/d/1uCDCWs8Xyo-3EaUnrLOs48mefXJIN235b1aAswA-s-Y/edit) 
 - [Technical Discussion](https://docs.google.com/document/d/1Fi_dvc1f-J0uuTzzzU7pwZV8hAI9iTX5LlI_THcg_ks/edit#heading=h.gfxf99xhgujm) and Decision made throughout the development
 - [Meeting Minutes](https://docs.google.com/document/d/1QRHzy0IWgAE5bjkwI_Lp67Dv50aywGuUmzmWewQ1rpY/edit?usp=sharing)
+- Codecov - [![codecov](https://codecov.io/gh/anitab-org/bridge-in-tech-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/anitab-org/bridge-in-tech-backend)
 
 For a more complete information on BridgeInTech project, please go to [BridgeInTech Backend Wiki page](https://github.com/anitab-org/bridge-in-tech-backend/wiki).
 
