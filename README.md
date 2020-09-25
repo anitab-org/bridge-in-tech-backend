@@ -1,4 +1,7 @@
+
+[![Build Status](https://travis-ci.org/anitab-org/bridge-in-tech-backend.svg?branch=develop)](https://travis-ci.org/anitab-org/bridge-in-tech-backend)
 [![codecov](https://codecov.io/gh/anitab-org/bridge-in-tech-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/anitab-org/bridge-in-tech-backend)
+
 # Bridge-In-Tech (backend)
 
 Bridge-In-Tech is an application that allows industries/companies, mentors and students to actively collaborate to one another. 

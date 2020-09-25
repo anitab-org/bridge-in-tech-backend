@@ -70,7 +70,7 @@ class TestListOrganizationApi(BaseTestCase):
         test_user1.save_to_db()
         self.test_user1_data = UserModel.find_by_email(test_user1.email)
         AUTH_COOKIE["user"] = marshal(self.test_user1_data, full_user_api_model)
-
+        
         test_user2 = UserModel(
             name=user2["name"],
             username=user2["username"],
@@ -106,19 +106,19 @@ class TestListOrganizationApi(BaseTestCase):
 
         user1_extension = UserExtensionModel(
             user_id=self.test_user1_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="AUSTRALIA_MELBOURNE"
         )
         user1_extension.is_organization_rep = True
         
         user2_extension = UserExtensionModel(
             user_id=self.test_user2_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="EUROPE_KIEV"
         )
         user2_extension.is_organization_rep = True
 
         user3_extension = UserExtensionModel(
             user_id=self.test_user3_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="EUROPE_KIEV"
         )
         user3_extension.is_organization_rep = True
         
@@ -144,7 +144,7 @@ class TestListOrganizationApi(BaseTestCase):
             email="companyabc@mail.com",
             address="506 Elizabeth St, Melbourne VIC 3000, Australia",
             website="https://www.ames.net.au",
-            timezone="ALASKA_STANDARD_TIME",
+            timezone="AUSTRALIA_MELBOURNE",
         )
         organization1.rep_department = "H&R Department"
         organization1.about = "This is about ABC"
@@ -158,7 +158,7 @@ class TestListOrganizationApi(BaseTestCase):
             email="companyxyz@mail.com",
             address="Singapore",
             website="",
-            timezone="ALASKA_STANDARD_TIME",
+            timezone="EUROPE_KIEV",
         )
         organization2.rep_department = "H&R Department"
         organization2.about = "This is about XYZ"
@@ -172,7 +172,7 @@ class TestListOrganizationApi(BaseTestCase):
             email="companydef@mail.com",
             address="Singapore",
             website="",
-            timezone="ALASKA_STANDARD_TIME",
+            timezone="EUROPE_KIEV",
         )
         organization3.rep_department = "H&R Department"
         organization3.about = "This is about DEF"
@@ -199,10 +199,10 @@ class TestListOrganizationApi(BaseTestCase):
                 "about": "This is about ABC",
                 "address": "506 Elizabeth St, Melbourne VIC 3000, Australia",
                 "website": "https://www.ames.net.au",
-                "timezone": "UTC-09:00/Alaska Standard Time",
+                "timezone": "Australia/Melbourne",
                 "phone": "321-456-789",
                 "status": "Publish",
-                "join_date": 1601478236
+                "join_date": '2020-10-01 01:03 AEST+1000'
             },
             {
                 "id": organization2_data.id,
@@ -214,10 +214,10 @@ class TestListOrganizationApi(BaseTestCase):
                 "about": "This is about XYZ",
                 "address": "Singapore",
                 "website": "",
-                "timezone": "UTC-09:00/Alaska Standard Time",
+                "timezone": "Europe/Kiev",
                 "phone": "321-456-789",
                 "status": "Publish",
-                "join_date": 1601478236
+                "join_date": '2020-10-01 01:03 AEST+1000'
             }
         ]
         success_code = HTTPStatus.OK

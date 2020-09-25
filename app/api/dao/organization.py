@@ -11,6 +11,7 @@ from app.utils.bitschema_utils import Timezone, OrganizationStatus
 from app.utils.ms_constants import DEFAULT_PAGE, DEFAULT_USERS_PER_PAGE
 from app.utils.bit_constants import MAX_ORGANIZATIONS_PER_PAGE
 from app.utils.decorator_utils import http_response_namedtuple_converter
+from app.utils.date_converter import convert_human_date_to_timestamp, convert_timestamp_to_human_date
 
 
 class OrganizationDAO:
@@ -56,19 +57,22 @@ class OrganizationDAO:
         user_json = (AUTH_COOKIE["user"].value)
         user = ast.literal_eval(user_json)
         representative_additional_info = UserExtensionModel.find_by_user_id(int(user["id"]))
-        if representative_additional_info.is_organization_rep:
-            organization = OrganizationModel.find_by_representative(int(user["id"]))
-            if not organization:
-                organization = OrganizationModel(int(user["id"]), name, email, address, website, timezone)
-                return update(organization, data, messages.ORGANIZATION_SUCCESSFULLY_CREATED, HTTPStatus.CREATED)  
-            organization.rep_id = int(user["id"])
-            organization.name = name
-            organization.email = email
-            organization.address = address
-            organization.website = website
-            organization.timezone = timezone
-            return update(organization, data, messages.ORGANIZATION_SUCCESSFULLY_UPDATED, HTTPStatus.OK)     
-        return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
+        try:
+            if representative_additional_info.is_organization_rep:
+                organization = OrganizationModel.find_by_representative(int(user["id"]))
+                if not organization:
+                    organization = OrganizationModel(int(user["id"]), name, email, address, website, timezone)
+                    return update(organization, data, messages.ORGANIZATION_SUCCESSFULLY_CREATED, HTTPStatus.CREATED)  
+                organization.rep_id = int(user["id"])
+                organization.name = name
+                organization.email = email
+                organization.address = address
+                organization.website = website
+                organization.timezone = timezone
+                return update(organization, data, messages.ORGANIZATION_SUCCESSFULLY_UPDATED, HTTPStatus.OK)     
+            return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
+        except AttributeError:
+            return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
 
     
     @staticmethod
@@ -124,11 +128,17 @@ class OrganizationDAO:
                         logged_in_user_organization = get_named_tuple_result(get_organization(int(user["id"]), user["name"]))
                         if logged_in_user_organization.status_code == 200:
                             organizations_list.append(logged_in_user_organization.message)
+                    user_additional_info = UserExtensionModel.find_by_user_id(int(user["id"]))
                     for user in users.message:
-                        user_additional_info = UserExtensionModel.find_by_user_id(user["id"])
+                        member_additional_info = UserExtensionModel.find_by_user_id(user["id"])
                         try:
-                            if user_additional_info.is_organization_rep:
+                            if member_additional_info.is_organization_rep:
                                 if organization["rep_id"] == user["id"]:
+                                    readable_join_date = ""
+                                    try:
+                                        readable_join_date = convert_timestamp_to_human_date(organization["join_date"], user_additional_info.timezone.value)
+                                    except AttributeError:
+                                            readable_join_date = convert_timestamp_to_human_date(organization["join_date"], Timezone.GMT0.value)
                                     organization_item = {
                                         "id": organization["id"],
                                         "representative_id": organization["rep_id"],
@@ -142,7 +152,7 @@ class OrganizationDAO:
                                         "timezone": organization["timezone"].value,
                                         "phone": organization["phone"],
                                         "status": organization["status"].value,
-                                        "join_date": organization["join_date"]
+                                        "join_date": readable_join_date
                                     }
                                     organizations_list.append(organization_item)
                         except AttributeError as e:
@@ -170,8 +180,10 @@ def get_organization(user_id, user_name):
     representative_additional_info = UserExtensionModel.find_by_user_id(user_id)
     try:
         if representative_additional_info.is_organization_rep:
-            result = OrganizationModel.find_by_representative(user_id)
+            readable_join_date = 0
             try:
+                result = OrganizationModel.find_by_representative(user_id)
+                readable_join_date = convert_timestamp_to_human_date(result.join_date, representative_additional_info.timezone.value)
                 return {
                     "id": result.id,
                     "representative_id": result.rep_id,
@@ -185,7 +197,7 @@ def get_organization(user_id, user_name):
                     "timezone": result.timezone.value,
                     "phone": result.phone,
                     "status": result.status.value,
-                    "join_date": result.join_date
+                    "join_date": readable_join_date
                 }, HTTPStatus.OK
             except AttributeError:
                 return messages.ORGANIZATION_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND

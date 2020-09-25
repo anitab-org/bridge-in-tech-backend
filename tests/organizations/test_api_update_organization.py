@@ -77,7 +77,7 @@ class TestUpdateOrganizationApi(BaseTestCase):
             "about": "This is about ABC",
             "address": "506 Elizabeth St, Melbourne VIC 3000, Australia",
             "website": "https://www.ames.net.au",
-            "timezone": "UTC-09:00/Alaska Standard Time",
+            "timezone": "Australia/Melbourne",
             "phone": "321-456-789",
             "status": "Draft",
         }
@@ -86,7 +86,7 @@ class TestUpdateOrganizationApi(BaseTestCase):
     def test_api_dao_create_organization_successfully(self):
         test_user_extension = UserExtensionModel(
             user_id=self.test_user1_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = True
         test_user_extension.save_to_db()
@@ -111,7 +111,7 @@ class TestUpdateOrganizationApi(BaseTestCase):
             email="companyabc@mail.com",
             address="506 Elizabeth St, Melbourne VIC 3000, Australia",
             website="https://www.ames.net.au",
-            timezone="ALASKA_STANDARD_TIME",
+            timezone="AUSTRALIA_MELBOURNE",
         )
         organization.rep_department = "H&R Department"
         organization.about = "This is about ABC"
@@ -124,7 +124,7 @@ class TestUpdateOrganizationApi(BaseTestCase):
         
         test_user_extension = UserExtensionModel(
             user_id=self.test_user1_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = True
         test_user_extension.save_to_db()
@@ -136,7 +136,7 @@ class TestUpdateOrganizationApi(BaseTestCase):
             "about": "This is about ABC",
             "address": "Some Address",
             "website": "https://www.ames.net.au",
-            "timezone": "UTC-09:00/Alaska Standard Time",
+            "timezone": "Australia/Melbourne",
             "phone": "321-456-789",
             "status": "Publish",
         }
@@ -156,7 +156,7 @@ class TestUpdateOrganizationApi(BaseTestCase):
     def test_api_dao_get_organization_not_representative(self):
         test_user_extension = UserExtensionModel(
             user_id=self.test_user1_data.id,
-            timezone="ALASKA_STANDARD_TIME"
+            timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = False
         test_user_extension.save_to_db()

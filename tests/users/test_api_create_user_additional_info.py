@@ -72,7 +72,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
 
         self.correct_payload_additional_info = {
             "is_organization_rep": True,
-            "timezone": "UTC-01:00/Cape Verde Time",
+            "timezone": "Australia/Melbourne",
             "phone": "123-456-789",
             "mobile": "",
             "personal_website": ""
@@ -110,7 +110,7 @@ class TestCreateUserAdditionalInfoApi(BaseTestCase):
 
         test_user_additional_info = {
             "is_organization_rep": True,
-            "timezone": "UTC-01:00/Cape Verde Time",
+            "timezone": "Australia/Melbourne",
             "phone": "128abc",
             "mobile": "",
             "personal_website": ""

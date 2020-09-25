@@ -25,10 +25,13 @@ Install all dependencies in the `requirements.txt` file: `pip install -r require
 3. If you are not currently connected as `postgres`, run the following to connect to the database you've just created as the superuser `postgres`.
 > \c bit_schema postgres
 
+<img width="971" alt="Screen Shot 2020-09-18 at 7 02 31 am" src="https://user-images.githubusercontent.com/45851538/93510910-9e6b5b80-f92a-11ea-924b-04d89d9ea446.png">
+
 4. Create the BIT schema: `create schema bitschema;`
 5. Confirm to check the new schema has been added. 
 
 You should see 2 schemas, public and bitschema.
+<img width="971" alt="Screen Shot 2020-09-18 at 8 30 30 am" src="https://user-images.githubusercontent.com/45851538/93559344-2fbceb00-f988-11ea-8053-e42659f523db.png">
 
 You can now closed the psql shell by typing `\q` and hit `enter`.
 
@@ -64,17 +67,23 @@ To make sure the second schema bitschema is discoverable, set the search_path to
 you should see the following
 <img width="971" alt="Screen Shot 2020-06-28 at 2 56 28 pm" src="https://user-images.githubusercontent.com/29667122/85938323-92858400-b94f-11ea-803b-cf2cea70d94f.png">
 
-1. Run the next command to show the existing search_path
+2. Run the next command to show the existing search_path
 > $ psql -c 'show search_path;' -U postgres -d bit_schema
 
-2. Then run this command to set new search_path to both bitschema and public
+![Step1](https://imgur.com/ObUbS9E.jpg)
+
+3. Then run this command to set new search_path to both bitschema and public
 > psql -c "ALTER DATABASE bit_schema SET search_path TO bitschema,public;" -U postgres -d bit_schema
 
-3. Finally, run the same command on step 2 to check if the new path has been set
+![Step2](https://imgur.com/jHhuq3K.jpg)
+
+4. Finally, run the same command on step 2 to check if the new path has been set
+
+![Step3](https://imgur.com/bsuoU6e.jpg)
 
 Do the same steps to set new search_path on bit_schema_test. You just need to set bitschema and public as it is done here (no need to set search path for test_schema and test_schema_2 as there are the default postgresql test schemas)
 
-Now when you run the application using `python run.py` from the terminal, you should see that the tables are created under each schemas.
+Now when you run the application using `python run.py` (after first completing step 7) from the terminal, you should see that the tables are created under each schemas.
 
 <img width="647" alt="Screen Shot 2020-07-15 at 5 39 46 pm" src="https://user-images.githubusercontent.com/29667122/87517460-38f8b580-c6c2-11ea-9bfb-a0117f0ee848.png">
 
