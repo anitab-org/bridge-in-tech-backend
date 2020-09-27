@@ -1,5 +1,5 @@
-
-[![Build Status](https://travis-ci.org/anitab-org/bridge-in-tech-backend.svg?branch=develop)](https://travis-ci.org/anitab-org/bridge-in-tech-backend)
+[![Build Status](https://travis-ci.org/anitab-org/bridge-in-tech-backend.svg?branch=develop)](https://travis-ci.org/anitab-org/bridge-in-tech-backend) 
+[![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://anitab-org.zulipchat.com/#narrow/stream/237630-bridge-in-tech)
 [![codecov](https://codecov.io/gh/anitab-org/bridge-in-tech-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/anitab-org/bridge-in-tech-backend)
 
 # Bridge-In-Tech (backend)
@@ -40,6 +40,8 @@ For a more complete information on BridgeInTech project, please go to [BridgeInT
 ## Contact
 
 If you have any questions or want to discuss something about this repo, feel free to join our [Zulip Community](http://anitab-org.zulipchat.com/)! If you are a new contributor, head over to this project's stream [#bridge-in-tech](https://anitab-org.zulipchat.com/#narrow/stream/237630-bridge-in-tech) on Zulip to see ongoing discussions.
+
+
 
 ## License
 
