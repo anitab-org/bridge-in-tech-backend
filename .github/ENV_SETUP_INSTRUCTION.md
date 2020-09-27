@@ -4,6 +4,8 @@ Before you start, you need to have the following installed:
 - [PostgreSQL database](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 - [pgAdmin4](https://www.pgadmin.org)
 
+After you downloaded the above, connect the pgadmin4 to your postgresql local server by following the instruction [here](https://www.enterprisedb.com/postgres-tutorials/connecting-postgresql-using-psql-and-pgadmin)
+
 If you have these already installed, you are ready to start.
 
 ## 1st, Fork, Clone and Remote
@@ -91,7 +93,7 @@ Now when you run the application using `python run.py` (after first completing s
 Update the values of corresponding environment variables or make sure you exported the following [environment variables - tba]():
 
 ```
-export FLASK_ENVIRONMENT_CONFIG = <dev-or-test-or-prod>
+export FLASK_ENVIRONMENT_CONFIG = <local-or-dev-or-test-or-prod>
 export SECRET_KEY = <your-secret-key>
 export SECURITY_PASSWORD_SALT = <your-security-password-salt>
 export MAIL_DEFAULT_SENDER = <mail-default-sender>
@@ -102,27 +104,53 @@ export MOCK_EMAIL = <True-or-False>
 export FLASK_APP=run.py
 ```
 
-If you're testing any environment other than "local", then you have to also set these other variables:
+NOTE: If you are on a Windows or Linux OS, you must do the following steps to allow connection to your local postgresql database:
+* Go to `config.py` 
+* Under `LocalConfig`, uncomment line 88 and comment-out line 86
+<img width="435" alt="Screen Shot 2020-09-27 at 5 21 14 pm" src="https://user-images.githubusercontent.com/29667122/94358710-4a106a80-00e6-11eb-819d-18affad4236d.png">
+
+
+* Then go back to your .env file and add your db credentials as per the following
+
+Note: For Windows or Ubuntu machines, you might have to remove `export` from the front of these variables to make it work.
 
 ```
 export DB_TYPE=postgresql
 export DB_USERNAME= <db-username>
 export DB_PASSWORD= <db-password>
-export DB_ENDPOINT= <db-endpoint>
-export DB_NAME=bit_schema
+export DB_ENDPOINT= localhost:5432
+export DB_NAME= bit_schema
 export DB_TEST_NAME=bit_schema_test
 ```
 
-Run the app: `python run.py`
+**Important:** 
+Depending on your OS, you can use DB_TYPE from the following options:
+
+    * postgresql 
+    * postgres
+    * postgresql+psycopg2
+    * postgres+psycopg2
+
+
+Now, you can run the app by executing the following on the terminal: `python run.py`
 
 Navigate to `http://localhost:5000` in your browser
 
 When you are done using the app, deactivate the virtual environment: `deactivate`
 
+
 ## 8th, Run unittest
 To run the unitests run the following command in the terminal (while the virtual environment is activated):
 
 `python -m unittest discover tests`
+
+**Important**
+If you are running test cases from Windows or Ubuntu OS, you also need to do the following extra steps to make sure the app can access your local test database:
+* uncomment line 102 under the `TestingConfig` section in `config.py` and comment out line 100
+<img width="449" alt="Screen Shot 2020-09-27 at 5 21 50 pm" src="https://user-images.githubusercontent.com/29667122/94358720-54caff80-00e6-11eb-871b-54a8873adc88.png">
+
+
+
 
 ## 9th, Connect to MS-for-BIT backend server
 **IMPORTANT!!! For BIT project, you need to run a BIT version of MS backend server (at least until BIT and MS backend are fully integrated)**. 
