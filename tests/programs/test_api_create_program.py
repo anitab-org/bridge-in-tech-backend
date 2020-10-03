@@ -1,3 +1,4 @@
+import time
 import unittest
 from http import HTTPStatus, cookies
 from unittest.mock import patch, Mock
@@ -16,6 +17,7 @@ from app.database.models.ms_schema.user import UserModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
 from app.database.models.bit_schema.organization import OrganizationModel
 from app.database.models.bit_schema.program import ProgramModel
+from app.utils.date_converter import convert_timestamp_to_human_date
 
 
 class TestCreateProgramApi(BaseTestCase):
@@ -23,10 +25,9 @@ class TestCreateProgramApi(BaseTestCase):
     @patch("requests.post")
     def setUp(self, mock_login, mock_get_user):
         super(TestCreateProgramApi, self).setUp()
-        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
-        # This date need to be adjusted accordingly once the development is near/pass the stated date
-        # to make sure the test still pass.
-        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
+        # set access expiry 4 weeks from today's date (sc*min*hrrs*days)
+        access_expiry = time.time() + 60*60*24*28
+        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -79,7 +80,6 @@ class TestCreateProgramApi(BaseTestCase):
         test_user_extension.save_to_db()
 
         # prepare existing organization
-        # created on the 2020-09-30 10:00 AEST+1000
         organization = OrganizationModel(
             rep_id=self.test_user1_data.id, 
             name="Company ABC",
@@ -92,7 +92,8 @@ class TestCreateProgramApi(BaseTestCase):
         organization.about = "This is about ABC"
         organization.phone = "321-456-789"
         organization.status = "DRAFT"
-        organization.join_date = 1601424000
+        # joined one month prior to access date
+        organization.join_date = time.time() - 60*60*24*7
 
         organization.save_to_db()
         self.organization1_data = OrganizationModel.find_by_representative(self.test_user1_data.id)
@@ -100,10 +101,14 @@ class TestCreateProgramApi(BaseTestCase):
         # prepare expected representative object
         self.expected_representative = marshal(self.test_user1_data, public_user_personal_details_response_model)
 
+        # set start date one month from now, end date another month after that
+        start_date = time.time() + 60*60*24*28
+        end_date = start_date + 60*60*24*28
+        
         self.correct_payload_program = {
             "program_name": "Program A",
-            "start_date": "2020-10-15 23:00",
-            "end_date": "2020-11-25 23:00",
+            "start_date": time.strftime("%Y-%m-%d %H:%M", time.localtime(start_date)),
+            "end_date": time.strftime("%Y-%m-%d %H:%M", time.localtime(end_date)),
             "organization_id": self.organization1_data.id,
             "description": "This is about Program A.",
             "target_skills": ["Python", "Ruby", "React"],
@@ -183,7 +188,6 @@ class TestCreateProgramApi(BaseTestCase):
         test_user2_data = UserModel.find_by_email(test_user2.email)
 
         # create another orgnazation
-        # created on the 2020-09-30 12:00 GMT0
         organization2 = OrganizationModel(
             rep_id=test_user2_data.id, 
             name="Company DEF",
@@ -196,7 +200,7 @@ class TestCreateProgramApi(BaseTestCase):
         organization2.about = "This is about DEF"
         organization2.phone = "321-456-789"
         organization2.status = "DRAFT"
-        organization2.join_date = 1601424000
+        organization2.join_date = time.time() - 60*60*24*7
 
         organization2.save_to_db()
         organization2_data = OrganizationModel.find_by_representative(test_user2_data.id)

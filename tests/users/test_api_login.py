@@ -1,3 +1,4 @@
+import time
 import unittest
 from http import HTTPStatus
 from unittest.mock import patch, Mock
@@ -37,10 +38,9 @@ class TestUserLoginApi(BaseTestCase):
     @patch("requests.get")
     @patch("requests.post")
     def test_api_login_successful(self, mock_login, mock_get_user):
-        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
-        # This date need to be adjusted accordingly once the development is near/pass the stated date
-        # to make sure the test still pass.
-        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
+        # set access expiry 4 weeks from today's date (sc*min*hrrs*days)
+        access_expiry = time.time() + 60*60*24*28
+        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
         success_code = HTTPStatus.OK
 
         mock_response = Mock()

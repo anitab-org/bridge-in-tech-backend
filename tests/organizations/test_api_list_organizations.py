@@ -1,3 +1,4 @@
+import time
 import unittest
 from http import HTTPStatus, cookies
 from unittest.mock import patch, Mock
@@ -16,6 +17,7 @@ from app.database.models.ms_schema.user import UserModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
 from app.database.models.bit_schema.organization import OrganizationModel
 from app.api.models.user import public_user_personal_details_response_model
+from app.utils.date_converter import convert_timestamp_to_human_date
 
 
 class TestListOrganizationApi(BaseTestCase):
@@ -23,10 +25,9 @@ class TestListOrganizationApi(BaseTestCase):
     @patch("requests.post")
     def setUp(self, mock_login, mock_get_user):
         super(TestListOrganizationApi, self).setUp()
-        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
-        # This date need to be adjusted accordingly once the development is near/pass the stated date
-        # to make sure the test still pass.
-        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
+        # set access expiry 4 weeks from today's date (sc*min*hrrs*days)
+        access_expiry = time.time() + 60*60*24*28
+        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -112,13 +113,13 @@ class TestListOrganizationApi(BaseTestCase):
         
         user2_extension = UserExtensionModel(
             user_id=self.test_user2_data.id,
-            timezone="EUROPE_KIEV"
+            timezone="ASIA_SINGAPORE"
         )
         user2_extension.is_organization_rep = True
 
         user3_extension = UserExtensionModel(
             user_id=self.test_user3_data.id,
-            timezone="EUROPE_KIEV"
+            timezone="ASIA_SINGAPORE"
         )
         user3_extension.is_organization_rep = True
         
@@ -150,21 +151,23 @@ class TestListOrganizationApi(BaseTestCase):
         organization1.about = "This is about ABC"
         organization1.phone = "321-456-789"
         organization1.status = "PUBLISH"
-        organization1.join_date = 1601478236
-        
+        # joined one month prior to access date
+        join_date = time.time() - 60*60*24*7
+        organization1.join_date = join_date
+
         organization2 = OrganizationModel(
             rep_id=self.test_user2_data.id, 
             name="Company XYZ",
             email="companyxyz@mail.com",
             address="Singapore",
             website="",
-            timezone="EUROPE_KIEV",
+            timezone="ASIA_SINGAPORE",
         )
         organization2.rep_department = "H&R Department"
         organization2.about = "This is about XYZ"
         organization2.phone = "321-456-789"
         organization2.status = "PUBLISH"
-        organization2.join_date = 1601478236
+        organization2.join_date = join_date
 
         organization3 = OrganizationModel(
             rep_id=self.test_user3_data.id, 
@@ -172,13 +175,13 @@ class TestListOrganizationApi(BaseTestCase):
             email="companydef@mail.com",
             address="Singapore",
             website="",
-            timezone="EUROPE_KIEV",
+            timezone="ASIA_SINGAPORE",
         )
         organization3.rep_department = "H&R Department"
         organization3.about = "This is about DEF"
         organization3.phone = "321-456-789"
         organization3.status = "DRAFT"
-        organization3.join_date = 1601478236
+        organization3.join_date = join_date
 
         organization1.save_to_db()
         organization2.save_to_db()
@@ -202,7 +205,7 @@ class TestListOrganizationApi(BaseTestCase):
                 "timezone": "Australia/Melbourne",
                 "phone": "321-456-789",
                 "status": "Publish",
-                "join_date": '2020-10-01 01:03 AEST+1000'
+                "join_date": convert_timestamp_to_human_date(join_date, "Australia/Melbourne"),
             },
             {
                 "id": organization2_data.id,
@@ -214,10 +217,10 @@ class TestListOrganizationApi(BaseTestCase):
                 "about": "This is about XYZ",
                 "address": "Singapore",
                 "website": "",
-                "timezone": "Europe/Kiev",
+                "timezone": "Asia/Singapore",
                 "phone": "321-456-789",
                 "status": "Publish",
-                "join_date": '2020-10-01 01:03 AEST+1000'
+                "join_date": convert_timestamp_to_human_date(join_date, "Australia/Melbourne"),
             }
         ]
         success_code = HTTPStatus.OK
@@ -234,7 +237,8 @@ class TestListOrganizationApi(BaseTestCase):
                 }, 
                 follow_redirects=True,
             )
-        
+        print(list_organizations_response.json)
+        print(expected_list_organizations)
         self.assertEqual(list_organizations_response.json, expected_list_organizations)
         self.assertEqual(list_organizations_response.status_code, success_code)
         
