@@ -452,37 +452,3 @@ class OtherUser(Resource):
         if not is_wrong_token:
             return http_response_checker(get_request(f"/users/{user_id}", token, params=None))
         return is_wrong_token
-
-@users_ns.route("mentorship_relations")
-@users_ns.param(
-        name="relation_state",
-        description="Mentorship relation state filter.",
-        _in="query",
-    )
-class GetAllMyMentorshipRelation(Resource):
-    @classmethod
-    @users_ns.doc("get_all_user_mentorship_relations")
-    @users_ns.expect(auth_header_parser)
-    @users_ns.response(
-        HTTPStatus.OK,
-        "Return all user's mentorship relations, filtered by the relation state, was successfully.",
-        public_user_personal_details_response_model,
-    )
-    @users_ns.response(
-       HTTPStatus.UNAUTHORIZED,
-        f"{messages.TOKEN_HAS_EXPIRED}\n"
-        f"{messages.TOKEN_IS_INVALID}\n"
-        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
-    )
-    @users_ns.response(
-        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
-    )
-    def get(cls):
-
-        token = request.headers.environ["HTTP_AUTHORIZATION"]
-        search = request.args.get("search", "")
-        page = request.args.get("page", default=DEFAULT_PAGE, type=int)
-        per_page = request.args.get("per_page", default=DEFAULT_USERS_PER_PAGE, type=int)
-        
-        
-        return http_response_checker(get_request("/users/verified", token))
