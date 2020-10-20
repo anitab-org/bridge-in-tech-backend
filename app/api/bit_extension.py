@@ -14,6 +14,9 @@ api = Api(
 api.namespaces.clear()
 
 # Adding namespaces
+from app.api.resources.mentorship_relation import mentorship_relation_ns as mentorship_relation_namespace
+api.add_namespace(mentorship_relation_namespace, path="/")
+
 from app.api.resources.users import users_ns as user_namespace
 api.add_namespace(user_namespace, path="/")
 
