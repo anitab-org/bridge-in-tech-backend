@@ -2,9 +2,8 @@ from datetime import datetime, timedelta
 from typing import Dict
 from http import HTTPStatus
 from app import messages
-from app.database.models.mentorship_relation import MentorshipRelationModel
-from app.database.models.tasks_list import TasksListModel
-from app.database.models.user import UserModel
+from app.database.models.bit_schema.mentorship_relation_extension import MentorshipRelationExtensionModel
+from app.database.models.bit_schema.user_extension import UserExtensionModel
 from app.utils.decorator_utils import email_verification_required
 from app.utils.enum_utils import MentorshipRelationState
 
