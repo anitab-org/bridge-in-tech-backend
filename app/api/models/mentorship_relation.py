@@ -7,7 +7,15 @@ def add_models_to_namespace(api_namespace):
     api_namespace.models[
         mentorship_request_response_body.name
     ] = mentorship_request_response_body
+    api_namespace.models[relation_user_response_body.name] = relation_user_response_body
 
+relation_user_response_body = Model(
+    "User",
+    {
+        "id": fields.Integer(required=True, description="User ID"),
+        "name": fields.String(required=True, description="User name"),
+    },
+)
 
 mentorship_request_response_body = Model(
     "List mentorship relation request model",
