@@ -1,10 +1,11 @@
+import time
 import unittest
 from http import HTTPStatus, cookies
 from unittest.mock import patch, Mock
-from tests.base_test_case import BaseTestCase
-from app import messages
 from flask import json
 from flask_restx import marshal
+from tests.base_test_case import BaseTestCase
+from app import messages
 from app.api.models.user import full_user_api_model
 from app.database.models.ms_schema.user import UserModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
@@ -12,6 +13,7 @@ from app.database.models.bit_schema.organization import OrganizationModel
 from app.api.request_api_utils import AUTH_COOKIE
 from tests.test_data import user1, user2, program1, organization1
 from app.database.models.bit_schema.program import ProgramModel
+from app.utils.date_converter import convert_timestamp_to_human_date
 
 
 class TestUpdateProgramApi(BaseTestCase):
@@ -19,10 +21,9 @@ class TestUpdateProgramApi(BaseTestCase):
     @patch("requests.post")
     def setUp(self, mock_login, mock_get_user):
         super(TestUpdateProgramApi, self).setUp()
-        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
-        # This date need to be adjusted accordingly once the development is near/pass the stated date
-        # to make sure the test still pass.
-        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
+        # set access expiry 4 weeks from today's date (sc*min*hrrs*days)
+        access_expiry = time.time() + 60*60*24*28
+        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -90,7 +91,7 @@ class TestUpdateProgramApi(BaseTestCase):
 
         test_user_2_extension = UserExtensionModel(
             user_id=test_user2_data.id,
-            timezone="EUROPE_KIEV"
+            timezone="ASIA_SINGAPORE"
         )
         test_user_2_extension.is_organization_rep = True
         test_user_2_extension.save_to_db()
@@ -104,13 +105,15 @@ class TestUpdateProgramApi(BaseTestCase):
             website="https://www.ames.net.au",
             timezone="AUSTRALIA_MELBOURNE",
         )
-
+        # joined one month prior to access date
+        join_date = time.time() - 60*60*24*7
+        
         test_organization.rep_department = "H&R Department"
         test_organization.about = "This is about ABC"
         test_organization.phone = "321-456-789"
         test_organization.status = "DRAFT"
-        test_organization.join_date = 1601478236
-        
+        test_organization.join_date = join_date
+
         test_organization.save_to_db()
         
         self.test_organization_data = OrganizationModel.find_by_email(test_organization.email)
@@ -121,23 +124,28 @@ class TestUpdateProgramApi(BaseTestCase):
             email="companyxyz@mail.com",
             address="Singapore",
             website="",
-            timezone="EUROPE_KIEV",
+            timezone="ASIA_SINGAPORE",
         )
 
         test_organization_2.rep_department = "H&R Department"
         test_organization_2.about = "This is about XYZ"
         test_organization_2.phone = "321-456-779"
         test_organization_2.status = "PUBLISH"
-        test_organization_2.join_date = 1601478236
-        
+        test_organization_2.join_date = join_date
+
         test_organization_2.save_to_db()
         
         self.test_organization_2_data = OrganizationModel.find_by_email(test_organization_2.email)
 
+        # set start date one month from now, end date another month after that
+        start_date = time.time() + 60*60*24*28
+        end_date = start_date + 60*60*24*28
+        creation_date = start_date - 60*60*24*14
+       
         self.update_payload_program = {
             "program_name": "Program A",
-            "start_date": "2020-10-15 23:00",
-            "end_date": "2020-11-25 23:00",
+            "start_date": time.strftime("%Y-%m-%d %H:%M", time.localtime(start_date)),
+            "end_date": time.strftime("%Y-%m-%d %H:%M", time.localtime(end_date)),
             "organization_id": self.test_organization_data.id,
             "description": "Program A.",
             "target_skills": ["Java", "Ruby", "React"],
@@ -173,11 +181,11 @@ class TestUpdateProgramApi(BaseTestCase):
             "tags": [], 
             "status": "Draft"
         }
-
+        
         program1 = ProgramModel(
             program_name="Program A",
-            start_date=1602763200,
-            end_date=1606305600,
+            start_date=start_date,
+            end_date=end_date,
             organization_id=self.test_organization_data,
         )
         program1.description = "This is about Program A."
@@ -198,15 +206,15 @@ class TestUpdateProgramApi(BaseTestCase):
         program1.contact_type = "REMOTE"
         program1.zone = "GLOBAL"
         program1.status = "DRAFT"
-        program1.creation_date = 1601424000
+        program1.creation_date = creation_date
         program1.save_to_db()
 
         self.program_data_1 = ProgramModel.find_by_name("Program A")
 
         program2 = ProgramModel(
             program_name="Program B",
-            start_date=1602343200,
-            end_date=1602504500,
+            start_date=start_date,
+            end_date=end_date,
             organization_id=self.test_organization_2_data,
         )
         program2.description = "This is about Program B."
@@ -227,17 +235,13 @@ class TestUpdateProgramApi(BaseTestCase):
         program2.contact_type = "REMOTE"
         program2.zone = "GLOBAL"
         program2.status = "CLOSED"
-        program2.creation_date = 1601344000
+        program2.creation_date = creation_date
         program2.save_to_db()
 
         self.program_data_2 = ProgramModel.find_by_name("Program B")
 
 
     def test_api_dao_update_program_successfully(self):
-        # prepare existing program with 
-        # start date 2020-10-15 12:00 GMT+0
-        # and end date 2020-11-25 12:00 GMT+0
-
         response = self.client.put(
             f"/organizations/{self.test_organization_data.id}/programs/{self.program_data_1.id}",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},

@@ -1,3 +1,4 @@
+import time
 import unittest
 from http import HTTPStatus, cookies
 from unittest.mock import patch, Mock
@@ -15,6 +16,7 @@ from tests.test_data import user1
 from app.database.models.ms_schema.user import UserModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
 from app.database.models.bit_schema.organization import OrganizationModel
+from app.utils.date_converter import convert_timestamp_to_human_date
 
 
 class TestUpdateOrganizationApi(BaseTestCase):
@@ -22,10 +24,9 @@ class TestUpdateOrganizationApi(BaseTestCase):
     @patch("requests.post")
     def setUp(self, mock_login, mock_get_user):
         super(TestUpdateOrganizationApi, self).setUp()
-        # The access_expiry on this test is set to Wednesday, 30-Sep-20 15:03:56 UTC.
-        # This date need to be adjusted accordingly once the development is near/pass the stated date
-        # to make sure the test still pass.
-        success_message = {"access_token": "this is fake token", "access_expiry": 1601478236}
+        # set access expiry 4 weeks from today's date (sc*min*hrrs*days)
+        access_expiry = time.time() + 60*60*24*28
+        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -117,8 +118,9 @@ class TestUpdateOrganizationApi(BaseTestCase):
         organization.about = "This is about ABC"
         organization.phone = "321-456-789"
         organization.status = "DRAFT"
-        organization.join_date = 1601478236
-        
+        # joined one month prior to access date
+        organization.join_date = time.time() - 60*60*24*7
+
         db.session.add(organization)
         db.session.commit()
         
