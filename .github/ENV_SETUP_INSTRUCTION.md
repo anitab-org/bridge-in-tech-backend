@@ -14,9 +14,12 @@ If you have these already installed, you are ready to start.
 ## 2nd, Create a new virtual environment 
 
 1. Create a new virtual environment: `virtualenv venv --python=python3`. Note: Do not use the same virtual environment for Mentorship System and BIT.
+
 2. Activate the virtual environment: `source ./venv/bin/activate`
 
-`source ./venv/bin/activate` may produce errors (no such directory errors) for Windows users who use Git Bash, because on Windows machines, virtual environments do not have the bin folder under venv. Instead, run the command `source ./venv/Scripts/activate`. This command only works on Git Bash on Windows machines. For Windows Command Line Users, run `.\env\Scripts\activate` instead. This command is for users running the program on Windows CMD.
+   For git bash users : `source ./venv/Scripts/activate`
+
+   For cmd users : `venv\Scripts\activate`
 
 Install all dependencies in the `requirements.txt` file: `pip install -r requirements.txt`
 
@@ -25,7 +28,8 @@ Install all dependencies in the `requirements.txt` file: `pip install -r require
 1. Run postgresql shell command: `psql`. 
 2. Create database, name it "bit_schema": `create DATABASE bit_schema;`
 3. If you are not currently connected as `postgres`, run the following to connect to the database you've just created as the superuser `postgres`.
-> \c bit_schema postgres
+
+   ` \c bit_schema postgres`
 
 <img width="971" alt="Screen Shot 2020-09-18 at 7 02 31 am" src="https://user-images.githubusercontent.com/45851538/93510910-9e6b5b80-f92a-11ea-924b-04d89d9ea446.png">
 
@@ -64,18 +68,21 @@ Your **bit_schema_test** database should look like this screenshot now.
 
 To make sure the second schema bitschema is discoverable, set the search_path to bitschema and public from the terminal. The steps are as followed:
 1. Run the command below to make sure we have 2 schemas already in the database
-> $ psql -c '\dn;' -U postgres -d bit_schema
+
+   ` $ psql -c "\dn;" -U postgres -d bit_schema `
 
 you should see the following
 <img width="971" alt="Screen Shot 2020-06-28 at 2 56 28 pm" src="https://user-images.githubusercontent.com/29667122/85938323-92858400-b94f-11ea-803b-cf2cea70d94f.png">
 
 2. Run the next command to show the existing search_path
-> $ psql -c 'show search_path;' -U postgres -d bit_schema
+
+   ` $ psql -c "show search_path;" -U postgres -d bit_schema `
 
 ![Step1](https://imgur.com/ObUbS9E.jpg)
 
 3. Then run this command to set new search_path to both bitschema and public
-> psql -c "ALTER DATABASE bit_schema SET search_path TO bitschema,public;" -U postgres -d bit_schema
+
+   ` psql -c "ALTER DATABASE bit_schema SET search_path TO bitschema,public;" -U postgres -d bit_schema`
 
 ![Step2](https://imgur.com/jHhuq3K.jpg)
 
