@@ -184,40 +184,6 @@ class Zone(Enum):
         return list(map(str, self))
 
 
-# @unique
-# class Timezone(Enum):
-#     CAPE_VERDE_TIME = "UTC-01:00/Cape Verde Time"
-#     NEWFOUNDLAND_STANDARD_TIME = "UTC-03:30/NewFoundland_Standard_Time"
-#     ATLANTTIC_STANDARD_TIME = "UTC-04:00/Atlantic Standard Time"
-#     EASTERN_STANDARD_TIME = "UTC-05:00/Eastern Standard Time"
-#     CENTRAL_STANDARD_TIME = "UTC-06:00/Central Standard Time"
-#     MOUNTAIN_STANDARD_TIME = "UTC-07:00/Mountain Standard Time"
-#     PACIFIC_STANDARD_TIME = "UTC-08:00/Pacific Standard Time"
-#     ALASKA_STANDARD_TIME = "UTC-09:00/Alaska Standard Time"
-#     HAWAII_ALEUTIAN_STANDARD_TIME = "UTC-10:00/Hawaii-Aleutian Standard Time"
-#     SAMOA_STANDARD_TIME = "UTC-11:00/Samoa Standard Time"
-#     GREENWICH_MEAN_TIME = "UTC+00:00/Greenwich Mean Time and Western European Time"
-#     CENTRAL_EUROPEAN_TIME = "UTC+01:00/Central European Time"
-#     WEST_AFRICA_TIME = "UTC+01:00/West Africa Time"
-#     EASTERN_EUROPEAN_TIME = "UTC+02:00/Eastern European Time"
-#     CENTRAL_SOUTH_AFRICA_TIME = "UTC+02:00/Central and South Africa Standard Time"
-#     EAST_AFRICA_TIME = "UTC+03:00/East Africa Time"
-#     MOSKOW_TIME = "UTC+03:00/Moskow Time"
-#     CHARLIE_TIME = "UTC+03:00/Charlie Time - Middle East Time"
-#     DELTA_TIME = "UTC+04:00/Delta Time - Middle East Time"
-#     INDIA_STANDARD_TIME = "UTC+05:30/India Standard Time"
-#     CHINA_STANDARD_TIME = "UTC+08:00/China Standard TIme"
-#     AUSTRALIAN_WESTERN_STANDARD_TIME = "UTC+08:00/Australian Western Standard Time"
-#     AUSTRALIAN_CENTRAL_SOUTH_STANDARD_TIME = (
-#         "UTC+09:30/Australian Central and South Standard Time"
-#     )
-#     AUSTRALIAN_EASTERN_STANDARD_TIME = "UTC+10:00/Australian Eastern Standard Time"
-#     NEW_ZEALAND_STANDARD_TIME = "UTC+12:00/New Zealand Standard Time"
-
-#     def timezone(self):
-#         return list(map(str self))
-
-
 @unique
 class Timezone(Enum):
     AFRICA_ABIDJAN = "Africa/Abidjan" 
