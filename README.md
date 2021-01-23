@@ -17,7 +17,7 @@ This is the backend client of Bridge-In-Tech.
 Please read our [Contributing Guidelines](.github/CONTRIBUTING.md), [Code of Conduct](.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](.github/REPORTING_GUIDELINES.md) thoroughly.
 
 ## Setup
-To start contributing to the project, setup the backend environment on your local machine by following the instructions on the [BIT Development Environment Setup Instruction]( https://github.com/anitab-org/bridge-in-tech-backend/wiki/BIT-development-environment-setup) wiki page.
+To start contributing to the project, setup the backend environment on your local machine by following the instructions on the [BIT Development Environment Setup Instruction]( https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/.github/ENV_SETUP_INSTRUCTION.md) wiki page.
 
 If you prefer to test the latest approved and merged version of the project on the remote server, you can use the [BridgeInTech Heroku Swagger UI server](https://bridgeintech-bit-heroku-psql.herokuapp.com) that already connected to the modified version of Mentorship System heroku backend server made specifically for BridgeInTech development.
 
