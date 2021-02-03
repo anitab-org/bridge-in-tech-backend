@@ -47,6 +47,37 @@ def post_request(request_string, data):
         return response_message, response_code
 
 
+def post_request_with_token(request_string, token, data):
+    request_url = f"{BASE_MS_API_URL}{request_string}" 
+    is_wrong_token = validate_token(token)
+
+    if not is_wrong_token:
+        try: 
+            response = requests.post(
+                request_url, 
+                json=data, 
+                headers={"Authorization": AUTH_COOKIE["Authorization"].value, "Accept": "application/json"}, 
+            )
+            response.raise_for_status()
+            response_message = response.json()
+            response_code = response.status_code
+        except requests.exceptions.ConnectionError as e:
+            response_message = messages.INTERNAL_SERVER_ERROR
+            response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
+            logging.fatal(f"{e}")
+        except requests.exceptions.HTTPError as e:
+            response_message = e.response.json()
+            response_code = e.response.status_code
+        except Exception as e:
+            response_message = messages.INTERNAL_SERVER_ERROR
+            response_code = json.dumps(HTTPStatus.INTERNAL_SERVER_ERROR)
+            logging.fatal(f"{e}")
+        finally:
+            logging.fatal(f"{response_message}")
+            return response_message, response_code
+    return is_wrong_token
+
+
 def get_user(token):
     request_url = "/user" 
     return get_request(request_url, token, params=None)

@@ -116,7 +116,7 @@ class ProgramModel(db.Model):
     def __repr__(self):
         """Returns the program name, creation/start/end date and organization id."""
         return (
-            f"Program id is {self.program.id}\n"
+            f"Program id is {self.id}\n"
             f"Program name is {self.program_name}.\n"
             f"Organization's id is {self.organization_id}.\n"
             f"Program start date is {self.start_date}\n"

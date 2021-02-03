@@ -66,6 +66,15 @@ class MentorshipRelationExtensionModel(db.Model):
                 _id: The id of a mentorship_relations_extension.
         """
         return cls.query.filter_by(id=_id).first()
+    
+    @classmethod
+    def find_by_program_id(cls, _id) -> "MentorshipRelationExtensionModel":
+
+        """Returns the mentorship_relations_extension that has the passed program id.
+           Args:
+                _id: The id of a program.
+        """
+        return cls.query.filter_by(program_id=_id).first()
 
     def save_to_db(self) -> None:
         """Saves the model to the database."""

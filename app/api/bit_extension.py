@@ -19,3 +19,6 @@ api.add_namespace(user_namespace, path="/")
 
 from app.api.resources.organizations import organizations_ns as organization_namespace
 api.add_namespace(organization_namespace, path="/")
+
+from app.api.resources.mentorship_relation import mentorship_relation_ns as mentorship_relation_namespace
+api.add_namespace(mentorship_relation_namespace, path="/")
