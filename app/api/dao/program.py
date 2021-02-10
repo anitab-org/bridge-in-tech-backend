@@ -3,6 +3,8 @@ import datetime
 import logging
 from http import HTTPStatus
 import pytz
+from sqlalchemy.exc import IntegrityError
+
 from app.database.models.bit_schema.organization import OrganizationModel
 from app.database.models.bit_schema.program import ProgramModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
@@ -108,6 +110,12 @@ class ProgramDAO:
                 return update(program, data, messages.PROGRAM_SUCCESSFULLY_CREATED, HTTPStatus.CREATED)  
         except AttributeError:
             return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
+        except IntegrityError as e:
+            if "program_name" in e.statement:
+                return messages.PROGRAM_NAME_ALREADY_USED, HTTPStatus.CONFLICT
+            return messages.INVALID_REQUEST_DATA, HTTPStatus.BAD_REQUEST
+
+
 
     @staticmethod
     def update_program(organization_id, program_id, data):
