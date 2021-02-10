@@ -1,6 +1,6 @@
 import ast
 import json
-from http import HTTPStatus, cookies
+from http import cookies
 from datetime import datetime, timedelta
 from flask import request
 from flask_restx import Resource, marshal, Namespace
@@ -32,14 +32,14 @@ class UserRegister(Resource):
     @users_ns.doc("create_user")
     @users_ns.doc(
         responses={
-            HTTPStatus.INTERNAL_SERVER_ERROR: f"{messages.INTERNAL_SERVER_ERROR['message']}"
+            500: f"{messages.INTERNAL_SERVER_ERROR['message']}"
         }
     )
     @users_ns.response(
-        HTTPStatus.CREATED, f"{messages.USER_WAS_CREATED_SUCCESSFULLY}"
+        201, f"{messages.USER_WAS_CREATED_SUCCESSFULLY}"
     )
     @users_ns.response(
-        HTTPStatus.BAD_REQUEST,
+        400,
         f"{messages.NAME_INPUT_BY_USER_IS_INVALID}\n"
         f"{messages.USERNAME_INPUT_BY_USER_IS_INVALID}\n"
         f"{messages.EMAIL_INPUT_BY_USER_IS_INVALID}\n"
@@ -48,12 +48,12 @@ class UserRegister(Resource):
         f"{messages.UNEXPECTED_INPUT}"
     )
     @users_ns.response(
-        HTTPStatus.CONFLICT,
+        409,
         f"{messages.USER_USES_A_USERNAME_THAT_ALREADY_EXISTS}\n"
         f"{messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS}"
     )
     @users_ns.response(
-        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+        500, f"{messages.INTERNAL_SERVER_ERROR}"
     )
     @users_ns.expect(register_user_api_model, validate=True)
     def post(cls):
@@ -70,11 +70,11 @@ class UserRegister(Resource):
 
         is_field_valid = expected_fields_validator(data, register_user_api_model)
         if not is_field_valid.get("is_field_valid"):
-            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+            return is_field_valid.get("message"), 400
 
         is_not_valid = validate_user_registration_request_data(data)
         if is_not_valid:
-            return is_not_valid, HTTPStatus.BAD_REQUEST
+            return is_not_valid, 400
             
         return http_response_checker(post_request("/register", data))
 
@@ -83,16 +83,16 @@ class UserRegister(Resource):
 class LoginUser(Resource):
     @classmethod
     @users_ns.doc("login")
-    @users_ns.response(HTTPStatus.OK, "Successful login", login_response_body_model)
+    @users_ns.response(200, "Successful login", login_response_body_model)
     @users_ns.response(
-        HTTPStatus.BAD_REQUEST,
+        400,
         f"{messages.USERNAME_FIELD_IS_MISSING}\n" 
         f"{messages.PASSWORD_FIELD_IS_MISSING}"
     )
-    @users_ns.response(HTTPStatus.UNAUTHORIZED, f"{messages.WRONG_USERNAME_OR_PASSWORD}")
-    @users_ns.response(HTTPStatus.FORBIDDEN, f"{messages.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN}")
+    @users_ns.response(401, f"{messages.WRONG_USERNAME_OR_PASSWORD}")
+    @users_ns.response(403, f"{messages.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN}")
     @users_ns.response(
-        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+        500, f"{messages.INTERNAL_SERVER_ERROR}"
     )
     @users_ns.expect(login_request_body_model)
     def post(cls):
@@ -111,28 +111,28 @@ class LoginUser(Resource):
 
         is_field_valid = expected_fields_validator(data, login_request_body_model)
         if not is_field_valid.get("is_field_valid"):
-            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+            return is_field_valid.get("message"), 400
 
         if not username:
-            return messages.USERNAME_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
+            return messages.USERNAME_FIELD_IS_MISSING, 400
         if not password:
-            return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
+            return messages.PASSWORD_FIELD_IS_MISSING, 400
 
         return http_response_checker(post_request("/login", data))
                     
         
 @users_ns.response(
-        HTTPStatus.UNAUTHORIZED,
+        401,
         f"{messages.TOKEN_HAS_EXPIRED}\n"
         f"{messages.TOKEN_IS_INVALID}\n"
         f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
 )
-@users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
+@users_ns.response(500, f"{messages.INTERNAL_SERVER_ERROR}")
 @users_ns.route("user/personal_details")
 class MyProfilePersonalDetails(Resource):
     @classmethod
     @users_ns.doc("get_user_personal_details")
-    @users_ns.response(HTTPStatus.OK, "Successful request", full_user_api_model)
+    @users_ns.response(200, "Successful request", full_user_api_model)
     @users_ns.expect(auth_header_parser, validate=True)
     def get(cls):
         """
@@ -147,14 +147,14 @@ class MyProfilePersonalDetails(Resource):
         if not is_wrong_token:
             user_json = (AUTH_COOKIE["user"].value)
             user = ast.literal_eval(user_json)
-            return user, HTTPStatus.OK 
+            return user, 200 
         return is_wrong_token
         
 
     @classmethod
     @users_ns.doc("update_user_personal_details")
-    @users_ns.response(HTTPStatus.OK, f"{messages.USER_SUCCESSFULLY_UPDATED}")
-    @users_ns.response(HTTPStatus.BAD_REQUEST, "Invalid input.")
+    @users_ns.response(200, f"{messages.USER_SUCCESSFULLY_UPDATED}")
+    @users_ns.response(400, "Invalid input.")
     @users_ns.expect(auth_header_parser, update_user_details_request_body_model, validate=True)
     def put(cls):
         """
@@ -170,15 +170,15 @@ class MyProfilePersonalDetails(Resource):
         data = request.json
         
         if not data:
-            return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
+            return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, 400
 
         is_field_valid = expected_fields_validator(data, update_user_details_request_body_model)
         if not is_field_valid.get("is_field_valid"):
-            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+            return is_field_valid.get("message"), 400
         
         is_not_valid = validate_update_profile_request_data(data)
         if is_not_valid:
-            return is_not_valid, HTTPStatus.BAD_REQUEST
+            return is_not_valid, 400
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]
         
@@ -187,26 +187,26 @@ class MyProfilePersonalDetails(Resource):
     
 @users_ns.doc(
     responses={
-        HTTPStatus.INTERNAL_SERVER_ERROR: f"{messages.INTERNAL_SERVER_ERROR['message']}"
+        500: f"{messages.INTERNAL_SERVER_ERROR['message']}"
     }
 )
 @users_ns.response( 
-    HTTPStatus.UNAUTHORIZED,
+    401,
     f"{messages.TOKEN_HAS_EXPIRED}\n"
     f"{messages.TOKEN_IS_INVALID}\n"
     f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
 )
 @users_ns.response(
-        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
+        403, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
 )
-@users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
+@users_ns.response(500, f"{messages.INTERNAL_SERVER_ERROR}")
 @users_ns.route("user/additional_info")
 class MyProfileAdditionalInfo(Resource):
     @classmethod
     @users_ns.doc("get_user_additional_info")
-    @users_ns.response(HTTPStatus.OK, "Successful request", get_user_extension_response_model)
-    @users_ns.response(HTTPStatus.BAD_REQUEST, "Invalid input.")
-    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST}")
+    @users_ns.response(200, "Successful request", get_user_extension_response_model)
+    @users_ns.response(400, "Invalid input.")
+    @users_ns.response(404, f"{messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST}")
     @users_ns.expect(auth_header_parser, validate=True)
     def get(cls):
         """
@@ -225,7 +225,7 @@ class MyProfileAdditionalInfo(Resource):
             user = ast.literal_eval(user_json)
             result = UserExtensionDAO.get_user_additional_data_info(int(user['id']))
             if not result:
-                return messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
+                return messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST, 404
             return result 
             
         return is_wrong_token
@@ -234,23 +234,23 @@ class MyProfileAdditionalInfo(Resource):
     @classmethod
     @users_ns.doc("update_user_additional_info")
     @users_ns.response(
-        HTTPStatus.OK, f"{messages.ADDITIONAL_INFO_SUCCESSFULLY_UPDATED}"
+        200, f"{messages.ADDITIONAL_INFO_SUCCESSFULLY_UPDATED}"
     )
     @users_ns.response(
-        HTTPStatus.CREATED, f"{messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED}"
+        201, f"{messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED}"
     )
     @users_ns.response(
-        HTTPStatus.BAD_REQUEST,
+        400,
         f"{messages.USER_ID_IS_NOT_VALID}\n"
         f"{messages.IS_ORGANIZATION_REP_FIELD_IS_MISSING}\n"
         f"{messages.TIMEZONE_FIELD_IS_MISSING}\n"
         f"{messages.UNEXPECTED_INPUT}"
     )
     @users_ns.response(
-        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
+        403, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
     )
     @users_ns.response(
-        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+        500, f"{messages.INTERNAL_SERVER_ERROR}"
     )
     @users_ns.expect(auth_header_parser, user_extension_request_body_model, validate=True)
     def put(cls):
@@ -269,15 +269,15 @@ class MyProfileAdditionalInfo(Resource):
         if not is_wrong_token:
             data = request.json
             if not data:
-                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
+                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, 400
 
             is_field_valid = expected_fields_validator(data, user_extension_request_body_model)
             if not is_field_valid.get("is_field_valid"):
-                return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+                return is_field_valid.get("message"), 400
             
             is_not_valid = validate_update_additional_info_request(data)
             if is_not_valid:
-                return is_not_valid, HTTPStatus.BAD_REQUEST
+                return is_not_valid, 400
 
             return UserExtensionDAO.update_user_additional_info(data)
              
@@ -286,25 +286,25 @@ class MyProfileAdditionalInfo(Resource):
 
 @users_ns.doc(
     responses={
-        HTTPStatus.INTERNAL_SERVER_ERROR: f"{messages.INTERNAL_SERVER_ERROR['message']}"
+        500: f"{messages.INTERNAL_SERVER_ERROR['message']}"
     }
 )
 @users_ns.response( 
-    HTTPStatus.UNAUTHORIZED,
+    401,
     f"{messages.TOKEN_HAS_EXPIRED}\n"
     f"{messages.TOKEN_IS_INVALID}\n"
     f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
 )
 @users_ns.response(
-        HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
+        403, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
 )
-@users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}")
+@users_ns.response(500, f"{messages.INTERNAL_SERVER_ERROR}")
 @users_ns.route("user/personal_background")
 class MyProfilePersonalBackground(Resource):
     @classmethod
     @users_ns.doc("get_user_personal_background")
-    @users_ns.response(HTTPStatus.OK, "Successful request", get_user_personal_background_response_model)
-    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST}")
+    @users_ns.response(200, "Successful request", get_user_personal_background_response_model)
+    @users_ns.response(404, f"{messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST}")
     @users_ns.expect(auth_header_parser, validate=True)
     def get(cls):
         """
@@ -323,7 +323,7 @@ class MyProfilePersonalBackground(Resource):
             user = ast.literal_eval(user_json)
             result = PersonalBackgroundDAO.get_user_personal_background_info(int(user['id']))
             if not result:
-                return messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
+                return messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST, 404
             return result 
         return is_wrong_token
     
@@ -331,19 +331,19 @@ class MyProfilePersonalBackground(Resource):
     @classmethod
     @users_ns.doc("update_user_personal_background")
     @users_ns.response(
-        HTTPStatus.OK, f"{messages.PERSONAL_BACKGROUND_SUCCESSFULLY_UPDATED}"
+        200, f"{messages.PERSONAL_BACKGROUND_SUCCESSFULLY_UPDATED}"
     )
     @users_ns.response(
-        HTTPStatus.CREATED, f"{messages.PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED}"
+        201, f"{messages.PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED}"
     )
     @users_ns.response(
-        HTTPStatus.BAD_REQUEST,
+        400,
         f"{messages.USER_ID_IS_NOT_VALID}\n"
         f"{messages.PERSONAL_BACKGROUND_DATA_HAS_MISSING_FIELD}\n"
         f"{messages.UNEXPECTED_INPUT}"
     )
     @users_ns.response(
-        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+        500, f"{messages.INTERNAL_SERVER_ERROR}"
     )
     @users_ns.expect(auth_header_parser, user_personal_background_request_body_model, validate=True)
     def put(cls):
@@ -364,15 +364,15 @@ class MyProfilePersonalBackground(Resource):
         if not is_wrong_token:
             data = request.json
             if not data:
-                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
+                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, 400
 
             is_field_valid = expected_fields_validator(data, user_personal_background_request_body_model)
             if not is_field_valid.get("is_field_valid"):
-                return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
+                return is_field_valid.get("message"), 400
             
             is_not_valid = validate_update_personal_background_info_request(data)
             if is_not_valid:
-                return is_not_valid, HTTPStatus.BAD_REQUEST
+                return is_not_valid, 400
 
             return PersonalBackgroundDAO.update_user_personal_background(data)
              
@@ -384,16 +384,16 @@ class UsersList(Resource):
     @classmethod
     @users_ns.doc("list_users", params={"search": "Search query", "page": "specify page of users", "per_page": "specify number of users per page"})
     @users_ns.response(
-        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+        500, f"{messages.INTERNAL_SERVER_ERROR}"
     )
-    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
+    @users_ns.response(404, f"{messages.USER_DOES_NOT_EXIST}")
     @users_ns.response( 
-    HTTPStatus.UNAUTHORIZED,
+    401,
         f"{messages.TOKEN_HAS_EXPIRED}\n"
         f"{messages.TOKEN_IS_INVALID}\n"
         f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
     )
-    @users_ns.response(HTTPStatus.OK, "Successful request", public_user_personal_details_response_model)
+    @users_ns.response(200, "Successful request", public_user_personal_details_response_model)
     @users_ns.expect(auth_header_parser)
     def get(cls):
         """
@@ -426,17 +426,17 @@ class OtherUser(Resource):
     @classmethod
     @users_ns.doc("get_member_details")
     @users_ns.expect(auth_header_parser)
-    @users_ns.response(HTTPStatus.OK, "Success.", public_user_personal_details_response_model)
-    @users_ns.response(HTTPStatus.BAD_REQUEST, f"{messages.USER_ID_IS_NOT_VALID}")
+    @users_ns.response(200, "Success.", public_user_personal_details_response_model)
+    @users_ns.response(400, f"{messages.USER_ID_IS_NOT_VALID}")
     @users_ns.response(
-        HTTPStatus.UNAUTHORIZED,
+        401,
         f"{messages.TOKEN_HAS_EXPIRED}\n"
         f"{messages.TOKEN_IS_INVALID}\n"
         f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
     )
-    @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
+    @users_ns.response(404, f"{messages.USER_DOES_NOT_EXIST}")
     @users_ns.response(
-        HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+        500, f"{messages.INTERNAL_SERVER_ERROR}"
     )
     def get(cls, user_id):
         """
