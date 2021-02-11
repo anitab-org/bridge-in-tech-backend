@@ -70,11 +70,11 @@ class UserRegister(Resource):
 
         is_field_valid = expected_fields_validator(data, register_user_api_model)
         if not is_field_valid.get("is_field_valid"):
-            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST.value
+            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
 
         is_not_valid = validate_user_registration_request_data(data)
         if is_not_valid:
-            return is_not_valid, HTTPStatus.BAD_REQUEST.value
+            return is_not_valid, HTTPStatus.BAD_REQUEST
             
         return http_response_checker(post_request("/register", data))
 
@@ -111,12 +111,12 @@ class LoginUser(Resource):
 
         is_field_valid = expected_fields_validator(data, login_request_body_model)
         if not is_field_valid.get("is_field_valid"):
-            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST.value
+            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
 
         if not username:
-            return messages.USERNAME_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST.value
+            return messages.USERNAME_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
         if not password:
-            return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST.value
+            return messages.PASSWORD_FIELD_IS_MISSING, HTTPStatus.BAD_REQUEST
 
         return http_response_checker(post_request("/login", data))
                     
@@ -147,7 +147,7 @@ class MyProfilePersonalDetails(Resource):
         if not is_wrong_token:
             user_json = (AUTH_COOKIE["user"].value)
             user = ast.literal_eval(user_json)
-            return user, HTTPStatus.OK.value
+            return user, HTTPStatus.OK
         return is_wrong_token
         
 
@@ -170,15 +170,15 @@ class MyProfilePersonalDetails(Resource):
         data = request.json
         
         if not data:
-            return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST.value
+            return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
 
         is_field_valid = expected_fields_validator(data, update_user_details_request_body_model)
         if not is_field_valid.get("is_field_valid"):
-            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST.value
+            return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
         
         is_not_valid = validate_update_profile_request_data(data)
         if is_not_valid:
-            return is_not_valid, HTTPStatus.BAD_REQUEST.value
+            return is_not_valid, HTTPStatus.BAD_REQUEST
 
         token = request.headers.environ["HTTP_AUTHORIZATION"]
         
@@ -225,7 +225,7 @@ class MyProfileAdditionalInfo(Resource):
             user = ast.literal_eval(user_json)
             result = UserExtensionDAO.get_user_additional_data_info(int(user['id']))
             if not result:
-                return messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND.value
+                return messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
             return result 
             
         return is_wrong_token
@@ -269,15 +269,15 @@ class MyProfileAdditionalInfo(Resource):
         if not is_wrong_token:
             data = request.json
             if not data:
-                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST.value
+                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
 
             is_field_valid = expected_fields_validator(data, user_extension_request_body_model)
             if not is_field_valid.get("is_field_valid"):
-                return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST.value
+                return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
             
             is_not_valid = validate_update_additional_info_request(data)
             if is_not_valid:
-                return is_not_valid, HTTPStatus.BAD_REQUEST.value
+                return is_not_valid, HTTPStatus.BAD_REQUEST
 
             return UserExtensionDAO.update_user_additional_info(data)
              
@@ -323,7 +323,7 @@ class MyProfilePersonalBackground(Resource):
             user = ast.literal_eval(user_json)
             result = PersonalBackgroundDAO.get_user_personal_background_info(int(user['id']))
             if not result:
-                return messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND.value
+                return messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
             return result 
         return is_wrong_token
     
@@ -364,15 +364,15 @@ class MyProfilePersonalBackground(Resource):
         if not is_wrong_token:
             data = request.json
             if not data:
-                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST.value
+                return messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT, HTTPStatus.BAD_REQUEST
 
             is_field_valid = expected_fields_validator(data, user_personal_background_request_body_model)
             if not is_field_valid.get("is_field_valid"):
-                return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST.value
+                return is_field_valid.get("message"), HTTPStatus.BAD_REQUEST
             
             is_not_valid = validate_update_personal_background_info_request(data)
             if is_not_valid:
-                return is_not_valid, HTTPStatus.BAD_REQUEST.value
+                return is_not_valid, HTTPStatus.BAD_REQUEST
 
             return PersonalBackgroundDAO.update_user_personal_background(data)
              
