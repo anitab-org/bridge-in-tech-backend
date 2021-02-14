@@ -23,7 +23,7 @@ class UserModel(db.Model):
     # Specifying database table used for UserModel
     __tablename__ = "users"
     __table_args__ = {"schema": "public", "extend_existing": True}
-    
+
     id = db.Column(db.Integer, primary_key=True)
 
     # personal data
@@ -102,7 +102,7 @@ class UserModel(db.Model):
         # optional fields
         self.need_mentoring = False
         self.available_to_mentor = False
-       
+
     def json(self):
         """Returns Usermodel object in json format."""
         return {
@@ -134,11 +134,8 @@ class UserModel(db.Model):
 
     def __repr__(self):
         """Returns the user's name and username. """
-        return (
-            f"User name is {self.name}\n"
-            f"User username is {self.username}\n"
-        )
-        
+        return f"User name is {self.name}\n" f"User username is {self.username}\n"
+
     @classmethod
     def find_by_username(cls, username: str) -> "UserModel":
         """Returns the user that has the username we searched for. """

@@ -6,7 +6,10 @@ from flask_restx import marshal
 from app import messages
 from tests.base_test_case import BaseTestCase
 from app.api.request_api_utils import AUTH_COOKIE
-from app.api.models.user import full_user_api_model, public_user_personal_details_response_model
+from app.api.models.user import (
+    full_user_api_model,
+    public_user_personal_details_response_model,
+)
 from tests.test_data import user1, user2
 from app.database.models.ms_schema.user import UserModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
@@ -20,10 +23,13 @@ class TestGetProgramApi(BaseTestCase):
     @patch("requests.post")
     def setUp(self, mock_login, mock_get_user):
         super(TestGetProgramApi, self).setUp()
-        
+
         # set access expiry 4 weeks from today's date
-        access_expiry = time.time() + 60*60*24*28
-        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
+        access_expiry = time.time() + 60 * 60 * 24 * 28
+        success_message = {
+            "access_token": "this is fake token",
+            "access_expiry": access_expiry,
+        }
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -33,21 +39,21 @@ class TestGetProgramApi(BaseTestCase):
         mock_login.raise_for_status = json.dumps(success_code)
 
         expected_user = marshal(user1, full_user_api_model)
-        
+
         mock_get_response = Mock()
         mock_get_response.json.return_value = expected_user
         mock_get_response.status_code = success_code
 
         mock_get_user.return_value = mock_get_response
         mock_get_user.raise_for_status = json.dumps(success_code)
-        
+
         user_login_success = {
             "username": user1.get("username"),
-            "password": user1.get("password")
+            "password": user1.get("password"),
         }
-        
+
         with self.client:
-            # login_response = 
+            # login_response =
             self.client.post(
                 "/login",
                 data=json.dumps(user_login_success),
@@ -58,9 +64,9 @@ class TestGetProgramApi(BaseTestCase):
         test_user1 = UserModel(
             name=user1["name"],
             username=user1["username"],
-            password=user1["password"], 
-            email=user1["email"], 
-            terms_and_conditions_checked=user1["terms_and_conditions_checked"]
+            password=user1["password"],
+            email=user1["email"],
+            terms_and_conditions_checked=user1["terms_and_conditions_checked"],
         )
         test_user1.need_mentoring = user1["need_mentoring"]
         test_user1.available_to_mentor = user1["available_to_mentor"]
@@ -70,15 +76,14 @@ class TestGetProgramApi(BaseTestCase):
         AUTH_COOKIE["user"] = marshal(self.test_user1_data, full_user_api_model)
 
         test_user_extension = UserExtensionModel(
-            user_id=self.test_user1_data.id,
-            timezone="AUSTRALIA_MELBOURNE"
+            user_id=self.test_user1_data.id, timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = True
         test_user_extension.save_to_db()
 
         # prepare existing organization
         organization = OrganizationModel(
-            rep_id=self.test_user1_data.id, 
+            rep_id=self.test_user1_data.id,
             name="Company ABC",
             email="companyabc@mail.com",
             address="506 Elizabeth St, Melbourne VIC 3000, Australia",
@@ -90,23 +95,26 @@ class TestGetProgramApi(BaseTestCase):
         organization.phone = "321-456-789"
         organization.status = "DRAFT"
         # joined one month prior to access date
-        organization.join_date = time.time() - 60*60*24*7
+        organization.join_date = time.time() - 60 * 60 * 24 * 7
 
         organization.save_to_db()
-        self.organization1_data = OrganizationModel.find_by_representative(self.test_user1_data.id)
-        
-        # prepare expected representative object
-        self.expected_representative = marshal(self.test_user1_data, public_user_personal_details_response_model)
+        self.organization1_data = OrganizationModel.find_by_representative(
+            self.test_user1_data.id
+        )
 
-        
+        # prepare expected representative object
+        self.expected_representative = marshal(
+            self.test_user1_data, public_user_personal_details_response_model
+        )
+
     @patch("requests.get")
     def test_api_dao_get_program_successfully(self, mock_get_representative):
-        # prepare existing program with 
+        # prepare existing program with
         # set start date one month from now, end date another month after that
         # set program creation date 14 days before starting date
-        start_date = time.time() + 60*60*24*28
-        end_date = start_date + 60*60*24*28
-        creation_date = start_date - 60*60*24*14
+        start_date = time.time() + 60 * 60 * 24 * 28
+        end_date = start_date + 60 * 60 * 24 * 28
+        creation_date = start_date - 60 * 60 * 24 * 14
 
         program = ProgramModel(
             program_name="Program A",
@@ -134,9 +142,9 @@ class TestGetProgramApi(BaseTestCase):
         program.status = "DRAFT"
         program.creation_date = creation_date
         program.save_to_db()
-        
+
         program_data1 = ProgramModel.find_by_name("Program A")
-        
+
         response_program = {
             "id": program_data1.id,
             "program_name": program_data1.program_name,
@@ -144,14 +152,14 @@ class TestGetProgramApi(BaseTestCase):
             "organization_name": self.organization1_data.name,
             "representative_id": self.organization1_data.rep_id,
             "representative_name": self.test_user1_data.name,
-            "start_date": convert_timestamp_to_human_date(start_date, "Australia/Melbourne"),
-            "end_date": convert_timestamp_to_human_date(end_date, "Australia/Melbourne"),
+            "start_date": convert_timestamp_to_human_date(
+                start_date, "Australia/Melbourne"
+            ),
+            "end_date": convert_timestamp_to_human_date(
+                end_date, "Australia/Melbourne"
+            ),
             "description": "This is about Program A.",
-            "target_skills": [
-                "Python",
-                "Ruby",
-                "React"
-            ],
+            "target_skills": ["Python", "Ruby", "React"],
             "target_candidate_gender": "Other",
             "target_candidate_age": "Not Applicable",
             "target_candidate_ethnicity": "Not Applicable",
@@ -183,10 +191,12 @@ class TestGetProgramApi(BaseTestCase):
             "irc_channel": None,
             "tags": None,
             "status": "Draft",
-            "creation_date": convert_timestamp_to_human_date(creation_date, "Australia/Melbourne"),
+            "creation_date": convert_timestamp_to_human_date(
+                creation_date, "Australia/Melbourne"
+            ),
         }
         success_code = HTTPStatus.OK
-        
+
         mock_get_response = Mock()
         mock_get_response.json.return_value = self.expected_representative
         mock_get_response.status_code = success_code
@@ -204,7 +214,6 @@ class TestGetProgramApi(BaseTestCase):
         print(response_program)
         self.assertEqual(response.json, response_program)
         self.assertEqual(response.status_code, success_code)
-        
 
     @patch("requests.get")
     def test_api_dao_get_program_not_exist(self, mock_get_representative):
@@ -224,25 +233,26 @@ class TestGetProgramApi(BaseTestCase):
         self.assertEqual(HTTPStatus.NOT_FOUND, response.status_code)
         self.assertEqual(messages.PROGRAM_DOES_NOT_EXIST, response.json)
 
-    
     @patch("requests.get")
-    def test_api_dao_get_program_exist_does_not_belong_to_organization(self, mock_get_representative):
+    def test_api_dao_get_program_exist_does_not_belong_to_organization(
+        self, mock_get_representative
+    ):
         test_user2 = UserModel(
             name=user2["name"],
             username=user2["username"],
-            password=user2["password"], 
-            email=user2["email"], 
-            terms_and_conditions_checked=user2["terms_and_conditions_checked"]
+            password=user2["password"],
+            email=user2["email"],
+            terms_and_conditions_checked=user2["terms_and_conditions_checked"],
         )
         test_user2.need_mentoring = user2["need_mentoring"]
         test_user2.available_to_mentor = user2["available_to_mentor"]
 
         test_user2.save_to_db()
         test_user2_data = UserModel.find_by_email(test_user2.email)
-        
+
         # prepare existing organization
         organization2 = OrganizationModel(
-            rep_id=test_user2_data.id, 
+            rep_id=test_user2_data.id,
             name="Company XYZ",
             email="companyxyz@mail.com",
             address="Somewhere",
@@ -253,17 +263,18 @@ class TestGetProgramApi(BaseTestCase):
         organization2.about = "This is about XYZ"
         organization2.phone = "321-456-789"
         organization2.status = "PUBLISH"
-        organization2.join_date = time.time() - 60*60*24*7
+        organization2.join_date = time.time() - 60 * 60 * 24 * 7
 
         organization2.save_to_db()
-        organization2_data = OrganizationModel.find_by_representative(test_user2_data.id)
-        
-        # prepare existing program with 
-        start_date = time.time() + 60*60*24*28
-        end_date = start_date + 60*60*24*28
-        creation_date = start_date - 60*60*24*14
+        organization2_data = OrganizationModel.find_by_representative(
+            test_user2_data.id
+        )
 
-        
+        # prepare existing program with
+        start_date = time.time() + 60 * 60 * 24 * 28
+        end_date = start_date + 60 * 60 * 24 * 28
+        creation_date = start_date - 60 * 60 * 24 * 14
+
         program = ProgramModel(
             program_name="Program A",
             start_date=start_date,
@@ -290,16 +301,16 @@ class TestGetProgramApi(BaseTestCase):
         program.status = "OPEN"
         program.creation_date = creation_date
         program.save_to_db()
-        
+
         program_data1 = ProgramModel.find_by_name("Program A")
-        
+
         mock_get_response = Mock()
         mock_get_response.json.return_value = self.expected_representative
         mock_get_response.status_code = HTTPStatus.OK
 
         mock_get_representative.return_value = mock_get_response
         mock_get_representative.raise_for_status = json.dumps(HTTPStatus.OK)
-        
+
         response = self.client.get(
             f"/organizations/{organization2_data.id}/programs/{program_data1.id}",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},

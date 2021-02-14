@@ -91,8 +91,8 @@ class OrganizationModel(db.Model):
     def find_by_id(cls, _id) -> "OrganizationModel":
 
         """Returns the Organization that has the passed id.
-           Args:
-                _id: The id of an Organization.
+        Args:
+             _id: The id of an Organization.
         """
         return cls.query.filter_by(id=_id).first()
 
