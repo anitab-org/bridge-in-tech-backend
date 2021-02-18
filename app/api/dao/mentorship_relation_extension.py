@@ -16,7 +16,8 @@ class MentorshipRelationExtensionDAO:
         """Creates the extending mentorship relation between organization's program and the user which is logged in.
 
         Arguments:
-            organization_id: The ID organization, program_id: The ID of program.
+            organization_id: The ID organization
+            program_id: The ID of program
 
         Returns:
             A dictionary containing "message" which indicates whether or not 
