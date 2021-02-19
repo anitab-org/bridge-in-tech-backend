@@ -28,3 +28,5 @@ install:
 script:
   - python -m unittest discover tests -v
   - pytest --cov tests
+  - bash <(curl -s https://codecov.io/bash)
+  
