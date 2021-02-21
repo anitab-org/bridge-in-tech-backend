@@ -1,4 +1,4 @@
-name: Build and Deploy to GitHub static pages
+name: Run tests, build and deploy to GitHub static pages
 
 on:
   push:
@@ -21,6 +21,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Run tests
+      run: |
+        python -m unittest discover tests -v
     - name: Checkout
       uses: actions/checkout@master
     - name: Build and Deploy
