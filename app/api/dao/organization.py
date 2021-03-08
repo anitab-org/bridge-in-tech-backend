@@ -3,6 +3,8 @@ import ast
 from http import HTTPStatus
 from flask import json
 from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
+
 from app.database.models.bit_schema.organization import OrganizationModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
 from app import messages
@@ -73,8 +75,14 @@ class OrganizationDAO:
             return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
         except AttributeError:
             return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
+        except IntegrityError as e:
+            if "organizations_name" in e.orig.args[0]:
+                return messages.ORGANIZATION_NAME_ALREADY_USED, HTTPStatus.CONFLICT
+            return messages.INVALID_REQUEST_DATA, HTTPStatus.BAD_REQUEST
+        except Exception:
+            return messages.UNEXPECTED_ERROR, HTTPStatus.INTERNAL_SERVER_ERROR
 
-    
+
     @staticmethod
     def list_organizations(
         name,

@@ -377,3 +377,9 @@ USER_ID_IS_NOT_RETRIEVED_WITH_GET_ORGANIZATION = {
 NOT_ORGANIZATION_REPRESENTATIVE = {
     "message": "You have not declared that you are representing an organization."
 }
+INVALID_REQUEST_DATA = {"message": "Data you provided cannot be processed. Make sure your data is acceptable."}
+UNEXPECTED_ERROR = {"message": "An unexpected error occurred. Please, try again later or contact the administrator."}
+
+# Non-unique value messages
+ORGANIZATION_NAME_ALREADY_USED = {"message": "Organization with that name already exists."}
+
