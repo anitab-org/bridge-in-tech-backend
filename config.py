@@ -29,6 +29,9 @@ class BaseConfig(object):
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # Mentorship System url
+    MS_URL = os.getenv("MS_URL", "http://localhost:4000")
+
     # Flask JWT settings
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(weeks=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(weeks=4)

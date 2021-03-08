@@ -5,9 +5,9 @@ from flask import json
 import requests
 from app import messages
 from app.utils.decorator_utils import http_response_namedtuple_converter
+from config import BaseConfig
 
-
-BASE_MS_API_URL = "http://MS:5000"
+BASE_MS_API_URL = BaseConfig.MS_URL
 AUTH_COOKIE = cookies.SimpleCookie()
 
 
