@@ -20,7 +20,7 @@ You can ignore all the environment variables below flask_app(included) as they h
 Run the command `docker-compose up`. If this is your first time it may take a while to download the images and get everything set up properly. Once this is complete you should be able to see the app running on http://localhost:5000 and the mentorship system running on http://localhost:4000. You can also connect to the Postgres server using `port 5432`.
 
 ## 5th Running test cases 
-Run the command `docker-compose -f docker-compose.test.yml up --exit-code-from bit` to run the test cases. If you can use Makefiles then you can also run `make docker_test`. (Linux and MacOS support make out of the box)
+Run the command `docker-compose -f docker-compose.test.yml up --exit-code-from bit` to run the test cases. If you can use Makefiles then you can also run `make docker_test`. Linux and MacOS support make out of the box, but you can also use makefiles on windows by installing MinGW.
 
 
 

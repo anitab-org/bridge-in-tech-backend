@@ -1,7 +1,7 @@
 
 services:
-    postgres: 
-      container_name: postgres 
+    test_postgres: 
+      container_name: test_postgres 
       image: postgres 
       environment: 
         POSTGRES_PASSWORD: postgres
@@ -12,12 +12,14 @@ services:
       volumes: 
         - .:/dockerBuild 
       build: . 
-      command: tests
+      command: python_tests
       depends_on:
         - ms
     ms: 
       container_name: MS_TEST
       build: ../mentorship-backend 
       depends_on:
-        - postgres 
+        - test_postgres
+      environment: 
+        -FLASK_ENVIRONMENT_CONFIG: test 
         
