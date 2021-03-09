@@ -14,4 +14,4 @@ ENV POSTGRES_PORT=5432
 ENV MS_URL=http://MS:5000
 ENV FLASK_APP=run.py
 ENTRYPOINT ["make"]
-CMD ["dockerdev"]
+CMD ["docker_host_dev"]

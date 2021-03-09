@@ -12,7 +12,7 @@ services:
       volumes: 
         - .:/dockerBuild 
       build: . 
-      command: dockertest
+      command: tests
       depends_on:
         - ms
     ms: 
