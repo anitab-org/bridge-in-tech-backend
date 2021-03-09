@@ -55,30 +55,30 @@ class BaseConfig(object):
     # mail accounts
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
 
-    DB_TYPE = (os.getenv("DB_TYPE"),)
-    DB_USERNAME = (os.getenv("DB_USERNAME"),)
-    DB_PASSWORD = (os.getenv("DB_PASSWORD"),)
-    DB_ENDPOINT = (os.getenv("DB_ENDPOINT"),)
-    DB_NAME = os.getenv("DB_NAME")
-    DB_TEST_NAME = os.getenv("DB_TEST_NAME")
+    DB_TYPE = os.getenv("DB_TYPE", "")
+    DB_USERNAME = os.getenv("DB_USERNAME", "")
+    DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+    DB_ENDPOINT = os.getenv("DB_ENDPOINT", "")
+    DB_NAME = os.getenv("DB_NAME", "")
+    DB_TEST_NAME = os.getenv("DB_TEST_NAME", "")
 
     @staticmethod
     def build_db_uri(
-        db_type_arg=os.getenv("DB_TYPE"),
-        db_user_arg=os.getenv("DB_USERNAME"),
-        db_password_arg=os.getenv("DB_PASSWORD"),
-        db_endpoint_arg=os.getenv("DB_ENDPOINT"),
-        db_name_arg=os.getenv("DB_NAME"),
+        db_type_arg=DB_TYPE,
+        db_user_arg=DB_USERNAME,
+        db_password_arg=DB_PASSWORD,
+        db_endpoint_arg=DB_ENDPOINT,
+        db_name_arg=DB_NAME,
     ):
         return f"{db_type_arg}://{db_user_arg}:{db_password_arg}@{db_endpoint_arg}/{db_name_arg}"
 
     @staticmethod
     def build_db_test_uri(
-        db_type_arg=os.getenv("DB_TYPE"),
-        db_user_arg=os.getenv("DB_USERNAME"),
-        db_password_arg=os.getenv("DB_PASSWORD"),
-        db_endpoint_arg=os.getenv("DB_ENDPOINT"),
-        db_name_arg=os.getenv("DB_TEST_NAME"),
+        db_type_arg=DB_TYPE,
+        db_user_arg=DB_USERNAME,
+        db_password_arg=DB_PASSWORD,
+        db_endpoint_arg=DB_ENDPOINT,
+        db_name_arg=DB_TEST_NAME,
     ):
         return f"{db_type_arg}://{db_user_arg}:{db_password_arg}@{db_endpoint_arg}/{db_name_arg}"
 
@@ -89,16 +89,16 @@ class LocalConfig(BaseConfig):
     DEBUG = True
 
     # Using a local postgre database
-    SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema"
+    # SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema"
 
-    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
+    SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
 
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
 
-    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@postgres:5432/bit_schema"
+    SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
+    # SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@postgres:5432/bit_schema"
 
 
 class TestingConfig(BaseConfig):
@@ -106,11 +106,11 @@ class TestingConfig(BaseConfig):
     MOCK_EMAIL = True
 
     # Using a local postgre database
-    SQLALCHEMY_DATABASE_URI = (
-        "postgresql://postgre:postgres@postgres:5432/bit_schema_test"
-    )
+    # SQLALCHEMY_DATABASE_URI = (
+    #    "postgresql:///bit_schema_test"
+    # )
 
-    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_test_uri()
+    SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_test_uri()
 
 
 class StagingConfig(BaseConfig):

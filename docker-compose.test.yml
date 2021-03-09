@@ -1,0 +1,23 @@
+
+services:
+    postgres: 
+      container_name: postgres 
+      image: postgres 
+      environment: 
+        POSTGRES_PASSWORD: postgres
+      volumes: 
+        - ./init_test_database.sql:/docker-entrypoint-initdb.d/init_test_database.sql
+    bit:
+      container_name: BIT_TEST
+      volumes: 
+        - .:/dockerBuild 
+      build: . 
+      command: dockertest
+      depends_on:
+        - ms
+    ms: 
+      container_name: MS_TEST
+      build: ../mentorship-backend 
+      depends_on:
+        - postgres 
+        

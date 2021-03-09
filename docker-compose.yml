@@ -1,37 +1,28 @@
 
 services:
     postgres:
+      container_name: postgres
       image: postgres
       environment: 
         POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: bit_schema
-      #options: 
-        #--health-cmd pg_isready
-        #--health-interval 10s
-        #--health-timeout 5s
-        #--health-retries 5
       ports:
         - 5432:5432
-      networks: 
-        - custom_network
-
+      volumes: 
+        - ./init_databases.sql:/docker-entrypoint-initdb.d/init_databases.sql
     bit:
-      container_name: BIT 
+      container_name: BIT
+      volumes: 
+        - .:/dockerBuild 
       build: . 
       ports: 
         - 5000:5000
-      networks:
-        - custom_network
-
+      depends_on:
+        - ms
     ms: 
       container_name: MS
       build: ../mentorship-backend 
       ports: 
-        - 4000:4000
-      networks:
-        - custom_network
-        
-networks: 
-  custom_network: 
-    name: custom_network
+        - 4000:5000
+      depends_on:
+        - postgres 
         

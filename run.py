@@ -77,11 +77,6 @@ def create_tables():
         MentorshipRelationExtensionModel,
     )
 
-    db.session.execute("CREATE SCHEMA IF NOT EXISTS bit_schema")
-    db.session.execute("CREATE SCHEMA IF NOT EXISTS bit_schema_test")
-    db.session.execute("ALTER DATABASE bit_schema SET search_path TO bitschema,public;")
-    db.session.commit()
-
     @application.shell_context_processor
     def make_shell_context():
         return {
