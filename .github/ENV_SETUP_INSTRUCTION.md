@@ -97,7 +97,7 @@ Now when you run the application using `python run.py` (after first completing s
 <img width="647" alt="Screen Shot 2020-07-15 at 5 39 46 pm" src="https://user-images.githubusercontent.com/29667122/87517460-38f8b580-c6c2-11ea-9bfb-a0117f0ee848.png">
 
 ## 7th, Create the `.env` file using `.env.template`
-Update the values of corresponding environment variables or make sure you exported the following [environment variables - tba]():
+Update the values of corresponding environment variables or make sure you exported the following [environment variables](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/docs/ENVIRONMENT_VARIABLES.md):
 
 ```
 export FLASK_ENVIRONMENT_CONFIG = <local-or-dev-or-test-or-prod>
