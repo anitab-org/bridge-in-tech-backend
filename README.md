@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/anitab-org/bridge-in-tech-backend.svg?branch=develop)](https://travis-ci.org/anitab-org/bridge-in-tech-backend) 
 [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://anitab-org.zulipchat.com/#narrow/stream/237630-bridge-in-tech)
 [![codecov](https://codecov.io/gh/anitab-org/bridge-in-tech-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/anitab-org/bridge-in-tech-backend)
-[![Python 3.7](https://img.shields.io/badge/python-3.x-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/)
 # Bridge-In-Tech (backend)
 
 Bridge-In-Tech is an application that allows industries/companies, mentors and students to actively collaborate to one another. 
