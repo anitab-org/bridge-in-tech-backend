@@ -144,8 +144,7 @@ class TestCreateProgramApi(BaseTestCase):
             "tags": [], 
             "status": "Draft"
         }
-        
-        
+
     @patch("requests.get")
     def test_api_dao_create_program_successfully(self, mock_get_representative):
         success_message = messages.PROGRAM_SUCCESSFULLY_CREATED
@@ -225,6 +224,29 @@ class TestCreateProgramApi(BaseTestCase):
         self.assertEqual(HTTPStatus.FORBIDDEN, response.status_code)
         self.assertEqual(messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE, response.json)
 
+    @patch("requests.get")
+    def test_api_dao_create_program__but_name_not_unique(self, mock_get_representative):
+        self.client.post(
+            f"/organizations/1/programs/program",
+            headers={"Authorization": AUTH_COOKIE["Authorization"].value},
+            data=json.dumps(
+                dict(self.correct_payload_program)
+            ),
+            follow_redirects=True,
+            content_type="application/json",
+        )
+
+        response = self.client.post(
+            f"/organizations/1/programs/program",
+            headers={"Authorization": AUTH_COOKIE["Authorization"].value},
+            data=json.dumps(
+                dict(self.correct_payload_program)
+            ),
+            follow_redirects=True,
+            content_type="application/json",
+        )
+        self.assertEqual(HTTPStatus.CONFLICT, response.status_code)
+        self.assertEqual(messages.PROGRAM_NAME_ALREADY_USED, response.json)
     
     @patch("requests.get")
     def test_api_dao_create_program_but_organization_not_exist(self, mock_get_representative):
