@@ -225,7 +225,7 @@ class TestCreateProgramApi(BaseTestCase):
         self.assertEqual(messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE, response.json)
 
     @patch("requests.get")
-    def test_api_dao_create_program__but_name_not_unique(self, mock_get_representative):
+    def test_api_dao_create_program_when_name_already_exist(self, mock_get_representative):
         self.client.post(
             f"/organizations/1/programs/program",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
