@@ -1,0 +1,25 @@
+
+services:
+    test_postgres: 
+      container_name: test_postgres 
+      image: postgres 
+      environment: 
+        POSTGRES_PASSWORD: postgres
+      volumes: 
+        - ./init_test_database.sql:/docker-entrypoint-initdb.d/init_test_database.sql
+    bit:
+      container_name: BIT_TEST
+      volumes: 
+        - .:/dockerBuild 
+      build: . 
+      command: python_tests
+      depends_on:
+        - ms
+    ms: 
+      container_name: MS_TEST
+      build: ../mentorship-backend 
+      depends_on:
+        - test_postgres
+      environment: 
+        FLASK_ENVIRONMENT_CONFIG: test 
+        

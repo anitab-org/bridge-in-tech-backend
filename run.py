@@ -4,7 +4,9 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_cors import CORS
 from config import get_env_config
 
+
 cors = CORS()
+
 
 def create_app(config_filename: str) -> Flask:
     # instantiate the app
@@ -36,8 +38,8 @@ def create_app(config_filename: str) -> Flask:
 
     migrate = Migrate(app, db)
 
-    cors.init_app(app, resources={r"*": {"origins": "http://localhost:3000"}}) 
-    
+    cors.init_app(app, resources={r"*": {"origins": "http://localhost:3000"}})
+
     from app.api.jwt_extension import jwt
 
     jwt.init_app(app)
@@ -58,9 +60,7 @@ application = create_app(get_env_config())
 
 @application.before_first_request
 def create_tables():
-    
     from app.database.sqlalchemy_extension import db
-
     from app.database.models.ms_schema.user import UserModel
     from app.database.models.ms_schema.mentorship_relation import (
         MentorshipRelationModel,
@@ -94,5 +94,8 @@ def create_tables():
             "MentorshipRelationExtensionModel": MentorshipRelationExtensionModel,
         }
 
+
 if __name__ == "__main__":
+    from app.database.sqlalchemy_extension import db
+
     application.run(port=5000)

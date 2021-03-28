@@ -1,0 +1,28 @@
+
+services:
+    postgres:
+      container_name: postgres
+      image: postgres
+      environment: 
+        POSTGRES_PASSWORD: postgres
+      ports:
+        - 5432:5432
+      volumes: 
+        - ./init_databases.sql:/docker-entrypoint-initdb.d/init_databases.sql
+    bit:
+      container_name: BIT
+      volumes: 
+        - .:/dockerBuild 
+      build: . 
+      ports: 
+        - 5000:5000
+      depends_on:
+        - ms
+    ms: 
+      container_name: MS
+      build: ../mentorship-backend 
+      ports: 
+        - 4000:5000
+      depends_on:
+        - postgres 
+        
