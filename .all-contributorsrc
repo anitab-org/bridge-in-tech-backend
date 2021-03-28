@@ -8,7 +8,7 @@
   "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
   "skipCi": true,
   "contributors": [],
-  "projectName": "bridge-in-tech-web",
+  "projectName": "bridge-in-tech-backend",
   "projectOwner": "anitab-org",
   "repoType": "github",
   "repoHost": "https://github.com"
