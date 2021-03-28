@@ -2,19 +2,12 @@
 [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://anitab-org.zulipchat.com/#narrow/stream/237630-bridge-in-tech)
 [![codecov](https://codecov.io/gh/anitab-org/bridge-in-tech-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/anitab-org/bridge-in-tech-backend)
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/)
+
 # Bridge-In-Tech (backend)
 
 Bridge-In-Tech is an application that allows industries/companies, mentors and students to actively collaborate to one another. 
 
 This is the backend client of Bridge-In-Tech.
-
-## Contributing
-
-**This project is under active development**
-
-    
-
-Please read our [Contributing Guidelines](.github/CONTRIBUTING.md), [Code of Conduct](.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](.github/REPORTING_GUIDELINES.md) thoroughly.
 
 ## Setup
 To start contributing to the project, setup the backend environment on your local machine by following the instructions on the [BIT Development Environment Setup Instruction](.github/ENV_SETUP_INSTRUCTION.md) wiki page.
@@ -38,6 +31,21 @@ This project has live documents that contain information on:
 
 For a more complete information on BridgeInTech project, please go to [BridgeInTech Backend Wiki page](https://github.com/anitab-org/bridge-in-tech-backend/wiki).
 
+## Contributing
+
+**This project is under active development**
+
+Please read our [Contributing Guidelines](.github/CONTRIBUTING.md), [Code of Conduct](.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](.github/REPORTING_GUIDELINES.md) thoroughly.
+
+### Contributors
+
+Thanks goes to these people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
+Contributions of any kind welcome!
 
 ## Contact
 
