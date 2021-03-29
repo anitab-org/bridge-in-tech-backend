@@ -40,7 +40,6 @@ jobs:
       env:
         POSTGRES_HOST: localhost
 
-    - uses: actions/checkout@v2
     - name: Set up python 3.x
       uses: actions/setup-python@v2
       with:
@@ -59,5 +58,4 @@ jobs:
         pytest --cov=./ --cov-report=xml
  
     #- name: Upload coverage to Codecov
-    
           
