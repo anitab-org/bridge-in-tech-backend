@@ -7,7 +7,7 @@
 
 Bridge-In-Tech is an application that allows industries/companies, mentors and students to actively collaborate to one another. 
 
-This is the backend client of Bridge-In-Tech.
+This is the backend client of [Bridge-In-Tech-Web](https://github.com/anitab-org/bridge-in-tech-web).
 
 ## Setup
 To start contributing to the project, setup the backend environment on your local machine by following the instructions on the [BIT Development Environment Setup Instruction](.github/ENV_SETUP_INSTRUCTION.md) wiki page.
