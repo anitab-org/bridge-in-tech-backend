@@ -89,7 +89,7 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
-            'https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/docs',
+            'https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/docs/docs/Home.md',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
