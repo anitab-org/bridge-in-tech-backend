@@ -1,5 +1,7 @@
 import time
 from sqlalchemy import null
+from sqlalchemy.exc import DBAPIError
+
 from app.database.sqlalchemy_extension import db
 from app.utils.bitschema_utils import OrganizationStatus, Timezone
 from app.database.models.bit_schema.program import ProgramModel
@@ -113,8 +115,12 @@ class OrganizationModel(db.Model):
 
     def save_to_db(self) -> None:
         """Adds an organization to the database. """
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except DBAPIError:
+            db.session.rollback()
+            raise
 
     def delete_from_db(self) -> None:
         """Deletes an organization from the database. """
