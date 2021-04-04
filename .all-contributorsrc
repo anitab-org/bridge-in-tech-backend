@@ -1,0 +1,38 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "contributorsPerLine": 7,
+  "contributorsSortAlphabetically": false,
+  "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
+  "skipCi": true,
+  "contributors": [
+    {
+      "login": "mtreacy002",
+      "name": "Maya Treacy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29667122?v=4",
+      "profile": "https://github.com/mtreacy002",
+      "contributions": [
+        "maintenance",
+        "code",
+        "doc",
+        "userTesting",
+        "test"
+      ]
+    },
+    {
+      "login": "rpattath",
+      "name": "Roshni Pattath",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26095715?v=4",
+      "profile": "https://github.com/rpattath",
+      "contributions": [
+        "maintenance"
+      ]
+    }
+  ],
+  "projectName": "bridge-in-tech-backend",
+  "projectOwner": "anitab-org",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}

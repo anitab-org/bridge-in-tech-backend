@@ -1,4 +1,7 @@
-# BridgeInTech Development Setup Instructions 
+---
+id: Environment-Setup-Instructions
+title: Environment Setup Instructions
+---
 
 Before you start, you need to have the following installed:
 - [PostgreSQL database](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
@@ -9,7 +12,7 @@ After you downloaded the above, connect the pgadmin4 to your postgresql local se
 If you have these already installed, you are ready to start.
 
 ## 1st, Fork, Clone and Remote
-1. Follow the instruction on the [Fork, Clone, and Remote](https://github.com/anitab-org/bridge-in-tech-backend/wiki/Fork,-Clone-&-Remote) page for this step.
+1. Follow the instruction on the [Fork, Clone, and Remote](./Fork,-Clone-&-Remote.md) page for this step.
 
 ## 2nd, Create a new virtual environment 
 
@@ -31,13 +34,13 @@ Install all dependencies in the `requirements.txt` file: `pip install -r require
 
    ` \c bit_schema postgres`
 
-<img width="971" alt="Screen Shot 2020-09-18 at 7 02 31 am" src="https://user-images.githubusercontent.com/45851538/93510910-9e6b5b80-f92a-11ea-924b-04d89d9ea446.png">
+<img width="971" alt="Screen Shot 2020-09-18 at 7 02 31 am" src="https://user-images.githubusercontent.com/45851538/93510910-9e6b5b80-f92a-11ea-924b-04d89d9ea446.png"/>
 
 4. Create the BIT schema: `create schema bitschema;`
 5. Confirm to check the new schema has been added. 
 
 You should see 2 schemas, public and bitschema.
-<img width="971" alt="Screen Shot 2020-09-18 at 8 30 30 am" src="https://user-images.githubusercontent.com/45851538/93559344-2fbceb00-f988-11ea-8053-e42659f523db.png">
+<img width="971" alt="Screen Shot 2020-09-18 at 8 30 30 am" src="https://user-images.githubusercontent.com/45851538/93559344-2fbceb00-f988-11ea-8053-e42659f523db.png"/>
 
 You can now closed the psql shell by typing `\q` and hit `enter`.
 
@@ -46,12 +49,12 @@ You can now closed the psql shell by typing `\q` and hit `enter`.
 * ### Set bit_schema database permissions
 You should see the local_data and when you expand the arrow, you should see the 2 schemas.
 
-<img width="154" alt="Screen Shot 2020-06-14 at 9 55 03 pm" src="https://user-images.githubusercontent.com/29667122/84592555-e2f9dd80-ae89-11ea-91b7-322605111961.png">
+<img width="154" alt="Screen Shot 2020-06-14 at 9 55 03 pm" src="https://user-images.githubusercontent.com/29667122/84592555-e2f9dd80-ae89-11ea-91b7-322605111961.png"/>
 
 By default, `public` schema will be accessible to `PUBLIC` and `postgres` users. We need to make sure `bitschema` and `bit_schema` also have the same permission settings.
 To do this, click on `bit_schema` on the left sidebar, go to `Properties` (top navbar) > `Edit` (top right) and adjust the settings under the `Security` tab to look like the screenshots below. Do the same with `bitschema`.
 
-<img width="620" alt="Screen Shot 2020-05-07 at 7 47 39 pm" src="https://user-images.githubusercontent.com/29667122/81332957-2f156d80-90e7-11ea-9e15-53a607542388.png">
+<img width="620" alt="Screen Shot 2020-05-07 at 7 47 39 pm" src="https://user-images.githubusercontent.com/29667122/81332957-2f156d80-90e7-11ea-9e15-53a607542388.png"/>
 
 
 Note: If you happened to create the `bit_schema` under your username instead of `postgres`, don't worry, don't change anything else, just add `PUBLIC` access on top of the existing one.
@@ -62,7 +65,7 @@ Note: If you happened to create the `bit_schema` under your username instead of 
 To set up the test database, do the same steps as creating `bit_schema` above (see `3rd` step), but change the name to `bit_schema_test` instead. Don't forget to also create `bitschema` as well as [2 other required schemas for PostgreSQL tests](https://github.com/sqlalchemy/sqlalchemy/blob/master/README.unittests.rst): **test_schema** and **test_schema_2**. Remember to change the permission settings to include `PUBLIC` in all added schemas.
 Your **bit_schema_test** database should look like this screenshot now.
 
-<img width="171" alt="Screen Shot 2020-06-14 at 9 57 41 pm" src="https://user-images.githubusercontent.com/29667122/84592600-2eac8700-ae8a-11ea-9035-c449068bdd7a.png">
+<img width="171" alt="Screen Shot 2020-06-14 at 9 57 41 pm" src="https://user-images.githubusercontent.com/29667122/84592600-2eac8700-ae8a-11ea-9035-c449068bdd7a.png"/>
 
 ## 6th, Modify search path to include the new schema bitschema
 
@@ -72,7 +75,7 @@ To make sure the second schema bitschema is discoverable, set the search_path to
    ` $ psql -c "\dn;" -U postgres -d bit_schema `
 
 you should see the following
-<img width="971" alt="Screen Shot 2020-06-28 at 2 56 28 pm" src="https://user-images.githubusercontent.com/29667122/85938323-92858400-b94f-11ea-803b-cf2cea70d94f.png">
+<img width="971" alt="Screen Shot 2020-06-28 at 2 56 28 pm" src="https://user-images.githubusercontent.com/29667122/85938323-92858400-b94f-11ea-803b-cf2cea70d94f.png"/>
 
 2. Run the next command to show the existing search_path
 
@@ -94,10 +97,10 @@ Do the same steps to set new search_path on bit_schema_test. You just need to se
 
 Now when you run the application using `python run.py` (after first completing step 7) from the terminal, you should see that the tables are created under each schemas.
 
-<img width="647" alt="Screen Shot 2020-07-15 at 5 39 46 pm" src="https://user-images.githubusercontent.com/29667122/87517460-38f8b580-c6c2-11ea-9bfb-a0117f0ee848.png">
+<img width="647" alt="Screen Shot 2020-07-15 at 5 39 46 pm" src="https://user-images.githubusercontent.com/29667122/87517460-38f8b580-c6c2-11ea-9bfb-a0117f0ee848.png"/>
 
 ## 7th, Create the `.env` file using `.env.template`
-Update the values of corresponding environment variables or make sure you exported the following [environment variables](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/docs/ENVIRONMENT_VARIABLES.md):
+Update the values of corresponding environment variables or make sure you exported the following environment variables:
 
 ```
 export FLASK_ENVIRONMENT_CONFIG = <local-or-dev-or-test-or-prod>
@@ -114,7 +117,7 @@ export FLASK_APP=run.py
 NOTE: If you are on a Windows or Linux OS, you must do the following steps to allow connection to your local postgresql database:
 * Go to `config.py` 
 * Under `LocalConfig`, uncomment line 88 and comment-out line 86
-<img width="435" alt="Screen Shot 2020-09-27 at 5 21 14 pm" src="https://user-images.githubusercontent.com/29667122/94358710-4a106a80-00e6-11eb-819d-18affad4236d.png">
+<img width="435" alt="Screen Shot 2020-09-27 at 5 21 14 pm" src="https://user-images.githubusercontent.com/29667122/94358710-4a106a80-00e6-11eb-819d-18affad4236d.png"/>
 
 
 * Then go back to your .env file and add your db credentials as per the following
@@ -154,9 +157,7 @@ To run the unitests run the following command in the terminal (while the virtual
 **Important**
 If you are running test cases from Windows or Ubuntu OS, you also need to do the following extra steps to make sure the app can access your local test database:
 * uncomment line 102 under the `TestingConfig` section in `config.py` and comment out line 100
-<img width="449" alt="Screen Shot 2020-09-27 at 5 21 50 pm" src="https://user-images.githubusercontent.com/29667122/94358720-54caff80-00e6-11eb-871b-54a8873adc88.png">
-
-
+<img width="449" alt="Screen Shot 2020-09-27 at 5 21 50 pm" src="https://user-images.githubusercontent.com/29667122/94358720-54caff80-00e6-11eb-871b-54a8873adc88.png"/>
 
 
 ## 9th, Connect to MS-for-BIT backend server
@@ -175,5 +176,3 @@ Now you have setup the BIT and MS backend servers which connected to one postgre
 You can run both BIT and MS backend servers and try the application starting with creating then login as a new user.
 
 That's it. Happy hacking 👌
-
-
