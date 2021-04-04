@@ -1,7 +1,14 @@
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/LICENSE)
+[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/anitab-org/bridge-in-tech-backend)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/anitab-org/bridge-in-tech-backend/pulse)
+[![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/.github/PULL_REQUEST_TEMPLATE.md)  
+
 ---
+
 id: Home
 title: Home
 slug: /
+
 ---
 
 Welcome to the bridge-in-tech-backend!
@@ -27,7 +34,6 @@ In order to engage with the community, you can sign up on [AnitaB.org Open Sourc
 A primary goal of AnitaB.org is to be inclusive of the largest number of contributors, with the most varied and diverse backgrounds possible. As such, we are committed to providing a friendly, safe, and welcoming environment for all, regardless of gender, sexual orientation, ability, ethnicity, socioeconomic status, and religion (or lack thereof).
 
 See the full [Code of Conduct](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/.github/CODE_OF_CONDUCT.md) and the [Reporting Guidelines](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/.github/REPORTING_GUIDELINES.md).
-
 
 # Contact
 
