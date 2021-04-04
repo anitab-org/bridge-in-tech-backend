@@ -1,6 +1,6 @@
 import ast
 import json
-from http import HTTPStatus,cookies
+from http import HTTPStatus, cookies
 from datetime import datetime, timedelta
 from flask import request
 from flask_restx import Resource, marshal, Namespace
@@ -37,13 +37,7 @@ class UserRegister(Resource):
             HTTPStatus.INTERNAL_SERVER_ERROR.value: f"{messages.INTERNAL_SERVER_ERROR['message']}"
         }
     )
-<<<<<<< HEAD
     @users_ns.response(HTTPStatus.CREATED, f"{messages.USER_WAS_CREATED_SUCCESSFULLY}")
-=======
-    @users_ns.response(
-        HTTPStatus.CREATED.value, f"{messages.USER_WAS_CREATED_SUCCESSFULLY}"
-    )
->>>>>>> upstream/develop
     @users_ns.response(
         HTTPStatus.BAD_REQUEST.value,
         f"{messages.NAME_INPUT_BY_USER_IS_INVALID}\n"
@@ -89,9 +83,10 @@ class UserRegister(Resource):
 class LoginUser(Resource):
     @classmethod
     @users_ns.doc("login")
-    @users_ns.response(HTTPStatus.OK.value, "Successful login", login_response_body_model)
     @users_ns.response(
-<<<<<<< HEAD
+        HTTPStatus.OK.value, "Successful login", login_response_body_model
+    )
+    @users_ns.response(
         HTTPStatus.BAD_REQUEST,
         f"{messages.USERNAME_FIELD_IS_MISSING}\n"
         f"{messages.PASSWORD_FIELD_IS_MISSING}",
@@ -102,14 +97,6 @@ class LoginUser(Resource):
     @users_ns.response(
         HTTPStatus.FORBIDDEN, f"{messages.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN}"
     )
-=======
-        HTTPStatus.BAD_REQUEST.value,
-        f"{messages.USERNAME_FIELD_IS_MISSING}\n" 
-        f"{messages.PASSWORD_FIELD_IS_MISSING}"
-    )
-    @users_ns.response(HTTPStatus.UNAUTHORIZED.value, f"{messages.WRONG_USERNAME_OR_PASSWORD}")
-    @users_ns.response(HTTPStatus.FORBIDDEN.value, f"{messages.USER_HAS_NOT_VERIFIED_EMAIL_BEFORE_LOGIN}")
->>>>>>> upstream/develop
     @users_ns.response(
         HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}"
     )
@@ -141,7 +128,6 @@ class LoginUser(Resource):
 
 
 @users_ns.response(
-<<<<<<< HEAD
     HTTPStatus.UNAUTHORIZED,
     f"{messages.TOKEN_HAS_EXPIRED}\n"
     f"{messages.TOKEN_IS_INVALID}\n"
@@ -150,14 +136,6 @@ class LoginUser(Resource):
 @users_ns.response(
     HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
 )
-=======
-        HTTPStatus.UNAUTHORIZED.value,
-        f"{messages.TOKEN_HAS_EXPIRED}\n"
-        f"{messages.TOKEN_IS_INVALID}\n"
-        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
-)
-@users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}")
->>>>>>> upstream/develop
 @users_ns.route("user/personal_details")
 class MyProfilePersonalDetails(Resource):
     @classmethod
@@ -182,17 +160,11 @@ class MyProfilePersonalDetails(Resource):
 
     @classmethod
     @users_ns.doc("update_user_personal_details")
-<<<<<<< HEAD
     @users_ns.response(HTTPStatus.OK, f"{messages.USER_SUCCESSFULLY_UPDATED}")
     @users_ns.response(HTTPStatus.BAD_REQUEST, "Invalid input.")
     @users_ns.expect(
         auth_header_parser, update_user_details_request_body_model, validate=True
     )
-=======
-    @users_ns.response(HTTPStatus.OK.value, f"{messages.USER_SUCCESSFULLY_UPDATED}")
-    @users_ns.response(HTTPStatus.BAD_REQUEST.value, "Invalid input.")
-    @users_ns.expect(auth_header_parser, update_user_details_request_body_model, validate=True)
->>>>>>> upstream/develop
     def put(cls):
         """
         Updates user personal details
@@ -232,34 +204,22 @@ class MyProfilePersonalDetails(Resource):
         HTTPStatus.INTERNAL_SERVER_ERROR.value: f"{messages.INTERNAL_SERVER_ERROR['message']}"
     }
 )
-<<<<<<< HEAD
 @users_ns.response(
     HTTPStatus.UNAUTHORIZED,
-=======
-@users_ns.response( 
-    HTTPStatus.UNAUTHORIZED.value,
->>>>>>> upstream/develop
     f"{messages.TOKEN_HAS_EXPIRED}\n"
     f"{messages.TOKEN_IS_INVALID}\n"
     f"{messages.AUTHORISATION_TOKEN_IS_MISSING}",
 )
 @users_ns.response(
-<<<<<<< HEAD
     HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
 )
 @users_ns.response(
     HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
 )
-=======
-        HTTPStatus.FORBIDDEN.value, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
-)
-@users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}")
->>>>>>> upstream/develop
 @users_ns.route("user/additional_info")
 class MyProfileAdditionalInfo(Resource):
     @classmethod
     @users_ns.doc("get_user_additional_info")
-<<<<<<< HEAD
     @users_ns.response(
         HTTPStatus.OK, "Successful request", get_user_extension_response_model
     )
@@ -267,11 +227,6 @@ class MyProfileAdditionalInfo(Resource):
     @users_ns.response(
         HTTPStatus.NOT_FOUND, f"{messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST}"
     )
-=======
-    @users_ns.response(HTTPStatus.OK.value, "Successful request", get_user_extension_response_model)
-    @users_ns.response(HTTPStatus.BAD_REQUEST.value, "Invalid input.")
-    @users_ns.response(HTTPStatus.NOT_FOUND.value, f"{messages.ADDITIONAL_INFORMATION_DOES_NOT_EXIST}")
->>>>>>> upstream/develop
     @users_ns.expect(auth_header_parser, validate=True)
     def get(cls):
         """
@@ -363,44 +318,28 @@ class MyProfileAdditionalInfo(Resource):
         HTTPStatus.INTERNAL_SERVER_ERROR.value: f"{messages.INTERNAL_SERVER_ERROR['message']}"
     }
 )
-<<<<<<< HEAD
 @users_ns.response(
     HTTPStatus.UNAUTHORIZED,
-=======
-@users_ns.response( 
-    HTTPStatus.UNAUTHORIZED.value,
->>>>>>> upstream/develop
     f"{messages.TOKEN_HAS_EXPIRED}\n"
     f"{messages.TOKEN_IS_INVALID}\n"
     f"{messages.AUTHORISATION_TOKEN_IS_MISSING}",
 )
 @users_ns.response(
-<<<<<<< HEAD
     HTTPStatus.FORBIDDEN, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
 )
 @users_ns.response(
     HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
 )
-=======
-        HTTPStatus.FORBIDDEN.value, f"{messages.USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER}"
-)
-@users_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}")
->>>>>>> upstream/develop
 @users_ns.route("user/personal_background")
 class MyProfilePersonalBackground(Resource):
     @classmethod
     @users_ns.doc("get_user_personal_background")
-<<<<<<< HEAD
     @users_ns.response(
         HTTPStatus.OK, "Successful request", get_user_personal_background_response_model
     )
     @users_ns.response(
         HTTPStatus.NOT_FOUND, f"{messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST}"
     )
-=======
-    @users_ns.response(HTTPStatus.OK.value, "Successful request", get_user_personal_background_response_model)
-    @users_ns.response(HTTPStatus.NOT_FOUND.value, f"{messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST}")
->>>>>>> upstream/develop
     @users_ns.expect(auth_header_parser, validate=True)
     def get(cls):
         """
@@ -497,15 +436,9 @@ class UsersList(Resource):
     @users_ns.response(
         HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}"
     )
-<<<<<<< HEAD
     @users_ns.response(HTTPStatus.NOT_FOUND, f"{messages.USER_DOES_NOT_EXIST}")
     @users_ns.response(
         HTTPStatus.UNAUTHORIZED,
-=======
-    @users_ns.response(HTTPStatus.NOT_FOUND.value, f"{messages.USER_DOES_NOT_EXIST}")
-    @users_ns.response( 
-    HTTPStatus.UNAUTHORIZED.value,
->>>>>>> upstream/develop
         f"{messages.TOKEN_HAS_EXPIRED}\n"
         f"{messages.TOKEN_IS_INVALID}\n"
         f"{messages.AUTHORISATION_TOKEN_IS_MISSING}",
@@ -513,10 +446,6 @@ class UsersList(Resource):
     @users_ns.response(
         HTTPStatus.OK, "Successful request", public_user_personal_details_response_model
     )
-<<<<<<< HEAD
-=======
-    @users_ns.response(HTTPStatus.OK.value, "Successful request", public_user_personal_details_response_model)
->>>>>>> upstream/develop
     @users_ns.expect(auth_header_parser)
     def get(cls):
         """
@@ -547,15 +476,10 @@ class OtherUser(Resource):
     @classmethod
     @users_ns.doc("get_member_details")
     @users_ns.expect(auth_header_parser)
-<<<<<<< HEAD
     @users_ns.response(
-        HTTPStatus.OK, "Success.", public_user_personal_details_response_model
+        HTTPStatus.OK.value, "Success.", public_user_personal_details_response_model
     )
-    @users_ns.response(HTTPStatus.BAD_REQUEST, f"{messages.USER_ID_IS_NOT_VALID}")
-=======
-    @users_ns.response(HTTPStatus.OK.value, "Success.", public_user_personal_details_response_model)
     @users_ns.response(HTTPStatus.BAD_REQUEST.value, f"{messages.USER_ID_IS_NOT_VALID}")
->>>>>>> upstream/develop
     @users_ns.response(
         HTTPStatus.UNAUTHORIZED.value,
         f"{messages.TOKEN_HAS_EXPIRED}\n"

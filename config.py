@@ -102,15 +102,9 @@ class TestingConfig(BaseConfig):
     MOCK_EMAIL = True
 
     # Using a local postgre database
-<<<<<<< HEAD
-    SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema_test"
-
-    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_test_uri()
-=======
     #SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema_test"
     
     SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_test_uri()
->>>>>>> upstream/develop
 
 
 class StagingConfig(BaseConfig):

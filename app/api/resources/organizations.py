@@ -37,42 +37,27 @@ ProgramDAO = ProgramDAO()
 
 
 @organizations_ns.response(
-<<<<<<< HEAD
-    HTTPStatus.UNAUTHORIZED,
+    HTTPStatus.UNAUTHORIZED.value,
     f"{messages.TOKEN_HAS_EXPIRED}\n"
     f"{messages.TOKEN_IS_INVALID}\n"
     f"{messages.AUTHORISATION_TOKEN_IS_MISSING}",
 )
 @organizations_ns.response(
-    HTTPStatus.FORBIDDEN, f"{messages.NOT_ORGANIZATION_REPRESENTATIVE}"
+    HTTPStatus.FORBIDDEN.value, f"{messages.NOT_ORGANIZATION_REPRESENTATIVE}"
 )
 @organizations_ns.response(
-    HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
+    HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}"
 )
-=======
-        HTTPStatus.UNAUTHORIZED.value,
-        f"{messages.TOKEN_HAS_EXPIRED}\n"
-        f"{messages.TOKEN_IS_INVALID}\n"
-        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}"
-)
-@organizations_ns.response(HTTPStatus.FORBIDDEN.value, f"{messages.NOT_ORGANIZATION_REPRESENTATIVE}")
-@organizations_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}")
->>>>>>> upstream/develop
 @organizations_ns.route("organization")
 class Organization(Resource):
     @classmethod
     @organizations_ns.doc("get_organization")
-<<<<<<< HEAD
     @organizations_ns.response(
-        HTTPStatus.OK, "Successful request", get_organization_response_model
+        HTTPStatus.OK.value, "Successful request", get_organization_response_model
     )
     @organizations_ns.response(
-        HTTPStatus.NOT_FOUND, f"{messages.ORGANIZATION_DOES_NOT_EXIST}"
+        HTTPStatus.NOT_FOUND.value, f"{messages.ORGANIZATION_DOES_NOT_EXIST}"
     )
-=======
-    @organizations_ns.response(HTTPStatus.OK.value, "Successful request", get_organization_response_model)
-    @organizations_ns.response(HTTPStatus.NOT_FOUND.value, f"{messages.ORGANIZATION_DOES_NOT_EXIST}")
->>>>>>> upstream/develop
     @organizations_ns.expect(auth_header_parser, validate=True)
     def get(cls):
         """
@@ -99,17 +84,12 @@ class Organization(Resource):
 
     @classmethod
     @organizations_ns.doc("update_organization")
-<<<<<<< HEAD
     @organizations_ns.response(
         HTTPStatus.OK, f"{messages.ORGANIZATION_SUCCESSFULLY_UPDATED}"
     )
     @organizations_ns.response(
         HTTPStatus.CREATED, f"{messages.ORGANIZATION_SUCCESSFULLY_CREATED}"
     )
-=======
-    @organizations_ns.response(HTTPStatus.OK.value, f"{messages.ORGANIZATION_SUCCESSFULLY_UPDATED}")
-    @organizations_ns.response(HTTPStatus.CREATED.value, f"{messages.ORGANIZATION_SUCCESSFULLY_CREATED}")
->>>>>>> upstream/develop
     @organizations_ns.response(
         HTTPStatus.BAD_REQUEST.value,
         f"{messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT}\n"
@@ -167,7 +147,6 @@ class OrganizationsList(Resource):
     @organizations_ns.doc(
         "list_organizations",
         params={
-<<<<<<< HEAD
             "name": "Search by organization name",
             "page": "Specify page of organizations",
             "per_page": "Specify number of organizations per page",
@@ -178,14 +157,6 @@ class OrganizationsList(Resource):
     )
     @organizations_ns.response(
         HTTPStatus.UNAUTHORIZED,
-=======
-            "name": "Search by organization name", 
-            "page": "Specify page of organizations", 
-            "per_page": "Specify number of organizations per page"})
-    @organizations_ns.response(HTTPStatus.OK.value, "Successful request", get_organization_response_model)
-    @organizations_ns.response( 
-        HTTPStatus.UNAUTHORIZED.value,
->>>>>>> upstream/develop
         f"{messages.TOKEN_HAS_EXPIRED}\n"
         f"{messages.TOKEN_IS_INVALID}\n"
         f"{messages.AUTHORISATION_TOKEN_IS_MISSING}",
@@ -193,10 +164,6 @@ class OrganizationsList(Resource):
     @organizations_ns.response(
         HTTPStatus.NOT_FOUND, f"{messages.ORGANIZATION_DOES_NOT_EXIST}"
     )
-<<<<<<< HEAD
-=======
-    @organizations_ns.response(HTTPStatus.NOT_FOUND.value, f"{messages.ORGANIZATION_DOES_NOT_EXIST}")
->>>>>>> upstream/develop
     @organizations_ns.response(
         HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}"
     )
@@ -232,13 +199,9 @@ class OrganizationsList(Resource):
 class ProgramsList(Resource):
     @classmethod
     @organizations_ns.doc("list_programs")
-<<<<<<< HEAD
     @organizations_ns.response(
         HTTPStatus.OK, "Successful request", get_program_response_model
     )
-=======
-    @organizations_ns.response(HTTPStatus.OK.value, "Successful request", get_program_response_model)
->>>>>>> upstream/develop
     @organizations_ns.response(
         HTTPStatus.UNAUTHORIZED.value,
         f"{messages.TOKEN_HAS_EXPIRED}\n"
@@ -249,17 +212,9 @@ class ProgramsList(Resource):
         HTTPStatus.NOT_FOUND,
         f"{messages.NO_PROGRAM_FOUND}\n" f"{messages.NO_ORGANIZATION_FOUND}",
     )
-<<<<<<< HEAD
     @organizations_ns.response(
         HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
     )
-=======
-    @organizations_ns.response(HTTPStatus.NOT_FOUND.value, 
-        f"{messages.NO_PROGRAM_FOUND}\n"
-        f"{messages.NO_ORGANIZATION_FOUND}"
-    )
-    @organizations_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}")
->>>>>>> upstream/develop
     @organizations_ns.expect(auth_header_parser, validate=True)
     def get(cls, organization_id):
         """
@@ -290,13 +245,9 @@ class ProgramsList(Resource):
 class CreateProgram(Resource):
     @classmethod
     @organizations_ns.doc("create_program")
-<<<<<<< HEAD
     @organizations_ns.response(
         HTTPStatus.CREATED, f"{messages.PROGRAM_SUCCESSFULLY_CREATED}"
     )
-=======
-    @organizations_ns.response(HTTPStatus.CREATED.value, f"{messages.PROGRAM_SUCCESSFULLY_CREATED}")
->>>>>>> upstream/develop
     @organizations_ns.response(
         HTTPStatus.BAD_REQUEST.value,
         f"{messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT}\n"
@@ -315,11 +266,7 @@ class CreateProgram(Resource):
         f"{messages.AUTHORISATION_TOKEN_IS_MISSING}",
     )
     @organizations_ns.response(
-<<<<<<< HEAD
         HTTPStatus.FORBIDDEN,
-=======
-        HTTPStatus.FORBIDDEN.value, 
->>>>>>> upstream/develop
         f"{messages.NOT_ORGANIZATION_REPRESENTATIVE}\n"
         f"{messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE}",
     )
@@ -332,12 +279,6 @@ class CreateProgram(Resource):
     @organizations_ns.expect(
         auth_header_parser, update_program_request_model, validate=True
     )
-<<<<<<< HEAD
-=======
-    @organizations_ns.response(HTTPStatus.NOT_FOUND.value, f"{messages.ORGANIZATION_DOES_NOT_EXIST}") 
-    @organizations_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}")
-    @organizations_ns.expect(auth_header_parser, update_program_request_model, validate=True)
->>>>>>> upstream/develop
     def post(cls, organization_id):
         """
         Creates a program where organization id is passed.
@@ -383,17 +324,11 @@ class CreateProgram(Resource):
         return is_wrong_token
 
 
-<<<<<<< HEAD
 @organizations_ns.response(
     HTTPStatus.INTERNAL_SERVER_ERROR, f"{messages.INTERNAL_SERVER_ERROR}"
 )
 @organizations_ns.response(
     HTTPStatus.NOT_FOUND,
-=======
-@organizations_ns.response(HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}")
-@organizations_ns.response(
-    HTTPStatus.NOT_FOUND.value, 
->>>>>>> upstream/develop
     f"{messages.NO_PROGRAM_FOUND}\n"
     f"{messages.ORGANIZATION_DOES_NOT_EXIST}\n"
     f"{messages.PROGRAM_DOES_NOT_EXIST}",
@@ -410,13 +345,9 @@ class CreateProgram(Resource):
 class Program(Resource):
     @classmethod
     @organizations_ns.doc("get_program")
-<<<<<<< HEAD
     @organizations_ns.response(
         HTTPStatus.OK, "Successful request", get_program_response_model
     )
-=======
-    @organizations_ns.response(HTTPStatus.OK.value, "Successful request", get_program_response_model)
->>>>>>> upstream/develop
     @organizations_ns.expect(auth_header_parser, validate=True)
     def get(cls, organization_id, program_id):
         """
@@ -447,13 +378,9 @@ class Program(Resource):
 
     @classmethod
     @organizations_ns.doc("update_program")
-<<<<<<< HEAD
     @organizations_ns.response(
         HTTPStatus.OK, f"{messages.PROGRAM_SUCCESSFULLY_UPDATED}"
     )
-=======
-    @organizations_ns.response(HTTPStatus.OK.value, f"{messages.PROGRAM_SUCCESSFULLY_UPDATED}")
->>>>>>> upstream/develop
     @organizations_ns.response(
         HTTPStatus.BAD_REQUEST.value,
         f"{messages.NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT}\n"
