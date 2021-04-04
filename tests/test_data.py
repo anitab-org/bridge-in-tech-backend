@@ -83,7 +83,7 @@ program1 = {
     "end_date": 1598828400,
     "target_candidate": None,
     "status": "Draft",
-    "creation_date": 1589457600
+    "creation_date": 1589457600,
 }
 
 organization1 = {

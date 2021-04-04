@@ -27,7 +27,6 @@ class TestTestingConfig(TestCase):
         self.assertTrue(application.config["MOCK_EMAIL"])
         self.assertIsNotNone(current_app)
 
-
     def test_get_db_uri_function(self):
 
         expected_result = "db_type_example://db_user_example:db_password_example@db_endpoint_example/db_name_example"
@@ -58,8 +57,6 @@ class TestDevelopmentConfig(TestCase):
         self.assertFalse(application.config["TESTING"])
         self.assertFalse(application.config["SQLALCHEMY_TRACK_MODIFICATIONS"])
         self.assertIsNotNone(current_app)
-
-    
 
 
 class TestStagingConfig(TestCase):
