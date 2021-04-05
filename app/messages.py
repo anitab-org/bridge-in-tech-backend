@@ -15,10 +15,12 @@ PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH = {
     "message": f"The password field has to be at least {PASSWORD_MIN_LENGTH} characters and no more than {PASSWORD_MAX_LENGTH} characters."
 }
 PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT = {
-    "message": "Phone or mobile fields must be in number format. It must contain numbers and may contain dash ""-"" or space characters."
+    "message": "Phone or mobile fields must be in number format. It must contain numbers and may contain dash "
+    "-"
+    " or space characters."
 }
 WEBSITE_URL_IS_INVALID = {
-    "message": "The website url is not in valid format. It must have ""http*"
+    "message": "The website url is not in valid format. It must have " "http*"
 }
 TIMEZONE_INPUT_IS_INVALID = {
     "messages": "The Timezone input is not within the approved list."
@@ -49,18 +51,12 @@ TASK_COMMENT_DOES_NOT_EXIST = {"message": "Task comment does not exist."}
 TASK_COMMENT_WITH_GIVEN_TASK_ID_DOES_NOT_EXIST = {
     "message": "Task comment with given task id does not exist."
 }
-ORGANIZATION_DOES_NOT_EXIST = {
-    "message": "Organization does not exist."
-}
+ORGANIZATION_DOES_NOT_EXIST = {"message": "Organization does not exist."}
 PROGRAM_DOES_NOT_EXIST = {
     "message": "The program you are looking for does not exist in this organization."
 }
-NO_ORGANIZATION_FOUND = {
-    "message": "No organization found on the record."
-}
-NO_PROGRAM_FOUND = {
-    "message": "No program found on the record."
-}
+NO_ORGANIZATION_FOUND = {"message": "No organization found on the record."}
+NO_PROGRAM_FOUND = {"message": "No program found on the record."}
 ORGANITATION_ENUM_FIELD_IS_INVALID = {
     "message": "Either Timezone or Status fields are invalid."
 }
@@ -83,7 +79,9 @@ AUTHORISATION_TOKEN_IS_MISSING = {"message": "The authorization token is" " miss
 DESCRIPTION_FIELD_IS_MISSING = {"message": "Description field is missing."}
 COMMENT_FIELD_IS_MISSING = {"message": "Comment field is missing."}
 TIMEZONE_FIELD_IS_MISSING = {"message": "Timezone information is missing."}
-IS_ORGANIZATION_REP_FIELD_IS_MISSING = {"message": "Please indicate whether or not you represent an organization that is registered/going to be registered with BridgeInTech."}
+IS_ORGANIZATION_REP_FIELD_IS_MISSING = {
+    "message": "Please indicate whether or not you represent an organization that is registered/going to be registered with BridgeInTech."
+}
 PHONE_FIELD_IS_MISSING = {"message": "Phone field is missing."}
 
 # Admin
@@ -118,9 +116,7 @@ MENTOR_ALREADY_IN_A_RELATION = {"message": "Mentor user is already in a relation
 MENTEE_NOT_AVAIL_TO_BE_MENTORED = {
     "message": "Mentee user is not available to be mentored."
 }
-MENTEE_ALREADY_IN_A_RELATION = {
-    "message": "Mentee user is already in a relationship."
-}
+MENTEE_ALREADY_IN_A_RELATION = {"message": "Mentee user is already in a relationship."}
 
 # Mismatch of fields
 MATCH_EITHER_MENTOR_OR_MENTEE = {
@@ -339,16 +335,20 @@ TASK_COMMENT_WAS_DELETED_SUCCESSFULLY = {
 LIST_TASK_COMMENTS_WITH_SUCCESS = {
     "message": "List task comments from a mentorship relation with success."
 }
-ADDITIONAL_INFO_SUCCESSFULLY_CREATED = {"message": "User additional info successfully created."}
-PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED = {"message": "User personal background information successfully created."}
-ORGANIZATION_SUCCESSFULLY_CREATED = {"message": "Organization was created successfully."}
-ORGANIZATION_SUCCESSFULLY_UPDATED = {"message": "Organization was updated successfully."}
-PROGRAM_SUCCESSFULLY_CREATED = {
-    "message": "Program was created successfully."
+ADDITIONAL_INFO_SUCCESSFULLY_CREATED = {
+    "message": "User additional info successfully created."
 }
-PROGRAM_SUCCESSFULLY_UPDATED = {
-    "message": "Program was updated successfully."
+PERSONAL_BACKGROUND_SUCCESSFULLY_CREATED = {
+    "message": "User personal background information successfully created."
 }
+ORGANIZATION_SUCCESSFULLY_CREATED = {
+    "message": "Organization was created successfully."
+}
+ORGANIZATION_SUCCESSFULLY_UPDATED = {
+    "message": "Organization was updated successfully."
+}
+PROGRAM_SUCCESSFULLY_CREATED = {"message": "Program was created successfully."}
+PROGRAM_SUCCESSFULLY_UPDATED = {"message": "Program was updated successfully."}
 
 # confimation
 ACCOUNT_ALREADY_CONFIRMED = {"message": "Account already confirmed."}
@@ -367,7 +367,9 @@ INTERNAL_SERVER_ERROR = {
     "message": "An unexpected server error occurs while processing your request. Please try again later."
 }
 
-UNEXPECTED_INPUT = {"message": "Unexpected input is detected. Please check your input to make sure only approved fields are to be submitted."}
+UNEXPECTED_INPUT = {
+    "message": "Unexpected input is detected. Please check your input to make sure only approved fields are to be submitted."
+}
 USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER = {
     "message": "You must view your personal details first before you can proceed."
 }

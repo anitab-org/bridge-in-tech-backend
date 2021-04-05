@@ -6,6 +6,7 @@ from config import get_env_config
 
 cors = CORS()
 
+
 def create_app(config_filename: str) -> Flask:
     # instantiate the app
     app = Flask(__name__, instance_relative_config=True)
@@ -36,8 +37,8 @@ def create_app(config_filename: str) -> Flask:
 
     migrate = Migrate(app, db)
 
-    cors.init_app(app, resources={r"*": {"origins": "http://localhost:3000"}}) 
-    
+    cors.init_app(app, resources={r"*": {"origins": "http://localhost:3000"}})
+
     from app.api.jwt_extension import jwt
 
     jwt.init_app(app)
@@ -58,7 +59,7 @@ application = create_app(get_env_config())
 
 @application.before_first_request
 def create_tables():
-    
+
     from app.database.sqlalchemy_extension import db
 
     from app.database.models.ms_schema.user import UserModel
@@ -93,6 +94,7 @@ def create_tables():
             "PersonalBackgroundModel": PersonalBackgroundModel,
             "MentorshipRelationExtensionModel": MentorshipRelationExtensionModel,
         }
+
 
 if __name__ == "__main__":
     application.run(port=5000)

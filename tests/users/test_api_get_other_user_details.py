@@ -8,7 +8,12 @@ from flask import json
 from flask_restx import marshal
 from app import messages
 from tests.base_test_case import BaseTestCase
-from app.api.request_api_utils import post_request, get_request, BASE_MS_API_URL, AUTH_COOKIE
+from app.api.request_api_utils import (
+    post_request,
+    get_request,
+    BASE_MS_API_URL,
+    AUTH_COOKIE,
+)
 from app.api.models.user import full_user_api_model, get_user_extension_response_model
 from tests.test_data import user1, user2, user3
 from app.database.models.ms_schema.user import UserModel
@@ -22,8 +27,11 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
         super(TestGetOtherUserPersonalDetailsApi, self).setUp()
 
         # set access expiry 4 weeks from today's date (sc*min*hrrs*days)
-        access_expiry = time.time() + 60*60*24*28
-        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
+        access_expiry = time.time() + 60 * 60 * 24 * 28
+        success_message = {
+            "access_token": "this is fake token",
+            "access_expiry": access_expiry,
+        }
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -33,19 +41,19 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
         mock_login.raise_for_status = json.dumps(success_code)
 
         expected_user = marshal(user1, full_user_api_model)
-        
+
         mock_get_response = Mock()
         mock_get_response.json.return_value = expected_user
         mock_get_response.status_code = success_code
 
         mock_get_user.return_value = mock_get_response
         mock_get_user.raise_for_status = json.dumps(success_code)
-        
+
         user_login_success = {
             "username": user1.get("username"),
-            "password": user1.get("password")
+            "password": user1.get("password"),
         }
-        
+
         with self.client:
             login_response = self.client.post(
                 "/login",
@@ -57,9 +65,9 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
         test_user1 = UserModel(
             name=user1["name"],
             username=user1["username"],
-            password=user1["password"], 
-            email=user1["email"], 
-            terms_and_conditions_checked=user1["terms_and_conditions_checked"]
+            password=user1["password"],
+            email=user1["email"],
+            terms_and_conditions_checked=user1["terms_and_conditions_checked"],
         )
         test_user1.need_mentoring = user1["need_mentoring"]
         test_user1.available_to_mentor = user1["available_to_mentor"]
@@ -67,8 +75,7 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
         test_user1.save_to_db()
         test_user1_data = UserModel.find_by_email(test_user1.email)
         AUTH_COOKIE["user"] = marshal(test_user1_data, full_user_api_model)
-        
-    
+
     @patch("requests.get")
     def test_api_other_user_personal_details_with_correct_token(self, mock_get_users):
         expected_response = {
@@ -76,15 +83,15 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
             "username": "usertest",
             "name": "User test",
             "slack_username": "Just any slack name",
-            "bio": "Just any bio" ,
+            "bio": "Just any bio",
             "location": "Just any location",
             "occupation": "Just any occupation",
             "current_organization": "Just any organization",
             "interests": "Just any interests",
             "skills": "Just any skills",
-            "need_mentoring":True,
+            "need_mentoring": True,
             "available_to_mentor": True,
-            "is_available": True
+            "is_available": True,
         }
         success_code = HTTPStatus.OK
 
@@ -100,8 +107,8 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
                 "/users/2",
                 headers={
                     "Authorization": AUTH_COOKIE["Authorization"].value,
-                    "Accept": "application/json"
-                }, 
+                    "Accept": "application/json",
+                },
                 follow_redirects=True,
             )
 
@@ -109,7 +116,6 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
         self.assertEqual(get_response.json, expected_response)
         self.assertEqual(get_response.status_code, success_code)
 
-    
     @patch("requests.get")
     def test_api_other_user_personal_details_with_token_expired(self, mock_get_users):
         error_message = messages.TOKEN_HAS_EXPIRED
@@ -129,8 +135,8 @@ class TestGetOtherUserPersonalDetailsApi(BaseTestCase):
                 "/users",
                 headers={
                     "Authorization": AUTH_COOKIE["Authorization"].value,
-                    "Accept": "application/json"
-                }, 
+                    "Accept": "application/json",
+                },
                 follow_redirects=True,
             )
         mock_get_users.assert_called()

@@ -473,4 +473,3 @@ def add_mock_data():
     db.session.add(tasks_list_1)
     db.session.add(tasks_list_1_task_comment_a)
     db.session.commit()
-

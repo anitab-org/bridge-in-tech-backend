@@ -41,12 +41,13 @@ email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 username_regex = r"(^[a-zA-Z0-9_]+$)"
 phone_regex = r"(^[0-9\s\-\+]+$)"
 
+
 def is_name_valid(name):
     """Checks if name input is within the acceptable pattern defined in name_regex.
-    
+
     Args:
         name: string input for name.
-    
+
     Return:
         True: if string input for name is within the acceptable name_regex pattern.
         False: if string input for name is not according to name_regex pattern.
@@ -56,10 +57,10 @@ def is_name_valid(name):
 
 def is_email_valid(email):
     """Checks if email input is within the acceptable pattern defined in email_regex.
-    
+
     Args:
         email: string input for email.
-    
+
     Return:
         True: if string input for email is within the acceptable email_regex pattern.
         False: if string input for email is not according to email_regex pattern.
@@ -69,30 +70,31 @@ def is_email_valid(email):
 
 def is_username_valid(username):
     """Checks if username input is within the acceptable pattern defined in username_regex.
-    
+
     Args:
         name: string input for username.
-    
+
     Return:
         True: if string input for username is within the acceptable username_regex pattern.
         False: if string input for username is not according to username_regex pattern.
     """
     return re.match(username_regex, username)
 
+
 def validate_length(field_length, min_length, max_length, field_name):
     """Validates string input.
 
     Checks the length of the string which is inserted in a particular field against the given values.
 
-    Args: 
+    Args:
         field_length: length of the string input in a given field.
-        min_length: minimum acceptable string length. 
+        min_length: minimum acceptable string length.
         max_length: maximum acceptable string length.
         field_name: the name of the field where the string is inserted.
 
     Returns:
         False, error_msg: if string input is either less than the minimum length, or more than the maximum length.
-        True, {}: if string input is longer or equals to the minimum length, and less than or equals to the maximum length. 
+        True, {}: if string input is longer or equals to the minimum length, and less than or equals to the maximum length.
     """
     if not min_length <= field_length <= max_length:
         if min_length <= 0:
@@ -101,14 +103,14 @@ def validate_length(field_length, min_length, max_length, field_name):
                     field_name, None, max_length
                 )
             }
-        
+
         error_msg = {
             "message": get_length_validation_error_message(
                 field_name, min_length, max_length
             )
         }
         return {"is_valid": False, "message": error_msg}
-    
+
     return {"is_valid": True, "message": {}}
 
 
@@ -117,24 +119,22 @@ def get_length_validation_error_message(field_name, min_length, max_length):
 
     Args:
         field_name: the name of the field where the string is inserted.
-        min_length: minimum acceptable string length. 
+        min_length: minimum acceptable string length.
         max_length: maximum acceptable string length.
-    
+
     Returns:
         - error message if minimum length is not determined.
         - error message if minimum length is determined.
     """
     if min_length is None:
         return f"The {field_name} field has to be no more than {max_limit} characters."
-        
-    
+
     return f"The {field_name} field has to be at least {min_length} characters and no more than {max_length} characters."
-    
 
 
 def get_stripped_string(string_with_whitespaces):
     """Returns a new string from key argument that has been cleaned from whitespaces (split and joined by delimiter "").
-    
+
     Args:
         string_with_whitespaces: string input that has whitespaces.
 
@@ -143,15 +143,16 @@ def get_stripped_string(string_with_whitespaces):
     """
     return "".join(string_with_whitespaces.split())
 
+
 def expected_fields_validator(user_input, data_model):
     """Validates data fields. Confirms whether or not user input fields contains only the expected fields of the data model.
-    
+
     Args:
-        user_input: A list of keys of all fields that are submitted by user to the payload. 
+        user_input: A list of keys of all fields that are submitted by user to the payload.
         data_model: A list of keys of all fields that are expected to be on the payload.
-        
+
     Return:
-        False, error_message: A dictionary with a boolean value stating input fields are not valid and an error message. 
+        False, error_message: A dictionary with a boolean value stating input fields are not valid and an error message.
         True, {}: A dictionary with a boolean value stating input fields are valid and no other message given.
     """
     expected_fields = []
@@ -163,12 +164,13 @@ def expected_fields_validator(user_input, data_model):
         return {"is_field_valid": False, "message": messages.UNEXPECTED_INPUT}
     return {"is_field_valid": True, "message": {}}
 
+
 def is_phone_valid(phone):
     """Checks if phone or mobile input is within the acceptable pattern defined in phone_regex.
-    
+
     Args:
         name: string input for phone or mobile.
-    
+
     Return:
         True: if string input for phone or mobile is within the acceptable phone_regex pattern.
         False: if string input for phone or mobile is not according to phone_regex pattern.
