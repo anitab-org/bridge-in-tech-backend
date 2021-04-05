@@ -1,15 +1,12 @@
+---
+id: Home
+title: Home
+slug: /
+---
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/LICENSE)
 [![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/anitab-org/bridge-in-tech-backend)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/anitab-org/bridge-in-tech-backend/pulse)
 [![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://github.com/anitab-org/bridge-in-tech-backend/blob/develop/.github/PULL_REQUEST_TEMPLATE.md)  
-
----
-
-id: Home
-title: Home
-slug: /
-
----
 
 Welcome to the bridge-in-tech-backend!
 
