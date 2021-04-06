@@ -22,8 +22,11 @@ class TestUpdateProgramApi(BaseTestCase):
     def setUp(self, mock_login, mock_get_user):
         super(TestUpdateProgramApi, self).setUp()
         # set access expiry 4 weeks from today's date (sc*min*hrrs*days)
-        access_expiry = time.time() + 60*60*24*28
-        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
+        access_expiry = time.time() + 60 * 60 * 24 * 28
+        success_message = {
+            "access_token": "this is fake token",
+            "access_expiry": access_expiry,
+        }
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -42,7 +45,7 @@ class TestUpdateProgramApi(BaseTestCase):
         mock_get_user.raise_for_status = json.dumps(success_code)
         user_login_success = {
             "username": user1.get("username"),
-            "password": user1.get("password")
+            "password": user1.get("password"),
         }
 
         with self.client:
@@ -56,21 +59,20 @@ class TestUpdateProgramApi(BaseTestCase):
         test_user1 = UserModel(
             name=user1["name"],
             username=user1["username"],
-            password=user1["password"], 
-            email=user1["email"], 
-            terms_and_conditions_checked=user1["terms_and_conditions_checked"]
+            password=user1["password"],
+            email=user1["email"],
+            terms_and_conditions_checked=user1["terms_and_conditions_checked"],
         )
         test_user1.need_mentoring = user1["need_mentoring"]
         test_user1.available_to_mentor = user1["available_to_mentor"]
 
         test_user1.save_to_db()
-        
+
         test_user1_data = UserModel.find_by_email(test_user1.email)
         AUTH_COOKIE["user"] = marshal(test_user1_data, full_user_api_model)
 
         test_user_extension = UserExtensionModel(
-            user_id=test_user1_data.id,
-            timezone="AUSTRALIA_MELBOURNE"
+            user_id=test_user1_data.id, timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = True
         test_user_extension.save_to_db()
@@ -80,8 +82,8 @@ class TestUpdateProgramApi(BaseTestCase):
             username=user2["username"],
             password=user2["password"],
             email=user2["email"],
-            terms_and_conditions_checked=user2["terms_and_conditions_checked"]
-            )
+            terms_and_conditions_checked=user2["terms_and_conditions_checked"],
+        )
         test_user2.need_mentoring = user2["need_mentoring"]
         test_user2.available_to_mentor = user2["available_to_mentor"]
 
@@ -90,15 +92,13 @@ class TestUpdateProgramApi(BaseTestCase):
         test_user2_data = UserModel.find_by_email(test_user2.email)
 
         test_user_2_extension = UserExtensionModel(
-            user_id=test_user2_data.id,
-            timezone="ASIA_SINGAPORE"
+            user_id=test_user2_data.id, timezone="ASIA_SINGAPORE"
         )
         test_user_2_extension.is_organization_rep = True
         test_user_2_extension.save_to_db()
 
-
         test_organization = OrganizationModel(
-            rep_id=test_user1_data.id, 
+            rep_id=test_user1_data.id,
             name="Company ABC",
             email="companyabc@mail.com",
             address="506 Elizabeth St, Melbourne VIC 3000, Australia",
@@ -106,8 +106,8 @@ class TestUpdateProgramApi(BaseTestCase):
             timezone="AUSTRALIA_MELBOURNE",
         )
         # joined one month prior to access date
-        join_date = time.time() - 60*60*24*7
-        
+        join_date = time.time() - 60 * 60 * 24 * 7
+
         test_organization.rep_department = "H&R Department"
         test_organization.about = "This is about ABC"
         test_organization.phone = "321-456-789"
@@ -115,11 +115,13 @@ class TestUpdateProgramApi(BaseTestCase):
         test_organization.join_date = join_date
 
         test_organization.save_to_db()
-        
-        self.test_organization_data = OrganizationModel.find_by_email(test_organization.email)
+
+        self.test_organization_data = OrganizationModel.find_by_email(
+            test_organization.email
+        )
 
         test_organization_2 = OrganizationModel(
-            rep_id=test_user2_data.id, 
+            rep_id=test_user2_data.id,
             name="Company XYZ",
             email="companyxyz@mail.com",
             address="Singapore",
@@ -134,14 +136,16 @@ class TestUpdateProgramApi(BaseTestCase):
         test_organization_2.join_date = join_date
 
         test_organization_2.save_to_db()
-        
-        self.test_organization_2_data = OrganizationModel.find_by_email(test_organization_2.email)
+
+        self.test_organization_2_data = OrganizationModel.find_by_email(
+            test_organization_2.email
+        )
 
         # set start date one month from now, end date another month after that
-        start_date = time.time() + 60*60*24*28
-        end_date = start_date + 60*60*24*28
-        creation_date = start_date - 60*60*24*14
-       
+        start_date = time.time() + 60 * 60 * 24 * 28
+        end_date = start_date + 60 * 60 * 24 * 28
+        creation_date = start_date - 60 * 60 * 24 * 14
+
         self.update_payload_program = {
             "program_name": "Program A",
             "start_date": time.strftime("%Y-%m-%d %H:%M", time.localtime(start_date)),
@@ -178,10 +182,10 @@ class TestUpdateProgramApi(BaseTestCase):
             "contact_email": "missjane@hrd.com",
             "program_website": "http://program_a.com",
             "irc_channel": "",
-            "tags": [], 
-            "status": "Draft"
+            "tags": [],
+            "status": "Draft",
         }
-        
+
         program1 = ProgramModel(
             program_name="Program A",
             start_date=start_date,
@@ -240,17 +244,14 @@ class TestUpdateProgramApi(BaseTestCase):
 
         self.program_data_2 = ProgramModel.find_by_name("Program B")
 
-
     def test_api_dao_update_program_successfully(self):
         response = self.client.put(
             f"/organizations/{self.test_organization_data.id}/programs/{self.program_data_1.id}",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-            data=json.dumps(
-                dict(self.update_payload_program)
-                ),
+            data=json.dumps(dict(self.update_payload_program)),
             follow_redirects=True,
             content_type="application/json",
-            )
+        )
         self.assertEqual(HTTPStatus.OK, response.status_code)
         self.assertEqual(messages.PROGRAM_SUCCESSFULLY_UPDATED, response.json)
 
@@ -260,12 +261,10 @@ class TestUpdateProgramApi(BaseTestCase):
         response = self.client.put(
             f"/organizations/{organization_id}/programs/{self.program_data_1.id}",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-            data=json.dumps(
-                dict(self.update_payload_program)
-                ),
+            data=json.dumps(dict(self.update_payload_program)),
             follow_redirects=True,
             content_type="application/json",
-            )
+        )
         self.assertEqual(HTTPStatus.NOT_FOUND, response.status_code)
         self.assertEqual(messages.ORGANIZATION_DOES_NOT_EXIST, response.json)
 
@@ -273,11 +272,11 @@ class TestUpdateProgramApi(BaseTestCase):
         response = self.client.put(
             f"/organizations/{self.test_organization_2_data.id}/programs/{self.program_data_2.id}",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-            data=json.dumps(
-                dict(self.update_payload_program)
-                ),
+            data=json.dumps(dict(self.update_payload_program)),
             follow_redirects=True,
             content_type="application/json",
-            )
+        )
         self.assertEqual(HTTPStatus.FORBIDDEN, response.status_code)
-        self.assertEqual(messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE, response.json)
+        self.assertEqual(
+            messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE, response.json
+        )

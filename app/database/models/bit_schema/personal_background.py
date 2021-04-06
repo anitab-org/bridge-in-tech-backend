@@ -18,7 +18,7 @@ class PersonalBackgroundModel(db.Model):
     mental_ability: A string for storing the user's mental ability.
     socio_economic: A string for storing the user's socio economic level.
     highest_education: A string for storing the user's highest education level.
-    years_of_experience: A string for storing the user's length of expeprience in the It related area. 
+    years_of_experience: A string for storing the user's length of expeprience in the It related area.
     others: A JSON data type for storing users descriptions of 'other' fields.
     is_public: A boolean indicating if user has agreed to display their personal background information publicly to other members.
     """
@@ -119,8 +119,8 @@ class PersonalBackgroundModel(db.Model):
     def find_by_user_id(cls, user_id) -> "PersonalBackgroundModel":
 
         """Returns the user's background that has the passed user id.
-           Args:
-                _id: The id of a user.
+        Args:
+             _id: The id of a user.
         """
         return cls.query.filter_by(user_id=user_id).first()
 

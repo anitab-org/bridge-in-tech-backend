@@ -20,6 +20,21 @@ This repository has the following branches:
 - **master**: This branch contains the deployment of the backend.
 - **develop**: This contains the latest code. All the contributing PRs must be sent to this branch.
 
+### Auto-formatting with black
+
+We use [_Black_](https://github.com/psf/black) to format code automatically so that we don't have to worry about clean and
+readable code. To install _Black_:
+
+```
+pip install black
+```
+
+To run black:
+
+```
+black .
+```
+
 ## Project Documentation
 
 Documentation for the project is hosted [here](https://bit-backend-docs.surge.sh/). We use `Docusaurus` for maintaining the documentation of the project.

@@ -48,8 +48,10 @@ def email_verification_required(user_function):
 
 def http_response_namedtuple_converter(user_function):
     def tuple_to_namedtuple_http_response(result):
-        HttpNamedTupleResponse = namedtuple("HttpNamedTupleResponse", ["message", "status_code"])
+        HttpNamedTupleResponse = namedtuple(
+            "HttpNamedTupleResponse", ["message", "status_code"]
+        )
         converted_result = HttpNamedTupleResponse(*result)
         return user_function(converted_result)
-    return tuple_to_namedtuple_http_response
 
+    return tuple_to_namedtuple_http_response

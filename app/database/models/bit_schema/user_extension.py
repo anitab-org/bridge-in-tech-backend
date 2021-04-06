@@ -62,8 +62,8 @@ class UserExtensionModel(db.Model):
     def find_by_user_id(cls, user_id) -> "UserExtensionModel":
 
         """Returns the user extension that has the passed user id.
-           Args:
-                _id: The id of a user.
+        Args:
+             _id: The id of a user.
         """
         return cls.query.filter_by(user_id=user_id).first()
 

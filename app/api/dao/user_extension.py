@@ -8,7 +8,7 @@ from app.utils.bitschema_utils import Timezone
 
 
 class UserExtensionDAO:
-    
+
     """Data Access Object for Users_Extension functionalities"""
 
     @staticmethod
@@ -34,7 +34,7 @@ class UserExtensionDAO:
                     "timezone": result.timezone.value,
                     "phone": phone,
                     "mobile": mobile,
-                    "personal_website": personal_website
+                    "personal_website": personal_website,
                 }
             except TypeError:
                 return {
@@ -43,7 +43,7 @@ class UserExtensionDAO:
                     "timezone": result.timezone.value,
                     "phone": "",
                     "mobile": "",
-                    "personal_website": ""
+                    "personal_website": "",
                 }
         return
 
@@ -54,21 +54,34 @@ class UserExtensionDAO:
         data: A list containing user's id, boolean value of whether or not
         the user is representing an organization, as well as their timezone
         Returns:
-                A dictionary containing "message" which indicates whether or not 
+                A dictionary containing "message" which indicates whether or not
                 the user_exension was updated successfully and "code" for the HTTP response code.
         """
 
         timezone_value = data["timezone"]
-        timezone = Timezone(timezone_value).name   
+        timezone = Timezone(timezone_value).name
 
-        user_json = (AUTH_COOKIE["user"].value)
+        user_json = AUTH_COOKIE["user"].value
         user = ast.literal_eval(user_json)
         user_additional_info = UserExtensionModel.find_by_user_id(int(user["id"]))
         if not user_additional_info:
             user_additional_info = UserExtensionModel(int(user["id"]), timezone)
-            return update(user_additional_info, data, timezone, messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED, HTTPStatus.CREATED)    
-        return update(user_additional_info, data, timezone, messages.ADDITIONAL_INFO_SUCCESSFULLY_UPDATED, HTTPStatus.OK)     
-    
+            return update(
+                user_additional_info,
+                data,
+                timezone,
+                messages.ADDITIONAL_INFO_SUCCESSFULLY_CREATED,
+                HTTPStatus.CREATED,
+            )
+        return update(
+            user_additional_info,
+            data,
+            timezone,
+            messages.ADDITIONAL_INFO_SUCCESSFULLY_UPDATED,
+            HTTPStatus.OK,
+        )
+
+
 def update(user, data, timezone, success_message, status_code):
     additional_info_data = {}
     try:
@@ -83,4 +96,4 @@ def update(user, data, timezone, success_message, status_code):
     user.additional_info = additional_info_data
     user.save_to_db()
 
-    return success_message, status_code 
+    return success_message, status_code
