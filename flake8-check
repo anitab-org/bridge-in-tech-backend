@@ -1,0 +1,13 @@
+#!/bin/bash
+
+flake8-check() {
+    flake8 && echo "Flake8 Check ✅" ||{
+        >&2 echo "Flake8 Check ❌"
+        echo "Suggestion: Run - flake8 ."
+        echo ""
+        FAILURE=1
+    }
+}
+
+flake8-check
+exit $FAILURE
