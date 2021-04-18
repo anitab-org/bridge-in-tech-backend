@@ -379,3 +379,6 @@ USER_ID_IS_NOT_RETRIEVED_WITH_GET_ORGANIZATION = {
 NOT_ORGANIZATION_REPRESENTATIVE = {
     "message": "You have not declared that you are representing an organization."
 }
+PERSONAL_BACKGROUND_NOT_PUBLIC = {
+    "message": "The personal background for this user is not public."
+}
