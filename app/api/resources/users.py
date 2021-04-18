@@ -535,7 +535,7 @@ class OtherUserPersonalBackground(Resource):
         HTTPStatus.FORBIDDEN.value, f"{messages.PERSONAL_BACKGROUND_NOT_PUBLIC}"
     )
     @users_ns.response(
-        HTTPStatus.NOT_FOUND.value, f"{messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST}"
+        HTTPStatus.NOT_FOUND.value, f"{messages.USER_PERSONAL_BACKGROUND_NOT_FOUND}"
     )
     @users_ns.expect(auth_header_parser, validate=True)
     def get(cls, user_id):
@@ -553,7 +553,7 @@ class OtherUserPersonalBackground(Resource):
         if not is_wrong_token:
             result = PersonalBackgroundDAO.get_user_personal_background_info(user_id)
             if not result:
-                return messages.PERSONAL_BACKGROUND_DOES_NOT_EXIST, HTTPStatus.NOT_FOUND
+                return messages.USER_PERSONAL_BACKGROUND_NOT_FOUND, HTTPStatus.NOT_FOUND
             if not result.get("is_public", None):
                 return messages.PERSONAL_BACKGROUND_NOT_PUBLIC, HTTPStatus.FORBIDDEN
             return result
