@@ -57,10 +57,9 @@ NO_PROGRAM_FOUND = {"message": "No program found on the record."}
 ORGANITATION_ENUM_FIELD_IS_INVALID = {
     "message": "Either Timezone or Status fields are invalid."
 }
-USER_PERSONAL_BACKGROUND_NOT_FOUND = {
-    "message": "No personal background found for this user."
+PERSONAL_BACKGROUND_NOT_FOUND = {
+    "message": "No personal background information found for this user."
 }
-
 # Missing fields
 MENTOR_ID_FIELD_IS_MISSING = {"message": "Mentor ID field is missing."}
 MENTEE_ID_FIELD_IS_MISSING = {"message": "Mentee ID field is missing."}
