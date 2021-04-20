@@ -18,12 +18,10 @@ class BaseTestCase(TestCase):
         return application
 
     def setUp(self):
-        
-        db.create_all()
 
+        db.create_all()
 
     @classmethod
     def tearDown(cls):
         db.session.remove()
         db.drop_all()
-        

@@ -327,7 +327,6 @@ NOT_IMPLEMENTED = {"message": "Not implemented."}
 INTERNAL_SERVER_ERROR = {
     "message": "An unexpected server error occurs while processing your request. Please try again later."
 }
-
 UNEXPECTED_INPUT = {"message": "Unexpected input is detected. Only approved fields should be submitted."}
 USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER = {
     "message": "You must view your personal details first before you can proceed."

@@ -1,6 +1,7 @@
 from datetime import date
 
 from app.database.models.ms_schema.tasks_list import TasksListModel
+
 # from app.database.models.bitschema import MentorshipRelationExtensionModel
 from app.database.sqlalchemy_extension import db
 from app.utils.enum_utils import MentorshipRelationState
@@ -8,7 +9,7 @@ from app.utils.enum_utils import MentorshipRelationState
 
 class MentorshipRelationModel(db.Model):
     """Data Model representation of a mentorship relation.
-    
+
     Attributes:
         mentor_id: integer indicates the id of the mentor.
         mentee_id: integer indicates the id of the mentee.
@@ -30,10 +31,9 @@ class MentorshipRelationModel(db.Model):
     # Specifying database table used for MentorshipRelationModel
     __tablename__ = "mentorship_relations"
     __table_args__ = {"schema": "public", "extend_existing": True}
-    
+
     id = db.Column(db.Integer, primary_key=True)
 
-    
     # personal data
     mentor_id = db.Column(db.Integer, db.ForeignKey("public.users.id"))
     mentee_id = db.Column(db.Integer, db.ForeignKey("public.users.id"))
@@ -52,11 +52,11 @@ class MentorshipRelationModel(db.Model):
     )
 
     creation_date = db.Column(db.Numeric("16,6", asdecimal=False), nullable=False)
-    
+
     accept_date = db.Column(db.Numeric("16,6", asdecimal=False))
-    
-    start_date = db.Column(db.Numeric("16,6", asdecimal=False)) 
-    end_date = db.Column(db.Numeric("16,6", asdecimal=False)) 
+
+    start_date = db.Column(db.Numeric("16,6", asdecimal=False))
+    end_date = db.Column(db.Numeric("16,6", asdecimal=False))
 
     state = db.Column(db.Enum(MentorshipRelationState), nullable=False)
     notes = db.Column(db.String(400))
@@ -73,7 +73,6 @@ class MentorshipRelationModel(db.Model):
         cascade="all,delete",
         passive_deletes=True,
     )
-    
 
     # pass in parameters in a dictionary
     def __init__(
@@ -112,13 +111,12 @@ class MentorshipRelationModel(db.Model):
             "notes": self.notes,
         }
 
-    
     @classmethod
     def find_by_id(cls, _id) -> "MentorshipRelationModel":
 
         """Returns the mentorship that has the passed id.
-           Args:
-                _id: The id of a mentorship.
+        Args:
+             _id: The id of a mentorship.
         """
         return cls.query.filter_by(id=_id).first()
 
@@ -131,8 +129,8 @@ class MentorshipRelationModel(db.Model):
     def find_by_program_id(cls, program_id):
 
         """Returns list of mentorship that has the passed program id.
-           Args:
-                program_id: The id of a program which the mentorships related to.
+        Args:
+             program_id: The id of a program which the mentorships related to.
         """
         return cls.query.filter_by(program_id=program_id).first().all
 

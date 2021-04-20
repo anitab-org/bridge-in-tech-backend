@@ -57,4 +57,3 @@ def validate_update_program(data):
         return messages.PROGRAM_STATUS_INPUT_IS_INVALID
     except KeyError:
         return messages.ORGANIZATION_OR_PROGRAM_STATUS_FIELD_IS_MISSING
-

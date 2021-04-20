@@ -1,20 +1,13 @@
 [![Build Status](https://travis-ci.org/anitab-org/bridge-in-tech-backend.svg?branch=develop)](https://travis-ci.org/anitab-org/bridge-in-tech-backend) 
 [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://anitab-org.zulipchat.com/#narrow/stream/237630-bridge-in-tech)
 [![codecov](https://codecov.io/gh/anitab-org/bridge-in-tech-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/anitab-org/bridge-in-tech-backend)
-[![Python 3.x](https://img.shields.io/badge/python-3.x-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/)
+
 # Bridge-In-Tech (backend)
 
 Bridge-In-Tech is an application that allows industries/companies, mentors and students to actively collaborate to one another. 
 
-This is the backend client of Bridge-In-Tech.
-
-## Contributing
-
-**This project is under active development**
-
-    
-
-Please read our [Contributing Guidelines](.github/CONTRIBUTING.md), [Code of Conduct](.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](.github/REPORTING_GUIDELINES.md) thoroughly.
+This is the backend client of [Bridge-In-Tech-Web](https://github.com/anitab-org/bridge-in-tech-web).
 
 ## Setup
 To start contributing to the project, setup the backend environment on your local machine by following the instructions on the [BIT Development Environment Setup Instruction](.github/ENV_SETUP_INSTRUCTION.md) wiki page.
@@ -27,6 +20,21 @@ This repository has the following branches:
 - **master**: This branch contains the deployment of the backend.
 - **develop**: This contains the latest code. All the contributing PRs must be sent to this branch.
 
+### Auto-formatting with black
+
+We use [_Black_](https://github.com/psf/black) to format code automatically so that we don't have to worry about clean and
+readable code. To install _Black_:
+
+```
+pip install black
+```
+
+To run black:
+
+```
+black .
+```
+
 ## Project Documentation
 
 Documentation for the project is hosted [here](https://bit-backend-docs.surge.sh/). We use `Docusaurus` for maintaining the documentation of the project.
@@ -38,6 +46,33 @@ This project has live documents that contain information on:
 
 For a more complete information on BridgeInTech project, please go to [BridgeInTech Backend Wiki page](https://github.com/anitab-org/bridge-in-tech-backend/wiki).
 
+## Contributing
+
+**This project is under active development**
+
+Please read our [Contributing Guidelines](.github/CONTRIBUTING.md), [Code of Conduct](.github/CODE_OF_CONDUCT.md) and [Reporting Guidelines](.github/REPORTING_GUIDELINES.md) thoroughly.
+
+### Contributors
+
+Thanks goes to these people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/mtreacy002"><img src="https://avatars.githubusercontent.com/u/29667122?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Maya Treacy</b></sub></a><br /><a href="#maintenance-mtreacy002" title="Maintenance">🚧</a> <a href="https://github.com/anitab-org/bridge-in-tech-backend/commits?author=mtreacy002" title="Code">💻</a> <a href="https://github.com/anitab-org/bridge-in-tech-backend/commits?author=mtreacy002" title="Documentation">📖</a> <a href="#userTesting-mtreacy002" title="User Testing">📓</a> <a href="https://github.com/anitab-org/bridge-in-tech-backend/commits?author=mtreacy002" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/rpattath"><img src="https://avatars.githubusercontent.com/u/26095715?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Roshni Pattath</b></sub></a><br /><a href="#maintenance-rpattath" title="Maintenance">🚧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
+Contributions of any kind welcome!
 
 ## Contact
 

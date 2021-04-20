@@ -22,10 +22,5 @@ def convert_human_date_to_timestamp(input_date, timezone):
         epoch = datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=pytz.UTC)
     except ValueError:
         raise ValueError("Incorrect date format, should be YYYY-MM-DD HH:MM")
-    
+
     return (date_in_utc_timezone - epoch).total_seconds()
-
-
-
-
-    
