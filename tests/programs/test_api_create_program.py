@@ -242,13 +242,13 @@ class TestCreateProgramApi(BaseTestCase):
         )
 
     @patch("requests.get")
-    def test_api_dao_create_program_when_name_already_exist(self, mock_get_representative):
+    def test_api_dao_create_program_when_name_already_exist(
+        self, mock_get_representative
+    ):
         self.client.post(
             f"/organizations/1/programs/program",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-            data=json.dumps(
-                dict(self.correct_payload_program)
-            ),
+            data=json.dumps(dict(self.correct_payload_program)),
             follow_redirects=True,
             content_type="application/json",
         )
@@ -256,9 +256,7 @@ class TestCreateProgramApi(BaseTestCase):
         response = self.client.post(
             f"/organizations/1/programs/program",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-            data=json.dumps(
-                dict(self.correct_payload_program)
-            ),
+            data=json.dumps(dict(self.correct_payload_program)),
             follow_redirects=True,
             content_type="application/json",
         )

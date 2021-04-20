@@ -138,8 +138,6 @@ class ProgramDAO:
                 return messages.PROGRAM_NAME_ALREADY_USED, HTTPStatus.CONFLICT
             return messages.INVALID_REQUEST_DATA, HTTPStatus.BAD_REQUEST
 
-
-
     @staticmethod
     def update_program(organization_id, program_id, data):
         """Updates the program that is offered by organization which

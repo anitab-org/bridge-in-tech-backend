@@ -16,7 +16,7 @@ PASSWORD_INPUT_BY_USER_HAS_INVALID_LENGTH = {
 }
 PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT = {
     "message": "Phone or mobile fields must be in number format. It must contain numbers and may contain dash '-'"
-               " or space characters."
+    " or space characters."
 }
 WEBSITE_URL_IS_INVALID = {
     "message": "The website url is not in valid format. It must have http*"
@@ -38,9 +38,7 @@ PROGRAM_STATUS_INPUT_IS_INVALID = {
 MENTORSHIP_RELATION_REQUEST_DOES_NOT_EXIST = {
     "message": "This mentorship relation request does not exist."
 }
-MENTORSHIP_RELATION_DOES_NOT_EXIST = {
-    "message": "Mentorship relation does not exist."
-}
+MENTORSHIP_RELATION_DOES_NOT_EXIST = {"message": "Mentorship relation does not exist."}
 USER_NOT_FOUND = {"message": "User not found."}
 MENTOR_DOES_NOT_EXIST = {"message": "Mentor user does not exist."}
 MENTEE_DOES_NOT_EXIST = {"message": "Mentee user does not exist."}
@@ -90,7 +88,9 @@ USER_CANNOT_BE_ASSIGNED_ADMIN_BY_USER = {
 }
 USER_IS_NOT_AN_ADMIN = {"message": "User is not an Admin."}
 USER_ADMIN_STATUS_WAS_REVOKED = {"message": "User admin status was revoked."}
-USER_CANT_DELETE = {"message": "You cannot delete your account, since you are the only Admin left."}
+USER_CANT_DELETE = {
+    "message": "You cannot delete your account, since you are the only Admin left."
+}
 USER_CANNOT_REVOKE_ADMIN_STATUS = {"message": "You cannot revoke your admin status."}
 USER_ASSIGN_NOT_ADMIN = {
     "message": "You don't have admin status. You can't assign other user as admin."
@@ -154,36 +154,64 @@ PERSONAL_BACKGROUND_DATA_HAS_MISSING_FIELD = {
 }
 
 # Relation constraints
-MENTOR_ID_SAME_AS_MENTEE_ID = {"message": "You cannot have a mentorship relation with yourself."}
+MENTOR_ID_SAME_AS_MENTEE_ID = {
+    "message": "You cannot have a mentorship relation with yourself."
+}
 END_TIME_BEFORE_PRESENT = {"message": "End date is invalid since date has passed."}
-MENTOR_TIME_GREATER_THAN_MAX_TIME = {"message": "Mentorship relation maximum duration is 6 months."}
-MENTOR_TIME_LESS_THAN_MIN_TIME = {"message": "Mentorship relation minimum duration is 4 week."}
-CANT_ACCEPT_MENTOR_REQ_SENT_BY_USER = {"message": "You cannot accept a mentorship request sent by yourself."}
+MENTOR_TIME_GREATER_THAN_MAX_TIME = {
+    "message": "Mentorship relation maximum duration is 6 months."
+}
+MENTOR_TIME_LESS_THAN_MIN_TIME = {
+    "message": "Mentorship relation minimum duration is 4 week."
+}
+CANT_ACCEPT_MENTOR_REQ_SENT_BY_USER = {
+    "message": "You cannot accept a mentorship request sent by yourself."
+}
 CANT_ACCEPT_UNINVOLVED_MENTOR_RELATION = {
     "message": "You cannot accept a mentorship relation where you are not involved."
 }
-USER_CANT_REJECT_REQUEST_SENT_BY_USER = {"message": "You cannot reject a mentorship request sent by yourself."}
+USER_CANT_REJECT_REQUEST_SENT_BY_USER = {
+    "message": "You cannot reject a mentorship request sent by yourself."
+}
 CANT_REJECT_UNINVOLVED_RELATION_REQUEST = {
     "message": "You cannot reject a mentorship relation where you are not involved."
 }
-CANT_CANCEL_UNINVOLVED_REQUEST = {"message": "You cannot cancel a mentorship relation where you are not involved."}
-CANT_DELETE_UNINVOLVED_REQUEST = {"message": "You cannot delete a mentorship request that you did not create."}
-NOT_IN_MENTORED_RELATION_CURRENTLY = {"message": "You are not in a current mentorship relation."}
-USER_IS_INVOLVED_IN_A_MENTORSHIP_RELATION = {"message": "You are currently involved in a mentorship relation."}
-USER_NOT_INVOLVED_IN_THIS_MENTOR_RELATION = {"message": "You are not involved in this mentorship relation."}
-USER_USES_A_USERNAME_THAT_ALREADY_EXISTS = {"message": "A user with that username already exists."}
-USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS = {"message": "A user with that email already exists."}
-USER_IS_NOT_REGISTERED_IN_THE_SYSTEM = {"message": "You are not registered in the system."}
+CANT_CANCEL_UNINVOLVED_REQUEST = {
+    "message": "You cannot cancel a mentorship relation where you are not involved."
+}
+CANT_DELETE_UNINVOLVED_REQUEST = {
+    "message": "You cannot delete a mentorship request that you did not create."
+}
+NOT_IN_MENTORED_RELATION_CURRENTLY = {
+    "message": "You are not in a current mentorship relation."
+}
+USER_IS_INVOLVED_IN_A_MENTORSHIP_RELATION = {
+    "message": "You are currently involved in a mentorship relation."
+}
+USER_NOT_INVOLVED_IN_THIS_MENTOR_RELATION = {
+    "message": "You are not involved in this mentorship relation."
+}
+USER_USES_A_USERNAME_THAT_ALREADY_EXISTS = {
+    "message": "A user with that username already exists."
+}
+USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS = {
+    "message": "A user with that email already exists."
+}
+USER_IS_NOT_REGISTERED_IN_THE_SYSTEM = {
+    "message": "You are not registered in the system."
+}
 NAME_LENGTH_GREATER_THAN_MAX_LIMIT = {
-    "message": "The {field_name} field has to be no more than {max_limit} characters."}
-NAME_LENGTH_NOT_VALID = {"message": "The {field_name} must have at least {min_limit} characters and at most {max_limit}"
-                                    " characters."
-                         }
+    "message": "The {field_name} field has to be no more than {max_limit} characters."
+}
+NAME_LENGTH_NOT_VALID = {
+    "message": "The {field_name} must have at least {min_limit} characters and at most {max_limit}"
+    " characters."
+}
 USER_INPUTS_INCORRECT_CONFIGURATION_VALUE = {
     "message": "The environment"
-               " config value has to be within"
-               " these values: prod,"
-               "dev, test."
+    " config value has to be within"
+    " these values: prod,"
+    "dev, test."
 }
 USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE = {
     "message": "You are not the representative of this Organization."
@@ -250,9 +278,9 @@ TASK_WAS_DELETED_SUCCESSFULLY = {"message": "Task was deleted successfully."}
 TASK_WAS_ACHIEVED_SUCCESSFULLY = {"message": "Task was achieved successfully."}
 USER_WAS_CREATED_SUCCESSFULLY = {
     "message": "User was created successfully."
-               "A confirmation email has been sent via"
-               " email. After confirming your email you "
-               "can login."
+    "A confirmation email has been sent via"
+    " email. After confirming your email you "
+    "can login."
 }
 ACCEPT_MENTORSHIP_RELATIONS_WITH_SUCCESS = {
     "message": "Accept mentorship relations with success."
@@ -327,7 +355,9 @@ NOT_IMPLEMENTED = {"message": "Not implemented."}
 INTERNAL_SERVER_ERROR = {
     "message": "An unexpected server error occurs while processing your request. Please try again later."
 }
-UNEXPECTED_INPUT = {"message": "Unexpected input is detected. Only approved fields should be submitted."}
+UNEXPECTED_INPUT = {
+    "message": "Unexpected input is detected. Only approved fields should be submitted."
+}
 USER_ID_IS_NOT_RETRIEVED_WITH_GET_USER = {
     "message": "You must view your personal details first before you can proceed."
 }
@@ -338,4 +368,6 @@ NOT_ORGANIZATION_REPRESENTATIVE = {
     "message": "You have not declared that you are representing an organization."
 }
 
-INVALID_REQUEST_DATA = {"message": "Data you provided cannot be processed. Make sure your data is acceptable."}
+INVALID_REQUEST_DATA = {
+    "message": "Data you provided cannot be processed. Make sure your data is acceptable."
+}
