@@ -300,7 +300,6 @@ class CreateProgram(Resource):
         token = request.headers.environ["HTTP_AUTHORIZATION"]
 
         is_wrong_token = validate_token(token)
-        status_code = HTTPStatus.BAD_REQUEST
         if not is_wrong_token:
             data = request.json
             if not data:
@@ -317,7 +316,10 @@ class CreateProgram(Resource):
 
             is_not_valid = validate_update_program(data)
             if is_not_valid:
-                return is_not_valid, status_code
+                return (
+                    is_not_valid,
+                    HTTPStatus.BAD_REQUEST,
+                )
             return ProgramDAO.create_program(organization_id, data)
         return is_wrong_token
 

@@ -200,9 +200,7 @@ USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS = {
 USER_IS_NOT_REGISTERED_IN_THE_SYSTEM = {
     "message": "You are not registered in the system."
 }
-NAME_LENGTH_GREATER_THAN_MAX_LIMIT = {
-    "message": "The {field_name} field has to be no more than {max_limit} characters."
-}
+
 NAME_LENGTH_NOT_VALID = {
     "message": "The {field_name} must have at least {min_limit} characters and at most {max_limit}"
     " characters."
