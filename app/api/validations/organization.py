@@ -1,6 +1,7 @@
 from app import messages
 from app.utils.bitschema_utils import OrganizationStatus, Timezone, Zone, ProgramStatus
 from app.utils.validation_utils import is_email_valid, is_phone_valid
+from app.database.models.bit_schema.program import ProgramModel
 
 
 def validate_update_organization(data):
@@ -30,6 +31,9 @@ def validate_update_organization(data):
 
 
 def validate_update_program(data):
+    if "program_name" not in data:
+        return messages.PROGRAM_NAME_IS_MISSING
+
     email = data["contact_email"]
     if not email:
         return messages.EMAIL_FIELD_IS_MISSING
@@ -46,7 +50,6 @@ def validate_update_program(data):
     if mobile:
         if not is_phone_valid(mobile):
             return messages.PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT
-
     try:
         status_value = data["status"]
         status = ProgramStatus(status_value).name
