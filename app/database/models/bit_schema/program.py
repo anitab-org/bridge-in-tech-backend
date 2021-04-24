@@ -158,8 +158,12 @@ class ProgramModel(db.Model):
 
     def save_to_db(self) -> None:
         """Adds a program to the database. """
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
     def delete_from_db(self) -> None:
         """Deletes a program from the database. """

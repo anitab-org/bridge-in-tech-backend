@@ -26,7 +26,6 @@ from app.utils.bit_constants import (
     DEFAULT_PROGRAMS_PER_PAGE,
 )
 
-
 organizations_ns = Namespace(
     "Organizations", description="Operations related to organizations"
 )
@@ -301,7 +300,6 @@ class CreateProgram(Resource):
         token = request.headers.environ["HTTP_AUTHORIZATION"]
 
         is_wrong_token = validate_token(token)
-
         if not is_wrong_token:
             data = request.json
             if not data:
@@ -318,8 +316,10 @@ class CreateProgram(Resource):
 
             is_not_valid = validate_update_program(data)
             if is_not_valid:
-                return is_not_valid, HTTPStatus.BAD_REQUEST
-
+                return (
+                    is_not_valid,
+                    HTTPStatus.BAD_REQUEST,
+                )
             return ProgramDAO.create_program(organization_id, data)
         return is_wrong_token
 
