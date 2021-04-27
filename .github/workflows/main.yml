@@ -24,7 +24,7 @@ jobs:
     runs-on: Ubuntu-20.04
     strategy:
       matrix:
-        python: [3.6, 3.7, 3.9]
+        python: [3.7, 3.9]
 
     env:
       DB_TYPE: postgresql
