@@ -157,7 +157,7 @@ class ProgramModel(db.Model):
         return cls.query.filter_by(rep_id=rep_id).all()
 
     def save_to_db(self) -> None:
-        """Adds a program to the database. """
+        """Adds a program to the database."""
         try:
             db.session.add(self)
             db.session.commit()
@@ -166,6 +166,6 @@ class ProgramModel(db.Model):
             raise e
 
     def delete_from_db(self) -> None:
-        """Deletes a program from the database. """
+        """Deletes a program from the database."""
         db.session.delete(self)
         db.session.commit()
