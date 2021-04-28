@@ -513,3 +513,51 @@ class OtherUser(Resource):
                 get_request(f"/users/{user_id}", token, params=None)
             )
         return is_wrong_token
+
+
+@users_ns.route("users/<int:user_id>/personal_background")
+@users_ns.param("user_id", "The user identifier")
+class OtherUserPersonalBackground(Resource):
+    @classmethod
+    @users_ns.doc("get_user_personal_background")
+    @users_ns.response(
+        HTTPStatus.OK.value,
+        "Successful request",
+        get_user_personal_background_response_model,
+    )
+    @users_ns.response(
+        HTTPStatus.UNAUTHORIZED.value,
+        f"{messages.TOKEN_HAS_EXPIRED}\n"
+        f"{messages.TOKEN_IS_INVALID}\n"
+        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}",
+    )
+    @users_ns.response(
+        HTTPStatus.FORBIDDEN.value, f"{messages.PERSONAL_BACKGROUND_NOT_PUBLIC}"
+    )
+    @users_ns.response(
+        HTTPStatus.NOT_FOUND.value, f"{messages.PERSONAL_BACKGROUND_NOT_FOUND}"
+    )
+    @users_ns.response(
+        HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}"
+    )
+    @users_ns.expect(auth_header_parser, validate=True)
+    def get(cls, user_id):
+        """
+        Returns personal background information of member other than current user
+
+        A user with valid access token can use this endpoint to view another member's personal background information.
+        The endpoint takes "user_id" of such user as input.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+
+        is_wrong_token = validate_token(token)
+
+        if not is_wrong_token:
+            result = PersonalBackgroundDAO.get_user_personal_background_info(user_id)
+            if not result:
+                return messages.PERSONAL_BACKGROUND_NOT_FOUND, HTTPStatus.NOT_FOUND
+            if not result.get("is_public", None):
+                return messages.PERSONAL_BACKGROUND_NOT_PUBLIC, HTTPStatus.FORBIDDEN
+            return result
+        return is_wrong_token
