@@ -131,6 +131,9 @@ NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT = {
 ADDITIONAL_INFORMATION_DOES_NOT_EXIST = {
     "message": "No additional information found with your data. Please provide them now."
 }
+ADDITIONAL_INFORMATION_WITH_ID_DOES_NOT_EXIST = {
+    "message": "No additional information found with this user id. Please provide them now."
+}
 ADDITIONAL_INFORMATION_OF_USER_ALREADY_EXIST = {
     "message": "Additional information already exist with your data. You may update it."
 }

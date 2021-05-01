@@ -513,3 +513,40 @@ class OtherUser(Resource):
                 get_request(f"/users/{user_id}", token, params=None)
             )
         return is_wrong_token
+@users_ns.route("users/<int:user_id>/additional_info")
+@users_ns.param("user_id", "The user identifier")
+class UserProfileAdditionalInfo(Resource):
+    @classmethod
+    @users_ns.doc("get_user_additional_info")
+    @users_ns.response(
+        HTTPStatus.OK.value, "Successful request", get_user_extension_response_model
+    )
+    @users_ns.response(HTTPStatus.BAD_REQUEST.value, "Invalid input.")
+    @users_ns.response(
+        HTTPStatus.NOT_FOUND.value, f"{messages.ADDITIONAL_INFORMATION_WITH_ID_DOES_NOT_EXIST}"
+    )
+    @users_ns.expect(auth_header_parser, validate=True)
+    def get(cls,user_id):
+        """
+        Returns additional information of user with 'user id' equal to user_id
+
+        A user with valid access token can use this endpoint to view their additional information details.
+        The endpoint doesn't take any other input.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+
+        is_wrong_token = validate_token(token)
+
+        if not is_wrong_token:
+            user_json = AUTH_COOKIE["user"].value
+            user = ast.literal_eval(user_json)
+            result = UserExtensionDAO.get_user_additional_data_info(user_id)
+            if not result:
+                return (
+                    messages.ADDITIONAL_INFORMATION_WITH_ID_DOES_NOT_EXIST,
+                    HTTPStatus.NOT_FOUND,
+                )
+            return result
+
+        return is_wrong_token
