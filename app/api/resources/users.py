@@ -513,6 +513,8 @@ class OtherUser(Resource):
                 get_request(f"/users/{user_id}", token, params=None)
             )
         return is_wrong_token
+
+
 @users_ns.route("users/<int:user_id>/additional_info")
 @users_ns.param("user_id", "The user identifier")
 class UserProfileAdditionalInfo(Resource):
@@ -523,10 +525,11 @@ class UserProfileAdditionalInfo(Resource):
     )
     @users_ns.response(HTTPStatus.BAD_REQUEST.value, "Invalid input.")
     @users_ns.response(
-        HTTPStatus.NOT_FOUND.value, f"{messages.ADDITIONAL_INFORMATION_WITH_ID_DOES_NOT_EXIST}"
+        HTTPStatus.NOT_FOUND.value,
+        f"{messages.ADDITIONAL_INFORMATION_WITH_ID_DOES_NOT_EXIST}",
     )
     @users_ns.expect(auth_header_parser, validate=True)
-    def get(cls,user_id):
+    def get(cls, user_id):
         """
         Returns additional information of user with 'user id' equal to user_id
 

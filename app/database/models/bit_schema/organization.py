@@ -98,25 +98,25 @@ class OrganizationModel(db.Model):
 
     @classmethod
     def find_by_representative(cls, rep_id: int) -> "OrganizationModel":
-        """Returns the organization that has the representative id user searched for. """
+        """Returns the organization that has the representative id user searched for."""
         return cls.query.filter_by(rep_id=rep_id).first()
 
     @classmethod
     def find_by_name(cls, name: str) -> "OrganizationModel":
-        """Returns the organization that has the name user searched for. """
+        """Returns the organization that has the name user searched for."""
         return cls.query.filter_by(name=name).first()
 
     @classmethod
     def find_by_email(cls, email: str) -> "OrganizationModel":
-        """Returns the organization that has the email user searched for. """
+        """Returns the organization that has the email user searched for."""
         return cls.query.filter_by(email=email).first()
 
     def save_to_db(self) -> None:
-        """Adds an organization to the database. """
+        """Adds an organization to the database."""
         db.session.add(self)
         db.session.commit()
 
     def delete_from_db(self) -> None:
-        """Deletes an organization from the database. """
+        """Deletes an organization from the database."""
         db.session.delete(self)
         db.session.commit()

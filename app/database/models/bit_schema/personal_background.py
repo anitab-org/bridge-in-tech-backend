@@ -125,11 +125,11 @@ class PersonalBackgroundModel(db.Model):
         return cls.query.filter_by(user_id=user_id).first()
 
     def save_to_db(self) -> None:
-        """Adds user's personal background to the database. """
+        """Adds user's personal background to the database."""
         db.session.add(self)
         db.session.commit()
 
     def delete_from_db(self) -> None:
-        """Deletes user's personal background from the database. """
+        """Deletes user's personal background from the database."""
         db.session.delete(self)
         db.session.commit()
