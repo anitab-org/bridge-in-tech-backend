@@ -531,7 +531,7 @@ class UserProfileAdditionalInfo(Resource):
     @users_ns.expect(auth_header_parser, validate=True)
     def get(cls, user_id):
         """
-        Returns additional information of user with 'user id' equal to user_id
+        Returns additional information of user with id = user_id
 
         A user with valid access token can use this endpoint to view their additional information details.
         The endpoint doesn't take any other input.
@@ -542,8 +542,6 @@ class UserProfileAdditionalInfo(Resource):
         is_wrong_token = validate_token(token)
 
         if not is_wrong_token:
-            user_json = AUTH_COOKIE["user"].value
-            user = ast.literal_eval(user_json)
             result = UserExtensionDAO.get_user_additional_data_info(user_id)
             if not result:
                 return (
