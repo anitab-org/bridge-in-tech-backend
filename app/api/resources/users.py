@@ -541,13 +541,13 @@ class UserProfileAdditionalInfo(Resource):
 
         is_wrong_token = validate_token(token)
 
-        if not is_wrong_token:
-            result = UserExtensionDAO.get_user_additional_data_info(user_id)
-            if not result:
-                return (
-                    messages.ADDITIONAL_INFORMATION_WITH_ID_DOES_NOT_EXIST,
-                    HTTPStatus.NOT_FOUND,
-                )
-            return result
+        if is_wrong_token:
+            return is_wrong_token
 
-        return is_wrong_token
+        result = UserExtensionDAO.get_user_additional_data_info(user_id)
+        if not result:
+            return (
+                messages.ADDITIONAL_INFORMATION_WITH_ID_DOES_NOT_EXIST,
+                HTTPStatus.NOT_FOUND,
+            )
+        return result
