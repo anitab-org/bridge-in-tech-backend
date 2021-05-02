@@ -169,3 +169,4 @@ class ProgramModel(db.Model):
         """Deletes a program from the database."""
         db.session.delete(self)
         db.session.commit()
+        
