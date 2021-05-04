@@ -169,7 +169,10 @@ $ git pull https://github.com/mtreacy002/mentorship-backend.git ms-backend-serve
 
 Follow the rest of the setup instructions (providing the environment credentials) mentioned on the [MS README Run app section](https://github.com/anitab-org/mentorship-backend). Note Notice that since BIT already occupies **port 5000** of your localhost, the MS server is set to run on **port 4000** for this BridgeInTech project.
 
-**---**
+<hr>
+<strong>Note: If you got stuck while setting up the development environment, then don't worry 😉 You may check out this setup tutorial 👇 : </strong>
+
+https://youtu.be/yha9CNMZV5k
 
 Now you have setup the BIT and MS backend servers which connected to one postgresql database.
 You can run both BIT and MS backend servers and try the application starting with creating then login as a new user.
