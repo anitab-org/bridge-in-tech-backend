@@ -171,6 +171,10 @@ Follow the rest of the setup instructions (providing the environment credentials
 
 **---**
 
+**Note : If you got stuck while setting up the development environment, then don't worry 😉 You may check out this setup tutorial 👇 :**
+
+[![Tutorial](http://img.youtube.com/vi/yha9CNMZV5k/0.jpg)](https://youtu.be/yha9CNMZV5k)
+
 Now you have setup the BIT and MS backend servers which connected to one postgresql database.
 You can run both BIT and MS backend servers and try the application starting with creating then login as a new user.
 
