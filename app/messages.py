@@ -57,7 +57,9 @@ NO_PROGRAM_FOUND = {"message": "No program found on the record."}
 ORGANITATION_ENUM_FIELD_IS_INVALID = {
     "message": "Either Timezone or Status fields are invalid."
 }
-
+PERSONAL_BACKGROUND_NOT_FOUND = {
+    "message": "No personal background information found for this user."
+}
 # Missing fields
 MENTOR_ID_FIELD_IS_MISSING = {"message": "Mentor ID field is missing."}
 MENTEE_ID_FIELD_IS_MISSING = {"message": "Mentee ID field is missing."}
@@ -368,7 +370,9 @@ USER_ID_IS_NOT_RETRIEVED_WITH_GET_ORGANIZATION = {
 NOT_ORGANIZATION_REPRESENTATIVE = {
     "message": "You have not declared that you are representing an organization."
 }
-
+PERSONAL_BACKGROUND_NOT_PUBLIC = {
+    "message": "The personal background for this user is not public."
+}
 INVALID_REQUEST_DATA = {
     "message": "Data you provided cannot be processed. Make sure your data is acceptable."
 }

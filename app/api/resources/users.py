@@ -534,6 +534,7 @@ class OtherUserPersonalBackground(Resource):
     def get(cls, user_id):
         """
         Returns personal background information of member other than current user
+
         A user with valid access token can use this endpoint to view another member's personal background information.
         The endpoint takes "user_id" of such user as input.
         """
