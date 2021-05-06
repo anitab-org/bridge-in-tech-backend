@@ -61,7 +61,6 @@ class UserRegister(Resource):
     def post(cls):
         """
         Creates a new user.
-
         The endpoint accepts user input related to Mentorship System API (name, username, password, email,
         terms_and_conditions_checked(true/false), need_mentoring(true/false),
         available_to_mentor(true/false)).
@@ -107,7 +106,6 @@ class LoginUser(Resource):
     def post(cls):
         """
         Login user
-
         The user can login with (username or email) + password.
         Username field can be either the User's username or the email.
         The return value is an access token and the expiry timestamp.
@@ -148,7 +146,6 @@ class MyProfilePersonalDetails(Resource):
     def get(cls):
         """
         Returns personal details of current user.
-
         A user with valid access token can use this endpoint to view their own
         user details. The endpoint doesn't take any other input.
         """
@@ -171,7 +168,6 @@ class MyProfilePersonalDetails(Resource):
     def put(cls):
         """
         Updates user personal details
-
         A user with valid access token can use this endpoint to edit their own
         user details. The endpoint takes any of the given parameters (name, username,
         bio, location, occupation, organization, slack_username, social_media_links,
@@ -234,7 +230,6 @@ class MyProfileAdditionalInfo(Resource):
     def get(cls):
         """
         Returns additional information of current user
-
         A user with valid access token can use this endpoint to view their additional information details.
         The endpoint doesn't take any other input.
         """
@@ -283,7 +278,6 @@ class MyProfileAdditionalInfo(Resource):
     def put(cls):
         """
         Creates or updates user additional information
-
         A user with valid access token can use this endpoint to create or update additional information to their own data.
         The endpoint takes any of the given parameters (is_organization_rep (true or false value), timezone
         (with value as per Timezone Enum Value) and additional_info (dictionary of phone, mobile and personal_website)).
@@ -349,7 +343,6 @@ class MyProfilePersonalBackground(Resource):
     def get(cls):
         """
         Returns personal background information of current user
-
         A user with valid access token can use this endpoint to view their personal background information.
         The endpoint doesn't take any other input.
         """
@@ -392,7 +385,6 @@ class MyProfilePersonalBackground(Resource):
     def put(cls):
         """
         Creates or updates user personal background
-
         A user with valid access token can use this endpoint to create or update personal background information to their own data.
         The endpoint takes any of the given parameters (gender, age, ethnicity, sexusl_orientation, religion, physical_ability,
         mental_ability, socio_economic, highest_education, years_of_experience enums), others (dictionary of any additional
@@ -457,7 +449,6 @@ class UsersList(Resource):
     def get(cls):
         """
         Returns list of all verified users whose names contain the given query.
-
         A user with valid access token can view the list of verified users. The endpoint
         doesn't take any other input. A JSON array having an object for each user is
         returned. The array contains id, username, name, slack_username, bio,
@@ -500,7 +491,6 @@ class OtherUser(Resource):
     def get(cls, user_id):
         """
         Returns a user.
-
         A user with valid access token can view the details of another user. The endpoint
         takes "user_id" of such user has input.
         """
@@ -512,6 +502,53 @@ class OtherUser(Resource):
             return http_response_checker(
                 get_request(f"/users/{user_id}", token, params=None)
             )
+        return is_wrong_token
+
+
+@users_ns.route("users/<int:user_id>/personal_background")
+@users_ns.param("user_id", "The user identifier")
+class OtherUserPersonalBackground(Resource):
+    @classmethod
+    @users_ns.doc("get_user_personal_background")
+    @users_ns.response(
+        HTTPStatus.OK.value,
+        "Successful request",
+        get_user_personal_background_response_model,
+    )
+    @users_ns.response(
+        HTTPStatus.UNAUTHORIZED.value,
+        f"{messages.TOKEN_HAS_EXPIRED}\n"
+        f"{messages.TOKEN_IS_INVALID}\n"
+        f"{messages.AUTHORISATION_TOKEN_IS_MISSING}",
+    )
+    @users_ns.response(
+        HTTPStatus.FORBIDDEN.value, f"{messages.PERSONAL_BACKGROUND_NOT_PUBLIC}"
+    )
+    @users_ns.response(
+        HTTPStatus.NOT_FOUND.value, f"{messages.PERSONAL_BACKGROUND_NOT_FOUND}"
+    )
+    @users_ns.response(
+        HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}"
+    )
+    @users_ns.expect(auth_header_parser, validate=True)
+    def get(cls, user_id):
+        """
+        Returns personal background information of member other than current user
+        A user with valid access token can use this endpoint to view another member's personal background information.
+        The endpoint takes "user_id" of such user as input.
+        """
+
+        token = request.headers.environ["HTTP_AUTHORIZATION"]
+
+        is_wrong_token = validate_token(token)
+
+        if not is_wrong_token:
+            result = PersonalBackgroundDAO.get_user_personal_background_info(user_id)
+            if not result:
+                return messages.PERSONAL_BACKGROUND_NOT_FOUND, HTTPStatus.NOT_FOUND
+            if not result.get("is_public", None):
+                return messages.PERSONAL_BACKGROUND_NOT_PUBLIC, HTTPStatus.FORBIDDEN
+            return result
         return is_wrong_token
 
 
