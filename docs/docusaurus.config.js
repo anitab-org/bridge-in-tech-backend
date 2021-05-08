@@ -1,12 +1,12 @@
 module.exports = {
   title: 'Bridge-In-Tech Backend',
   tagline: 'Documentation for Bridge-In-Tech backend',
-  url: 'https://bit-backend-docs.surge.sh',
-  baseUrl: '/',
+  url: 'https://anitab-org.github.io',
+  baseUrl: '/bridge-in-tech-backend',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'AnitaB.org',
+  organizationName: 'anitab-org',
   projectName: 'bridge-in-tech-backend',
   themeConfig: {
     navbar: {
