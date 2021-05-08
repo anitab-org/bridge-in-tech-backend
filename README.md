@@ -37,7 +37,7 @@ black .
 
 ## Project Documentation
 
-Documentation for the project is hosted [here](https://bit-backend-docs.surge.sh/). We use `Docusaurus` for maintaining the documentation of the project.
+Documentation for the project is hosted [here](https://anitab-org.github.io/bridge-in-tech-backend). We use `Docusaurus` for maintaining the documentation of the project.
 
 This project has live documents that contain information on:
 - Planning - [BridgeInTech Proposal Review](https://docs.google.com/document/d/1uCDCWs8Xyo-3EaUnrLOs48mefXJIN235b1aAswA-s-Y/edit) 
