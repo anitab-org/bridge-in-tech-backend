@@ -2,7 +2,7 @@ module.exports = {
   title: 'Bridge-In-Tech Backend',
   tagline: 'Documentation for Bridge-In-Tech backend',
   url: 'https://anitab-org.github.io',
-  baseUrl: '/bridge-in-tech-backend',
+  baseUrl: '/bridge-in-tech-backend/',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
