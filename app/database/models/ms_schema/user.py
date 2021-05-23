@@ -23,7 +23,7 @@ class UserModel(db.Model):
     # Specifying database table used for UserModel
     __tablename__ = "users"
     __table_args__ = {"schema": "public", "extend_existing": True}
-    
+
     id = db.Column(db.Integer, primary_key=True)
 
     # personal data
@@ -83,7 +83,7 @@ class UserModel(db.Model):
     )
 
     def __init__(self, name, username, password, email, terms_and_conditions_checked):
-        """Initialises userModel class with name, username, password, email, and terms_and_conditions_checked. """
+        """Initialises userModel class with name, username, password, email, and terms_and_conditions_checked."""
         ## required fields
 
         self.name = name
@@ -102,7 +102,7 @@ class UserModel(db.Model):
         # optional fields
         self.need_mentoring = False
         self.available_to_mentor = False
-       
+
     def json(self):
         """Returns Usermodel object in json format."""
         return {
@@ -133,57 +133,54 @@ class UserModel(db.Model):
         }
 
     def __repr__(self):
-        """Returns the user's name and username. """
-        return (
-            f"User name is {self.name}\n"
-            f"User username is {self.username}\n"
-        )
-        
+        """Returns the user's name and username."""
+        return f"User name is {self.name}\n" f"User username is {self.username}\n"
+
     @classmethod
     def find_by_username(cls, username: str) -> "UserModel":
-        """Returns the user that has the username we searched for. """
+        """Returns the user that has the username we searched for."""
         return cls.query.filter_by(username=username).first()
 
     @classmethod
     def find_by_email(cls, email: str) -> "UserModel":
-        """Returns the user that has the email we searched for. """
+        """Returns the user that has the email we searched for."""
         return cls.query.filter_by(email=email).first()
 
     @classmethod
     def find_by_id(cls, _id: int) -> "UserModel":
-        """Returns the user that has the id we searched for. """
+        """Returns the user that has the id we searched for."""
         return cls.query.filter_by(id=_id).first()
 
     @classmethod
     def get_all_admins(cls, is_admin=True):
-        """Returns all the admins. """
+        """Returns all the admins."""
         return cls.query.filter_by(is_admin=is_admin).all()
 
     @classmethod
     def is_empty(cls) -> bool:
-        """Returns a boolean if the Usermodel is empty or not. """
+        """Returns a boolean if the Usermodel is empty or not."""
         return cls.query.first() is None
 
     @classmethod
     def get_all_representatives(cls, is_company_rep=True):
-        """Returns all users who is a company representative. """
+        """Returns all users who is a company representative."""
         return cls.query.filter_by(is_company_rep=is_company_rep).all()
 
     def set_password(self, password_plain_text: str) -> None:
-        """Sets user password when they create an account or when they are changing their password. """
+        """Sets user password when they create an account or when they are changing their password."""
         self.password_hash = generate_password_hash(password_plain_text)
 
     # checks if password is the same, using its hash
     def check_password(self, password_plain_text: str) -> bool:
-        """Returns a boolean if password is the same as it hash or not. """
+        """Returns a boolean if password is the same as it hash or not."""
         return check_password_hash(self.password_hash, password_plain_text)
 
     def save_to_db(self) -> None:
-        """Adds a user to the database. """
+        """Adds a user to the database."""
         db.session.add(self)
         db.session.commit()
 
     def delete_from_db(self) -> None:
-        """Deletes a user from the database. """
+        """Deletes a user from the database."""
         db.session.delete(self)
         db.session.commit()

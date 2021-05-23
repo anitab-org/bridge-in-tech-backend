@@ -62,17 +62,17 @@ class UserExtensionModel(db.Model):
     def find_by_user_id(cls, user_id) -> "UserExtensionModel":
 
         """Returns the user extension that has the passed user id.
-           Args:
-                _id: The id of a user.
+        Args:
+             _id: The id of a user.
         """
         return cls.query.filter_by(user_id=user_id).first()
 
     def save_to_db(self) -> None:
-        """Adds user's BridgeInTech specific data to the database. """
+        """Adds user's BridgeInTech specific data to the database."""
         db.session.add(self)
         db.session.commit()
 
     def delete_from_db(self) -> None:
-        """Deletes user's BridgeInTech specific data from the database. """
+        """Deletes user's BridgeInTech specific data from the database."""
         db.session.delete(self)
         db.session.commit()

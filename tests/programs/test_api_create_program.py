@@ -9,9 +9,20 @@ from flask_restx import marshal
 from app import messages
 from app.database.sqlalchemy_extension import db
 from tests.base_test_case import BaseTestCase
-from app.api.request_api_utils import post_request, get_request, BASE_MS_API_URL, AUTH_COOKIE
-from app.api.models.user import full_user_api_model, public_user_personal_details_response_model
-from app.api.models.organization import get_organization_response_model, update_organization_request_model
+from app.api.request_api_utils import (
+    post_request,
+    get_request,
+    BASE_MS_API_URL,
+    AUTH_COOKIE,
+)
+from app.api.models.user import (
+    full_user_api_model,
+    public_user_personal_details_response_model,
+)
+from app.api.models.organization import (
+    get_organization_response_model,
+    update_organization_request_model,
+)
 from tests.test_data import user1, user2
 from app.database.models.ms_schema.user import UserModel
 from app.database.models.bit_schema.user_extension import UserExtensionModel
@@ -26,8 +37,11 @@ class TestCreateProgramApi(BaseTestCase):
     def setUp(self, mock_login, mock_get_user):
         super(TestCreateProgramApi, self).setUp()
         # set access expiry 4 weeks from today's date (sc*min*hrrs*days)
-        access_expiry = time.time() + 60*60*24*28
-        success_message = {"access_token": "this is fake token", "access_expiry": access_expiry}
+        access_expiry = time.time() + 60 * 60 * 24 * 28
+        success_message = {
+            "access_token": "this is fake token",
+            "access_expiry": access_expiry,
+        }
         success_code = HTTPStatus.OK
 
         mock_login_response = Mock()
@@ -37,19 +51,19 @@ class TestCreateProgramApi(BaseTestCase):
         mock_login.raise_for_status = json.dumps(success_code)
 
         expected_user = marshal(user1, full_user_api_model)
-        
+
         mock_get_response = Mock()
         mock_get_response.json.return_value = expected_user
         mock_get_response.status_code = success_code
 
         mock_get_user.return_value = mock_get_response
         mock_get_user.raise_for_status = json.dumps(success_code)
-        
+
         user_login_success = {
             "username": user1.get("username"),
-            "password": user1.get("password")
+            "password": user1.get("password"),
         }
-        
+
         with self.client:
             login_response = self.client.post(
                 "/login",
@@ -61,9 +75,9 @@ class TestCreateProgramApi(BaseTestCase):
         test_user1 = UserModel(
             name=user1["name"],
             username=user1["username"],
-            password=user1["password"], 
-            email=user1["email"], 
-            terms_and_conditions_checked=user1["terms_and_conditions_checked"]
+            password=user1["password"],
+            email=user1["email"],
+            terms_and_conditions_checked=user1["terms_and_conditions_checked"],
         )
         test_user1.need_mentoring = user1["need_mentoring"]
         test_user1.available_to_mentor = user1["available_to_mentor"]
@@ -73,15 +87,14 @@ class TestCreateProgramApi(BaseTestCase):
         AUTH_COOKIE["user"] = marshal(self.test_user1_data, full_user_api_model)
 
         test_user_extension = UserExtensionModel(
-            user_id=self.test_user1_data.id,
-            timezone="AUSTRALIA_MELBOURNE"
+            user_id=self.test_user1_data.id, timezone="AUSTRALIA_MELBOURNE"
         )
         test_user_extension.is_organization_rep = True
         test_user_extension.save_to_db()
 
         # prepare existing organization
         organization = OrganizationModel(
-            rep_id=self.test_user1_data.id, 
+            rep_id=self.test_user1_data.id,
             name="Company ABC",
             email="companyabc@mail.com",
             address="506 Elizabeth St, Melbourne VIC 3000, Australia",
@@ -93,18 +106,22 @@ class TestCreateProgramApi(BaseTestCase):
         organization.phone = "321-456-789"
         organization.status = "DRAFT"
         # joined one month prior to access date
-        organization.join_date = time.time() - 60*60*24*7
+        organization.join_date = time.time() - 60 * 60 * 24 * 7
 
         organization.save_to_db()
-        self.organization1_data = OrganizationModel.find_by_representative(self.test_user1_data.id)
-        
+        self.organization1_data = OrganizationModel.find_by_representative(
+            self.test_user1_data.id
+        )
+
         # prepare expected representative object
-        self.expected_representative = marshal(self.test_user1_data, public_user_personal_details_response_model)
+        self.expected_representative = marshal(
+            self.test_user1_data, public_user_personal_details_response_model
+        )
 
         # set start date one month from now, end date another month after that
-        start_date = time.time() + 60*60*24*28
-        end_date = start_date + 60*60*24*28
-        
+        start_date = time.time() + 60 * 60 * 24 * 28
+        end_date = start_date + 60 * 60 * 24 * 28
+
         self.correct_payload_program = {
             "program_name": "Program A",
             "start_date": time.strftime("%Y-%m-%d %H:%M", time.localtime(start_date)),
@@ -141,11 +158,10 @@ class TestCreateProgramApi(BaseTestCase):
             "contact_email": "missjane@hrd.com",
             "program_website": "http://program_a.com",
             "irc_channel": "",
-            "tags": [], 
-            "status": "Draft"
+            "tags": [],
+            "status": "Draft",
         }
-        
-        
+
     @patch("requests.get")
     def test_api_dao_create_program_successfully(self, mock_get_representative):
         success_message = messages.PROGRAM_SUCCESSFULLY_CREATED
@@ -161,25 +177,24 @@ class TestCreateProgramApi(BaseTestCase):
         response = self.client.post(
             f"/organizations/{self.organization1_data.id}/programs/program",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-            data=json.dumps(
-                    dict(self.correct_payload_program)
-                ),
+            data=json.dumps(dict(self.correct_payload_program)),
             follow_redirects=True,
             content_type="application/json",
         )
         self.assertEqual(response.json, success_message)
         self.assertEqual(response.status_code, success_code)
-        
 
     @patch("requests.get")
-    def test_api_dao_create_program__but_not_representative(self, mock_get_representative):
+    def test_api_dao_create_program__but_not_representative(
+        self, mock_get_representative
+    ):
         # create another user representative
         test_user2 = UserModel(
             name=user2["name"],
             username=user2["username"],
-            password=user2["password"], 
-            email=user2["email"], 
-            terms_and_conditions_checked=user2["terms_and_conditions_checked"]
+            password=user2["password"],
+            email=user2["email"],
+            terms_and_conditions_checked=user2["terms_and_conditions_checked"],
         )
         test_user2.need_mentoring = user2["need_mentoring"]
         test_user2.available_to_mentor = user2["available_to_mentor"]
@@ -189,7 +204,7 @@ class TestCreateProgramApi(BaseTestCase):
 
         # create another orgnazation
         organization2 = OrganizationModel(
-            rep_id=test_user2_data.id, 
+            rep_id=test_user2_data.id,
             name="Company DEF",
             email="companydef@mail.com",
             address="Somewhere",
@@ -200,10 +215,12 @@ class TestCreateProgramApi(BaseTestCase):
         organization2.about = "This is about DEF"
         organization2.phone = "321-456-789"
         organization2.status = "DRAFT"
-        organization2.join_date = time.time() - 60*60*24*7
+        organization2.join_date = time.time() - 60 * 60 * 24 * 7
 
         organization2.save_to_db()
-        organization2_data = OrganizationModel.find_by_representative(test_user2_data.id)
+        organization2_data = OrganizationModel.find_by_representative(
+            test_user2_data.id
+        )
 
         mock_get_response = Mock()
         mock_get_response.json.return_value = self.expected_representative
@@ -211,36 +228,56 @@ class TestCreateProgramApi(BaseTestCase):
 
         mock_get_representative.return_value = mock_get_response
         mock_get_representative.raise_for_status = json.dumps(HTTPStatus.OK)
-        
 
         response = self.client.post(
             f"/organizations/{organization2_data.id}/programs/program",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-            data=json.dumps(
-                    dict(self.correct_payload_program)
-                ),
+            data=json.dumps(dict(self.correct_payload_program)),
             follow_redirects=True,
             content_type="application/json",
         )
         self.assertEqual(HTTPStatus.FORBIDDEN, response.status_code)
-        self.assertEqual(messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE, response.json)
+        self.assertEqual(
+            messages.USER_IS_NOT_THE_ORGANIZATION_REPRESENTATIVE, response.json
+        )
 
-    
     @patch("requests.get")
-    def test_api_dao_create_program_but_organization_not_exist(self, mock_get_representative):
+    def test_api_dao_create_program_when_name_already_exist(
+        self, mock_get_representative
+    ):
+        self.client.post(
+            f"/organizations/1/programs/program",
+            headers={"Authorization": AUTH_COOKIE["Authorization"].value},
+            data=json.dumps(dict(self.correct_payload_program)),
+            follow_redirects=True,
+            content_type="application/json",
+        )
+
+        response = self.client.post(
+            f"/organizations/1/programs/program",
+            headers={"Authorization": AUTH_COOKIE["Authorization"].value},
+            data=json.dumps(dict(self.correct_payload_program)),
+            follow_redirects=True,
+            content_type="application/json",
+        )
+        self.assertEqual(HTTPStatus.CONFLICT, response.status_code)
+        self.assertEqual(messages.PROGRAM_NAME_ALREADY_USED, response.json)
+
+    @patch("requests.get")
+    def test_api_dao_create_program_but_organization_not_exist(
+        self, mock_get_representative
+    ):
         mock_get_response = Mock()
         mock_get_response.json.return_value = self.expected_representative
         mock_get_response.status_code = HTTPStatus.OK
 
         mock_get_representative.return_value = mock_get_response
         mock_get_representative.raise_for_status = json.dumps(HTTPStatus.OK)
-        
+
         response = self.client.post(
             "/organizations/3/programs/program",
             headers={"Authorization": AUTH_COOKIE["Authorization"].value},
-            data=json.dumps(
-                    dict(self.correct_payload_program)
-                ),
+            data=json.dumps(dict(self.correct_payload_program)),
             follow_redirects=True,
             content_type="application/json",
         )

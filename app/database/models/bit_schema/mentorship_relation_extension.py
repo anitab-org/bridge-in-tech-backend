@@ -6,7 +6,7 @@ from app.database.sqlalchemy_extension import db
 
 class MentorshipRelationExtensionModel(db.Model):
     """Defines attibutes of mentorship relation that are specific only to BridgeInTech.
-    
+
     Attributes:
     program_id: An integer for storing program id.
     mentorship_relation_id: An integer for storing mentorship relation id.
@@ -62,8 +62,8 @@ class MentorshipRelationExtensionModel(db.Model):
     def find_by_id(cls, _id) -> "MentorshipRelationExtensionModel":
 
         """Returns the mentorship_relations_extension that has the passed id.
-           Args:
-                _id: The id of a mentorship_relations_extension.
+        Args:
+             _id: The id of a mentorship_relations_extension.
         """
         return cls.query.filter_by(id=_id).first()
 

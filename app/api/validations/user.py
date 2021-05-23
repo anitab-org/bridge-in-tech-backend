@@ -39,13 +39,13 @@ def validate_user_registration_request_data(data):
         return messages.EMAIL_FIELD_IS_MISSING
     if "terms_and_conditions_checked" not in data:
         return messages.TERMS_AND_CONDITIONS_FIELD_IS_MISSING
-    
+
     name = data["name"]
     username = data["username"]
     password = data["password"]
     email = data["email"]
     terms_and_conditions_checked = data["terms_and_conditions_checked"]
-    
+
     if not (
         isinstance(name, str)
         and isinstance(username, str)
@@ -110,7 +110,7 @@ def validate_update_profile_request_data(data):
         return messages.NAME_FIELD_IS_MISSING
     if "username" not in data:
         return messages.USERNAME_FIELD_IS_MISSING
-    
+
     username = data.get("username", None)
     if username:
         is_valid = validate_length(
@@ -244,6 +244,7 @@ def validate_new_password(data):
 
     return {}
 
+
 def validate_update_additional_info_request(data):
     if "is_organization_rep" not in data:
         return messages.IS_ORGANIZATION_REP_FIELD_IS_MISSING
@@ -253,7 +254,7 @@ def validate_update_additional_info_request(data):
     timezone_value = data.get("timezone")
     phone = data.get("phone", None)
     mobile = data.get("mobile", None)
-    
+
     try:
         timezone = Timezone(timezone_value).name
     except ValueError:
@@ -264,7 +265,8 @@ def validate_update_additional_info_request(data):
     if mobile:
         if not is_phone_valid(mobile):
             return messages.PHONE_OR_MOBILE_IS_NOT_IN_NUMBER_FORMAT
-    
+
+
 def validate_update_personal_background_info_request(data):
     approved = []
     try:
@@ -280,4 +282,3 @@ def validate_update_personal_background_info_request(data):
         approved.append(YearsOfExperience(data["years_of_experience"]).name)
     except ValueError:
         return messages.PERSONAL_BACKGROUND_IS_INVALID
-

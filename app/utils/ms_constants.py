@@ -5,4 +5,3 @@
 # from UserDAO constants
 DEFAULT_PAGE = 1
 DEFAULT_USERS_PER_PAGE = 10
-    

@@ -4,6 +4,7 @@ from sqlalchemy import BigInteger, ARRAY
 from sqlalchemy.dialects.postgresql import JSONB
 from app.database.sqlalchemy_extension import db
 from app.utils.bitschema_utils import ContactType, Zone, ProgramStatus
+
 # from app.database.models.ms_schema.mentorship_relation import MentorshipRelationModel
 from app.database.models.bit_schema.mentorship_relation_extension import (
     MentorshipRelationExtensionModel,
@@ -17,7 +18,7 @@ class ProgramModel(db.Model):
     program_name: A string for storing program name.
     organization_id: An integer for storing organization's id.
     start_date: A date for storing the program start date.
-    end_date: A date for storing the program end date. 
+    end_date: A date for storing the program end date.
     """
 
     # Specifying database table used for ProgramModel
@@ -128,8 +129,8 @@ class ProgramModel(db.Model):
     def find_by_id(cls, _id) -> "ProgramModel":
 
         """Returns the Program that has the passed id.
-           Args:
-                _id: The id of a Program.
+        Args:
+             _id: The id of a Program.
         """
         return cls.query.filter_by(id=_id).first()
 
@@ -137,30 +138,34 @@ class ProgramModel(db.Model):
     def find_by_name(cls, program_name) -> "ProgramModel":
 
         """Returns the Program that has the passed name.
-           Args:
-                program_name: The name of a Program.
+        Args:
+             program_name: The name of a Program.
         """
         return cls.query.filter_by(program_name=program_name).first()
-    
+
     @classmethod
     def get_all_programs_by_organization(cls, organization_id):
         """Returns list of programs that has the passed organization id.
-           Args:
-                _id: The id of an Organization.
+        Args:
+             _id: The id of an Organization.
         """
         return cls.query.filter_by(organization_id=organization_id).all()
-    
+
     @classmethod
     def get_all_programs_by_representative(cls, rep_id):
         """Returns list of programs that where their representative ID is the passedid."""
         return cls.query.filter_by(rep_id=rep_id).all()
 
     def save_to_db(self) -> None:
-        """Adds a program to the database. """
-        db.session.add(self)
-        db.session.commit()
+        """Adds a program to the database."""
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
     def delete_from_db(self) -> None:
-        """Deletes a program from the database. """
+        """Deletes a program from the database."""
         db.session.delete(self)
         db.session.commit()
