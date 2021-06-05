@@ -5,6 +5,7 @@ from app.database.models.bit_schema.user_extension import UserExtensionModel
 from app import messages
 from app.api.request_api_utils import AUTH_COOKIE
 from app.utils.bitschema_utils import Timezone
+from typing import Dict
 
 
 class UserExtensionDAO:
@@ -12,7 +13,7 @@ class UserExtensionDAO:
     """Data Access Object for Users_Extension functionalities"""
 
     @staticmethod
-    def get_user_additional_data_info(user_id):
+    def get_user_additional_data_info(user_id: int) -> dict:
         """Retrieves a user's additional information using a specified ID.
 
         Arguments:
@@ -48,7 +49,7 @@ class UserExtensionDAO:
         return
 
     @staticmethod
-    def update_user_additional_info(data):
+    def update_user_additional_info(data: Dict[str, str]) -> tuple:
         """Updates a user_extension instance.
         Arguments:
         data: A list containing user's id, boolean value of whether or not
@@ -82,7 +83,13 @@ class UserExtensionDAO:
         )
 
 
-def update(user, data, timezone, success_message, status_code):
+def update(
+    user: Dict[str, str],
+    data: Dict[str, str],
+    timezone: str,
+    success_message: str,
+    status_code: int,
+) -> tuple:
     additional_info_data = {}
     try:
         additional_info_data["phone"] = data["phone"]
