@@ -16,6 +16,7 @@ from app.utils.date_converter import (
     convert_human_date_to_timestamp,
     convert_timestamp_to_human_date,
 )
+from typing import Dict
 
 
 class ProgramDAO:
@@ -23,7 +24,7 @@ class ProgramDAO:
     """Data Access Object for Program functionalities"""
 
     @staticmethod
-    def get_program_by_program_id(organization_id, program_id, token):
+    def get_program_by_program_id(organization_id: int, program_id: int, token: str):
         """Retrieves a program which ID is passed as parameter.
 
         Arguments:
@@ -52,7 +53,7 @@ class ProgramDAO:
         return get_program(program, organization, user.message)
 
     @staticmethod
-    def get_all_programs_by_organization(organization_id, token):
+    def get_all_programs_by_organization(organization_id: int, token: str):
 
         """Retrieves all the programs that are offered by the organization which ID is passed as parameter.
 
@@ -81,7 +82,7 @@ class ProgramDAO:
         ]
 
     @staticmethod
-    def create_program(organization_id, data):
+    def create_program(organization_id: int, data: Dict[str, str]):
         """Creates the program that is offered by organization which ID is passed as parameter.
 
         Arguments:
@@ -139,7 +140,7 @@ class ProgramDAO:
             return messages.INVALID_REQUEST_DATA, HTTPStatus.BAD_REQUEST
 
     @staticmethod
-    def update_program(organization_id, program_id, data):
+    def update_program(organization_id: int, program_id: int, data: Dict[str, str]):
         """Updates the program that is offered by organization which
         program and organization ID are passed as parameters.
 
