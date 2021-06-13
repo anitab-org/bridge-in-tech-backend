@@ -1,14 +1,24 @@
 module.exports = {
   title: 'Bridge-In-Tech Backend',
   tagline: 'Documentation for Bridge-In-Tech backend',
-  url: 'https://bit-backend-docs.surge.sh',
-  baseUrl: '/',
+  url: 'https://anitab-org.github.io',
+  baseUrl: '/bridge-in-tech-backend/',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'AnitaB.org',
   projectName: 'bridge-in-tech-backend',
   themeConfig: {
+     announcementBar: {
+      id: 'support_us',
+      content:
+        '⭐️ If you like Bridge-In-Tech-Backend, give it a star on <a href="https://github.com/anitab-org/bridge-in-tech-backend" rel="noopener noreferrer" target="_blank">GitHub!</a> ⭐️',
+      backgroundColor: '#fafbfc',
+      textColor: '#091E42',
+    },
+    colorMode: {
+      defaultMode: "light",
+    },
     navbar: {
       title: 'Bridge-In-Tech Backend',
       hideOnScroll: true,
@@ -79,7 +89,16 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} AnitaB.org`,
+      copyright: `
+        <div>
+            <a href="https://www.facebook.com/AnitaB.0rg/" rel="noopener noreferrer" target="_blank"><i id="social-fb" class="fa fa-facebook-square fa-3x social"></i></a>
+            <a href="https://twitter.com/anitab_org" rel="noopener noreferrer" target="_blank"><i id="social-tw" class="fa fa-twitter-square fa-3x social"></i></a>
+            <a href="https://www.linkedin.com/company/anitab-org/" rel="noopener noreferrer" target="_blank"><i id="fa fa-linkedin-square fa-3x social" class="fa fa-linkedin-square fa-3x social"></i></a>
+            <a href="https://www.instagram.com/anitab_org/" rel="noopener noreferrer" target="_blank"><i id="fa fa-instagram-square fa-2x social" class="fa fa-instagram fa-3x social"></i></a>
+        </div>
+        <b>Copyright © ${new Date().getFullYear()} AnitaB.org</b>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+      `,
     },
   },
   presets: [
