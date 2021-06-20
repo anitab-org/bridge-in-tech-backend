@@ -6,7 +6,7 @@ module.exports = {
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'AnitaB.org',
+  organizationName: 'anitab-org',
   projectName: 'bridge-in-tech-backend',
   themeConfig: {
      announcementBar: {
