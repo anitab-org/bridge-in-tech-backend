@@ -37,7 +37,12 @@ def create_app(config_filename: str) -> Flask:
 
     migrate = Migrate(app, db)
 
-    cors.init_app(app, resources={r"*": {"origins": "http://localhost:3000"}})
+    cors.init_app(
+        app,
+        resources={
+            r"*": {"origins": {"http://localhost:3000", "https://anitab-org.github.io"}}
+        },
+    )
 
     from app.api.jwt_extension import jwt
 
