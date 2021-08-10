@@ -1,10 +1,12 @@
+from typing import Dict
+
 from app import messages
 from app.utils.bitschema_utils import OrganizationStatus, Timezone, Zone, ProgramStatus
 from app.utils.validation_utils import is_email_valid, is_phone_valid
 from app.database.models.bit_schema.program import ProgramModel
 
 
-def validate_update_organization(data):
+def validate_update_organization(data: Dict):
     try:
         email = data["email"]
         phone = data["phone"]
@@ -30,7 +32,7 @@ def validate_update_organization(data):
         return messages.ORGANIZATION_OR_PROGRAM_STATUS_FIELD_IS_MISSING
 
 
-def validate_update_program(data):
+def validate_update_program(data: Dict):
     if "program_name" not in data:
         return messages.PROGRAM_NAME_IS_MISSING
 
