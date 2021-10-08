@@ -1,5 +1,6 @@
 import logging
 import ast
+from typing import Dict
 from http import HTTPStatus
 from flask import json
 from sqlalchemy import func
@@ -22,11 +23,12 @@ class OrganizationDAO:
     """Data Access Object for Organization functionalities"""
 
     @staticmethod
-    def get_organization(representative_id, representative_name):
+    def get_organization(representative_id: int, representative_name: str):
         """Retrieves the organization that is represented by the user which ID is passed as parameter.
 
         Arguments:
             representative_id: The ID of the user who represents the organization.
+            representative_name: Name of the user who represents the organization.
 
         Returns:
             The OrganizationModel class represented by the user whose ID was searched.
@@ -35,11 +37,11 @@ class OrganizationDAO:
         return get_organization(representative_id, representative_name)
 
     @staticmethod
-    def update_organization(data):
+    def update_organization(data: Dict):
         """Creates or updates the organization that is represented by the user which ID is passed as parameter.
 
         Arguments:
-            representative_id: The ID of the user who represents the organization.
+            data: Dictionary of organization information.
 
         Returns:
             A dictionary containing "message" which indicates whether or not
@@ -91,15 +93,15 @@ class OrganizationDAO:
             return messages.NOT_ORGANIZATION_REPRESENTATIVE, HTTPStatus.FORBIDDEN
 
     @staticmethod
-    def list_organizations(name, page, per_page, token):
+    def list_organizations(name: str, page: str, per_page: str, token: str):
 
         """Retrieves a list of organizations with the specified ID.
 
         Arguments:
-            user_id: The ID of the user to be listed.
             name: The search query for name of the organizations to be found.
             page: The page of organizations to be returned
             per_page: The number of organizations to return per page
+            token: Bearer Token
 
         Returns:
             A list of organizations matching conditions and the HTTP response code.
@@ -199,7 +201,7 @@ class OrganizationDAO:
             return e, HTTPStatus.BAD_REQUEST
 
 
-def update(organization, data, success_message, status_code):
+def update(organization: OrganizationModel, data: Dict, success_message: str, status_code: int):
     organization.rep_department = data["representative_department"]
     organization.about = data["about"]
     organization.phone = data["phone"]
@@ -211,7 +213,7 @@ def update(organization, data, success_message, status_code):
     return success_message, status_code
 
 
-def get_organization(user_id, user_name):
+def get_organization(user_id: int, user_name: str):
     representative_additional_info = UserExtensionModel.find_by_user_id(user_id)
     try:
         if representative_additional_info.is_organization_rep:

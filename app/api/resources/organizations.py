@@ -215,7 +215,7 @@ class ProgramsList(Resource):
         HTTPStatus.INTERNAL_SERVER_ERROR.value, f"{messages.INTERNAL_SERVER_ERROR}"
     )
     @organizations_ns.expect(auth_header_parser, validate=True)
-    def get(cls, organization_id):
+    def get(cls, organization_id: int):
         """
         Returns list of all programs where organization ID is passed as parameter.
 
@@ -349,7 +349,7 @@ class Program(Resource):
         HTTPStatus.OK.value, "Successful request", get_program_response_model
     )
     @organizations_ns.expect(auth_header_parser, validate=True)
-    def get(cls, organization_id, program_id):
+    def get(cls, organization_id: int, program_id: int):
         """
         Returns a program which program ID and organization ID are passed as parameters.
 
@@ -393,7 +393,7 @@ class Program(Resource):
     @organizations_ns.expect(
         auth_header_parser, update_program_request_model, validate=True
     )
-    def put(cls, organization_id, program_id):
+    def put(cls, organization_id: int, program_id: int):
         """
         Updates a program where program ID and organization id are passed as parameters.
 
