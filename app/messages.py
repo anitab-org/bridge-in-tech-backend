@@ -64,6 +64,7 @@ PERSONAL_BACKGROUND_NOT_FOUND = {
 MENTOR_ID_FIELD_IS_MISSING = {"message": "Mentor ID field is missing."}
 MENTEE_ID_FIELD_IS_MISSING = {"message": "Mentee ID field is missing."}
 END_DATE_FIELD_IS_MISSING = {"message": "End date field is missing."}
+MENTEE_REQUEST_DATE_FIELD_IS_MISSING = {"message": "Mentee request date field is missing."}
 NOTES_FIELD_IS_MISSING = {"message": "Notes field is missing."}
 USERNAME_FIELD_IS_MISSING = {"message": "The field username is missing."}
 PASSWORD_FIELD_IS_MISSING = {"message": "Password field is missing."}
@@ -129,6 +130,9 @@ TASK_COMMENT_WAS_NOT_CREATED_BY_YOU_DELETE = {
 # Update
 NO_DATA_FOR_UPDATING_PROFILE_WAS_SENT = {
     "message": "No data for updating profile was sent."
+}
+NO_DATA_WAS_SENT = {
+    "message": "No data was sent."
 }
 ADDITIONAL_INFORMATION_DOES_NOT_EXIST = {
     "message": "No additional information found with your data. Please provide them now."
